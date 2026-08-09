@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Custom Properties for Remo - Sunset Cosmic Theme */
+:root {
+  /* Default: Sunset Cosmic (Dark Mode) */
+  --color-bg: #0A0B10;
+  --color-card: #121420;
+  --color-border: #1F2336;
+  --color-text: #FFFFFF;
+  --color-text-secondary: #94A3B8;
+  --color-primary: #3B82F6;          /* Soft clear blue from buttons in 1st/3rd image */
+  --color-primary-light: #60A5FA;
+  --color-primary-dark: #1D4ED8;
+  --color-secondary: #F97316;        /* Sunset Orange */
+  --color-accent-gold: #EAB308;       /* Gold Sun yellow */
+  --radius-custom: 16px;
+}
+
+:root.light {
+  /* Light Mode Palette (from 2nd image color card layout) */
+  --color-bg: #F1F5F9;
+  --color-card: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-text: #0F172A;
+  --color-text-secondary: #475569;
+  --color-primary: #2563EB;
+  --color-primary-light: #3B82F6;
+  --color-primary-dark: #1D4ED8;
+  --color-secondary: #E2E8F0;
+  --color-accent-gold: #F59E0B;
+  --radius-custom: 12px;
+}
+
+/* Base style resets and transitions */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Raleway', 'Inter', sans-serif;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+              color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Premium Split Card Container Frame (3rd Image styling) */
+.premium-frame {
+  border: 12px solid rgba(255, 255, 255, 0.04);
+  border-radius: 32px;
+  background-color: var(--color-card);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.light .premium-frame {
+  border: 12px solid rgba(15, 23, 42, 0.03);
+  background-color: var(--color-card);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+}
+
+/* Glassmorphism panel definitions */
+.glass-panel {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.4s ease, border-color 0.4s ease;
+}
+
+:root:not(.light) .glass-panel {
+  background: rgba(18, 20, 32, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+/* Custom premium scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-light);
+}
+
+/* Typography styles */
+.font-inter { font-family: 'Inter', sans-serif; }
+.font-poppins { font-family: 'Poppins', sans-serif; }
+.font-roboto { font-family: 'Roboto', sans-serif; }
+.font-open-sans { font-family: 'Open Sans', sans-serif; }
+.font-playfair { font-family: 'Playfair Display', serif; }
+.font-raleway { font-family: 'Raleway', sans-serif; }
+.font-montserrat { font-family: 'Montserrat', sans-serif; }
+.font-lora { font-family: 'Lora', serif; }
+.font-outfit { font-family: 'Outfit', sans-serif; }
+
+/* LUNA Theme (Teal/Blue) */
+:root.theme-luna,
+:root.theme-luna:not(.light) {
+  --color-bg: #011C40;
+  --color-card: #023859;
+  --color-border: #26658C;
+  --color-text: #FFFFFF;
+  --color-text-secondary: #8EADC0;
+  --color-primary: #54ACBF;
+  --color-primary-light: #A7EBF2;
+  --color-primary-dark: #26658C;
+  --color-secondary: #A7EBF2;
+  --color-accent-gold: #A7EBF2;
+}
+
+/* MOON Theme (Purple/Pink) */
+:root.theme-moon,
+:root.theme-moon:not(.light) {
+  --color-bg: #210635;
+  --color-card: #420D4B;
+  --color-border: #7B337E;
+  --color-text: #FFFFFF;
+  --color-text-secondary: #D4B0E8;
+  --color-primary: #6667AB;
+  --color-primary-light: #F5D5E0;
+  --color-primary-dark: #420D4B;
+  --color-secondary: #F5D5E0;
+  --color-accent-gold: #F5D5E0;
+}
