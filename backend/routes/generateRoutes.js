@@ -2,6 +2,8 @@ import express from 'express';
 import { requireAuth } from '../middleware/auth.js';
 import { generateResumePdf, generateCoverLetterPdf } from '../pdfGenerator.js';
 import Groq from 'groq-sdk';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const router = express.Router();
 const groq = new Groq({
