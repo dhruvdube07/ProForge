@@ -1,11 +1,18 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import Navbar from './components/Navbar';
 import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import MyProfiles from './pages/MyProfiles';
 import ProfileDetail from './pages/ProfileDetail';
+import FolioEditor from './pages/FolioEditor';
+import PublicPortfolio from './pages/PublicPortfolio';
+import TaloMatcher from './pages/TaloMatcher';
+import CovoOutreach from './pages/CovoOutreach';
+import LikoPost from './pages/LikoPost';
+import Hub from './pages/Hub';
+import Settings from './pages/Settings';
 
 /**
  * Route guard for routes that require active authentication.
@@ -30,7 +37,7 @@ function ProtectedRoute({ children }) {
 }
 
 /**
- * Route guard to redirect logged-in users away from Landing.
+ * Route guard to redirect logged-in users away from Landing to Hub.
  */
 function GuestRoute({ children }) {
   const { user, loading } = useAuth();
@@ -44,16 +51,20 @@ function GuestRoute({ children }) {
   }
 
   if (user) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/hub" replace />;
   }
 
   return children;
 }
 
 function MainAppLayout() {
+  const location = useLocation();
+  // Hide navbar on public portfolio pages reactively
+  const hideNavbar = location.pathname.startsWith('/p/');
+
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      {!hideNavbar && <Navbar />}
       <main className="flex-grow">
         <Routes>
           {/* Guest Only Routes */}
@@ -67,6 +78,22 @@ function MainAppLayout() {
           />
 
           {/* Protected Application Routes */}
+          <Route
+            path="/hub"
+            element={
+              <ProtectedRoute>
+                <Hub />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/dashboard"
             element={
@@ -91,8 +118,46 @@ function MainAppLayout() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/folio"
+            element={
+              <ProtectedRoute>
+                <FolioEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/talo"
+            element={
+              <ProtectedRoute>
+                <TaloMatcher />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/covo"
+            element={
+              <ProtectedRoute>
+                <CovoOutreach />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/liko"
+            element={
+              <ProtectedRoute>
+                <LikoPost />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Fallback Catch-all Route */}
+          {/* Guest Public Route */}
+          <Route
+            path="/p/:slugOrId"
+            element={<PublicPortfolio />}
+          />
+
+          {/* Fallback Catch-all Route redirects to Hub if logged in, else Home */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

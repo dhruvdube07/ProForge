@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useAuth } from './useAuth';
 
 export const useProfile = () => {
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -32,9 +32,11 @@ export const useProfile = () => {
       throw new Error('User is not authenticated');
     }
 
+    const customKey = localStorage.getItem('pf_custom_groq_key') || '';
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
+      'x-custom-groq-key': customKey,
       ...options.headers
     };
 
@@ -42,6 +44,12 @@ export const useProfile = () => {
       ...options,
       headers
     });
+
+    if (response.status === 401) {
+      logout();
+      window.location.href = '/';
+      throw new Error('Invalid or expired authentication token. Please login again.');
+    }
 
     if (!response.ok) {
       let errorMsg = 'API request failed';
@@ -55,7 +63,7 @@ export const useProfile = () => {
     }
 
     return response;
-  }, [token]);
+  }, [token, logout]);
 
   /**
    * Fetch all profiles for the current user.

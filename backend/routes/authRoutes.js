@@ -1,7 +1,8 @@
 import express from 'express';
 import { supabase } from '../supabaseClient.js';
-import { sendOtpEmail } from '../emailClient.js';
+import { sendOtpEmail, sendTestEmail } from '../emailClient.js';
 import { requireAuth } from '../middleware/auth.js';
+import { recordLogin } from '../loginHistory.js';
 
 const router = express.Router();
 
@@ -123,6 +124,9 @@ router.post('/verify-otp', async (req, res) => {
       return res.status(500).json({ error: `Sign up succeeded but sign in failed: ${signInError.message}` });
     }
 
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await recordLogin(email, clientIp, req.headers['user-agent']);
+
     return res.status(200).json({
       message: 'Account created successfully!',
       token: sessionData.session.access_token,
@@ -163,6 +167,9 @@ router.post('/login', async (req, res) => {
       console.error('Supabase signInWithPassword error:', error);
       return res.status(400).json({ error: error.message });
     }
+
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await recordLogin(email, clientIp, req.headers['user-agent']);
 
     return res.status(200).json({
       message: 'Logged in successfully',
@@ -253,6 +260,27 @@ router.put('/update-profile', requireAuth, async (req, res) => {
   } catch (err) {
     console.error('Update Profile Route Exception:', err);
     return res.status(500).json({ error: 'Internal server error during profile update' });
+  }
+});
+
+/**
+ * POST /api/auth/send-test-email
+ * Dispatches a diagnostic test email to the user's destination email address.
+ */
+router.post('/send-test-email', requireAuth, async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: 'Recipient email is required' });
+  }
+
+  try {
+    console.log(`Sending diagnostic test email to ${email} for user ${req.user.email}...`);
+    await sendTestEmail(email);
+    return res.status(200).json({ message: 'Diagnostic test email sent successfully!' });
+  } catch (error) {
+    console.error('Test Email Diagnostic Route Error:', error);
+    return res.status(500).json({ error: 'Failed to send test email. Check SMTP server parameters.' });
   }
 });
 

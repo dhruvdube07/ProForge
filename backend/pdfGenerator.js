@@ -186,14 +186,14 @@ const parseArray = (field) => {
 const drawStructuredSection = (doc, title, items, x, y, width, colors, fonts) => {
   if (!items || !Array.isArray(items) || items.length === 0) return y;
   
-  if (y > 700) { doc.addPage(); y = 40; }
+  if (y > 720) { doc.addPage(); y = 36; }
   
-  doc.fillColor(colors.primary).font(fonts.bold).fontSize(12).text(title.toUpperCase(), x, y);
-  doc.strokeColor(colors.primary).lineWidth(1).moveTo(x, y + 14).lineTo(x + width, y + 14).stroke();
-  y += 20;
+  doc.fillColor(colors.primary).font(fonts.bold).fontSize(10.5).text(title.toUpperCase(), x, y);
+  doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(x, y + 12).lineTo(x + width, y + 12).stroke();
+  y += 16;
 
   items.forEach((item) => {
-    if (y > 720) { doc.addPage(); y = 40; }
+    if (y > 740) { doc.addPage(); y = 36; }
     
     const roleVal = item.role || item.degree || item.title || '';
     const companyVal = item.company || item.school || item.technologies || '';
@@ -201,8 +201,8 @@ const drawStructuredSection = (doc, title, items, x, y, width, colors, fonts) =>
     
     // Role / Title line
     if (roleVal) {
-      doc.fillColor(colors.primary).font(fonts.bold).fontSize(10).text(roleVal, x, y, { width });
-      y += 12;
+      doc.fillColor(colors.primary).font(fonts.bold).fontSize(9).text(roleVal, x, y, { width });
+      y += 11;
     }
     
     // Sub-header line: Company/School/Tech - Duration
@@ -211,20 +211,20 @@ const drawStructuredSection = (doc, title, items, x, y, width, colors, fonts) =>
     else subHeader = companyVal || durationVal;
     
     if (subHeader) {
-      doc.fillColor(colors.secondary).font(fonts.bold).fontSize(9).text(subHeader, x, y, { width });
-      y += 12;
+      doc.fillColor(colors.secondary).font(fonts.bold).fontSize(8).text(subHeader, x, y, { width });
+      y += 11;
     }
     
     // Description paragraph
     if (item.description) {
-      doc.fillColor(colors.text).font(fonts.regular).fontSize(9).text(item.description, x, y, { width, align: 'justify', lineGap: 1.5 });
-      y += doc.heightOfString(item.description, { width, lineGap: 1.5 }) + 8;
+      doc.fillColor(colors.text).font(fonts.regular).fontSize(8.5).text(item.description, x, y, { width, align: 'justify', lineGap: 1.25 });
+      y += doc.heightOfString(item.description, { width, lineGap: 1.25 }) + 6;
     } else {
-      y += 4;
+      y += 3;
     }
   });
 
-  return y + 8;
+  return y + 6;
 };
 
 /**
@@ -233,28 +233,28 @@ const drawStructuredSection = (doc, title, items, x, y, width, colors, fonts) =>
 const drawBadgeList = (doc, title, items, x, y, width, colors, fonts) => {
   if (!items || !Array.isArray(items) || items.length === 0) return y;
   
-  if (y > 700) { doc.addPage(); y = 40; }
-  doc.fillColor(colors.primary).font(fonts.bold).fontSize(11).text(title.toUpperCase(), x, y);
-  doc.strokeColor(colors.primary).lineWidth(1).moveTo(x, y + 13).lineTo(x + width, y + 13).stroke();
-  y += 18;
+  if (y > 720) { doc.addPage(); y = 36; }
+  doc.fillColor(colors.primary).font(fonts.bold).fontSize(10).text(title.toUpperCase(), x, y);
+  doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(x, y + 11).lineTo(x + width, y + 11).stroke();
+  y += 15;
   
   let currentX = x;
-  const gap = 5;
+  const gap = 4;
   items.forEach(item => {
     const textStr = String(item);
-    const itemWidth = doc.widthOfString(textStr, { size: 8 }) + 10;
+    const itemWidth = doc.widthOfString(textStr, { size: 7.5 }) + 8;
     if (currentX + itemWidth > x + width) {
       currentX = x;
-      y += 15;
+      y += 13;
     }
-    if (y > 740) { doc.addPage(); y = 40; currentX = x; }
+    if (y > 750) { doc.addPage(); y = 36; currentX = x; }
     
-    doc.rect(currentX, y, itemWidth, 12).fill(colors.bg);
-    doc.fillColor(colors.primary).font(fonts.regular).fontSize(8).text(textStr, currentX + 5, y + 2.5);
+    doc.rect(currentX, y, itemWidth, 10).fill(colors.bg);
+    doc.fillColor(colors.primary).font(fonts.regular).fontSize(7.5).text(textStr, currentX + 4, y + 1.5);
     currentX += itemWidth + gap;
   });
   
-  return y + 20;
+  return y + 16;
 };
 
 /**

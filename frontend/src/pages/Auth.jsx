@@ -15,17 +15,18 @@ export default function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
-  const [gender, setGender] = useState('male'); // Theme selector state
+  const themeOptions = ['luna', 'moon', 'solara', 'aurora', 'nebula', 'cyber', 'glacier', 'vulcan', 'forest', 'monochrome'];
+  const [gender, setGender] = useState(() => themeOptions[Math.floor(Math.random() * themeOptions.length)]); // Theme selector state
 
-  // Apply LUNA/MOON theme to document dynamically
+  // Apply visual theme to document dynamically based on selected index
   useEffect(() => {
-    if (gender === 'female') {
-      document.documentElement.classList.add('theme-moon');
-      document.documentElement.classList.remove('theme-luna', 'light');
-    } else {
-      document.documentElement.classList.add('theme-luna');
-      document.documentElement.classList.remove('theme-moon', 'light');
-    }
+    const themeClasses = [
+      'theme-luna', 'theme-moon', 'theme-solara', 'theme-aurora', 
+      'theme-nebula', 'theme-cyber', 'theme-glacier', 'theme-vulcan', 
+      'theme-forest', 'theme-monochrome'
+    ];
+    document.documentElement.classList.remove(...themeClasses, 'light');
+    document.documentElement.classList.add(`theme-${gender}`);
   }, [gender]);
   
   // Registration steps: 1 = Email/Password inputs, 2 = OTP verification
@@ -87,7 +88,7 @@ export default function Auth() {
     try {
       const success = await verifyOtp(email, password, otp, firstName, lastName, gender);
       if (success) {
-        navigate('/dashboard', { state: { justSignedUp: true } });
+        navigate('/hub', { state: { justSignedUp: true } });
       }
     } catch (err) {
       setLocalError(err.message || 'OTP verification failed.');
@@ -105,7 +106,7 @@ export default function Auth() {
     try {
       const success = await login(email, password);
       if (success) {
-        navigate('/dashboard');
+        navigate('/hub');
       }
     } catch (err) {
       setLocalError(err.message || 'Login failed. Please check credentials.');
@@ -335,33 +336,23 @@ export default function Auth() {
 
               {/* Gender / Theme Selection inside Sign Up */}
               <div className="space-y-1">
-                <label className="block text-xs font-semibold text-themeTextSecondary pl-1">Gender (Theme Palette)</label>
-                <div className="grid grid-cols-2 bg-themeBg p-0.5 rounded-theme border border-themeBorder">
-                  <button
-                    type="button"
-                    onClick={() => setGender('male')}
-                    className={`py-2 px-3 text-xs font-bold rounded-theme transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer ${
-                      gender === 'male'
-                        ? 'bg-themeCard text-themePrimary shadow-sm'
-                        : 'text-themeTextSecondary hover:text-themeText'
-                    }`}
-                  >
-                    <span>👨</span>
-                    LUNA (Male)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setGender('female')}
-                    className={`py-2 px-3 text-xs font-bold rounded-theme transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer ${
-                      gender === 'female'
-                        ? 'bg-themeCard text-themePrimary shadow-sm'
-                        : 'text-themeTextSecondary hover:text-themeText'
-                    }`}
-                  >
-                    <span>👩</span>
-                    MOON (Female)
-                  </button>
-                </div>
+                <label className="block text-xs font-semibold text-themeTextSecondary pl-1">Visual Theme Palette</label>
+                <select
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="w-full p-2.5 rounded-theme border border-themeBorder bg-themeBg focus:outline-none focus:border-themePrimary text-xs text-themeText"
+                >
+                  <option value="luna">🌌 Luna Theme (Electric Blue)</option>
+                  <option value="moon">🔮 Moon Theme (Amethyst Purple)</option>
+                  <option value="solara">☀️ Solara Gold (Amber Yellow)</option>
+                  <option value="aurora">🌲 Aurora Emerald (Forest Green)</option>
+                  <option value="nebula">🎒 Nebula Crimson (Ruby Red)</option>
+                  <option value="cyber">⚡ Cyber Neon (Hot Pink)</option>
+                  <option value="glacier">❄️ Glacier Blue (Ice Cyan)</option>
+                  <option value="vulcan">🌋 Vulcan Orange (Flame Orange)</option>
+                  <option value="forest">🍃 Forest Olive (Sage Green)</option>
+                  <option value="monochrome">◽ Monochrome Silver (Sterling Silver)</option>
+                </select>
               </div>
 
               <div className="space-y-1">

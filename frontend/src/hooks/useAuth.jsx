@@ -26,16 +26,21 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // Apply gender theme dynamically based on logged in user's profile
+  // Apply a random visual theme dynamically whenever the user logs in or refreshes the site
   useEffect(() => {
-    if (user && user.gender) {
-      if (user.gender === 'female') {
-        document.documentElement.classList.add('theme-moon');
-        document.documentElement.classList.remove('theme-luna', 'light');
-      } else {
-        document.documentElement.classList.add('theme-luna');
-        document.documentElement.classList.remove('theme-moon', 'light');
-      }
+    if (user) {
+      const themeClasses = [
+        'theme-luna', 'theme-moon', 'theme-solara', 'theme-aurora', 
+        'theme-nebula', 'theme-cyber', 'theme-glacier', 'theme-vulcan', 
+        'theme-forest', 'theme-monochrome'
+      ];
+      document.documentElement.classList.remove(...themeClasses, 'light');
+      
+      const randomTheme = themeClasses[Math.floor(Math.random() * themeClasses.length)];
+      document.documentElement.classList.add(randomTheme);
+      
+      // Store in sessionStorage so user settings can track the active state
+      sessionStorage.setItem('pf_active_theme', randomTheme.replace('theme-', ''));
     }
   }, [user]);
 

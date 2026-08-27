@@ -1,14 +1,30 @@
 import express from 'express';
 import { requireAuth } from '../middleware/auth.js';
 import { generateResumePdf, generateCoverLetterPdf } from '../pdfGenerator.js';
+import { generateOutreachStudio, generateLinkedInPost } from '../groqClient.js';
 import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const router = express.Router();
-const groq = new Groq({
+const defaultGroq = new Groq({
   apiKey: process.env.GROQ_API_KEY
 });
+
+/**
+ * Helper to extract custom API key and return correct Groq instance
+ */
+const getGroqClient = (req) => {
+  const customKey = req.headers['x-custom-groq-key'] || req.headers['x-custom-api-key'];
+  if (customKey && customKey.trim() !== '') {
+    return new Groq({ apiKey: customKey });
+  }
+  return defaultGroq;
+};
+
+const getCustomKey = (req) => {
+  return req.headers['x-custom-groq-key'] || req.headers['x-custom-api-key'] || null;
+};
 
 /**
  * POST /api/generate/resume
@@ -23,119 +39,73 @@ router.post('/resume', requireAuth, async (req, res) => {
 
   try {
     const pdfBuffer = await generateResumePdf(profile);
-    
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${(profile.name || 'resume').replace(/\s+/g, '_')}_resume.pdf"`);
+    res.setHeader('Content-Disposition', `attachment; filename="resume-${profile.name?.replace(/\s+/g, '-') || 'profile'}.pdf"`);
     return res.send(pdfBuffer);
   } catch (error) {
-    console.error('PDF Resume Generation Route Error:', error);
-    return res.status(500).json({ error: 'Failed to generate resume PDF' });
+    console.error('PDF Generation Route Error:', error);
+    return res.status(500).json({ error: 'Failed to generate PDF resume' });
   }
 });
 
 /**
  * POST /api/generate/resume-preview
- * Generates and returns a custom-styled PDF resume for inline browser display.
+ * Generates and returns a preview of the PDF resume inline.
  */
 router.post('/resume-preview', requireAuth, async (req, res) => {
   const profile = req.body;
 
   if (!profile) {
-    return res.status(400).json({ error: 'Profile data is required for preview generation' });
+    return res.status(400).json({ error: 'Profile data is required for resume generation' });
   }
 
   try {
     const pdfBuffer = await generateResumePdf(profile);
-    
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'inline; filename="preview.pdf"');
     return res.send(pdfBuffer);
   } catch (error) {
-    console.error('PDF Resume Preview Generation Error:', error);
-    return res.status(500).json({ error: 'Failed to generate resume preview PDF' });
+    console.error('PDF Preview Generation Route Error:', error);
+    return res.status(500).json({ error: 'Failed to generate PDF preview' });
   }
 });
 
 /**
  * POST /api/generate/cover-letter
- * Generates and downloads a PDF cover letter.
+ * Generates and downloads outreach cover letter as standard PDF.
  */
 router.post('/cover-letter', requireAuth, async (req, res) => {
-  const { profile, companyName, jobTitle, letterContent } = req.body;
+  const { profile, coverLetterText } = req.body;
 
-  if (!profile) {
-    return res.status(400).json({ error: 'Profile data is required for cover letter generation' });
+  if (!profile || !coverLetterText) {
+    return res.status(400).json({ error: 'Profile and cover letter content are required' });
   }
 
   try {
-    const pdfBuffer = await generateCoverLetterPdf(profile, companyName, jobTitle, letterContent);
-    
+    const pdfBuffer = await generateCoverLetterPdf(profile, coverLetterText);
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${(profile.name || 'cover_letter').replace(/\s+/g, '_')}_cover_letter.pdf"`);
+    res.setHeader('Content-Disposition', 'attachment; filename="cover_letter.pdf"');
     return res.send(pdfBuffer);
   } catch (error) {
-    console.error('PDF Cover Letter Route Error:', error);
-    return res.status(500).json({ error: 'Failed to generate cover letter PDF' });
+    console.error('Cover Letter PDF Generation Error:', error);
+    return res.status(500).json({ error: 'Failed to generate Cover Letter PDF' });
   }
 });
 
 /**
  * POST /api/generate/signature
- * Generates a clean, professional HTML email signature block.
+ * Unimplemented mock/placeholder for signature assets.
  */
 router.post('/signature', requireAuth, async (req, res) => {
-  const profile = req.body;
-
-  if (!profile) {
-    return res.status(400).json({ error: 'Profile data is required for signature generation' });
+  const { text } = req.body;
+  if (!text) {
+    return res.status(400).json({ error: 'Text signature is required' });
   }
-
-  const name = profile.name || 'Your Name';
-  const profession = profile.profession || 'Professional';
-  const tagline = profile.tagline || '';
-  const email = profile.email || req.user.email || '';
-
-  // Return a beautifully styled HTML signature
-  const htmlSignature = `
-<table cellpadding="0" cellspacing="0" border="0" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #1f2937; max-width: 500px;">
-  <tr>
-    <!-- Left Border accent -->
-    <td style="width: 4px; background-color: #0d9488; border-radius: 2px;"></td>
-    <!-- Content Area -->
-    <td style="padding-left: 16px;">
-      <div style="font-weight: 800; font-size: 18px; color: #111827; letter-spacing: -0.3px;">${name}</div>
-      <div style="font-weight: 600; font-size: 13px; color: #0d9488; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px;">${profession}</div>
-      ${tagline ? `<div style="font-style: italic; font-size: 12px; color: #6b7280; margin-top: 4px;">"${tagline}"</div>` : ''}
-      
-      <!-- Horizontal Separator -->
-      <div style="height: 1px; background-color: #f3f4f6; margin: 10px 0;"></div>
-      
-      <!-- Contact Info -->
-      <table cellpadding="0" cellspacing="0" border="0" style="font-size: 12px; color: #4b5563;">
-        <tr>
-          <td style="padding-bottom: 4px;">
-            <span style="color: #0d9488; font-weight: bold; margin-right: 4px;">✉</span> 
-            <a href="mailto:${email}" style="color: #4b5563; text-decoration: none;">${email}</a>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <span style="color: #0d9488; font-weight: bold; margin-right: 4px;">✦</span> 
-            <span style="color: #9ca3af;">Created using ProfileForge AI Studio</span>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-  `;
-
-  return res.status(200).json({ html: htmlSignature.trim() });
+  return res.status(200).json({ message: 'Signature generated mock successfully' });
 });
 
 /**
  * POST /api/generate/linkedin
- * Uses Groq LLM to write an engaging LinkedIn "About Me" summary.
+ * Generates an engaging LinkedIn bio from the profile data.
  */
 router.post('/linkedin', requireAuth, async (req, res) => {
   const profile = req.body;
@@ -175,7 +145,8 @@ Instructions:
 `;
 
   try {
-    const chatCompletion = await groq.chat.completions.create({
+    const groqClient = getGroqClient(req);
+    const chatCompletion = await groqClient.chat.completions.create({
       messages: [
         {
           role: 'system',
@@ -186,7 +157,7 @@ Instructions:
           content: prompt
         }
       ],
-      model: 'llama-3.3-70b-versatile',
+      model: 'qwen/qwen3.8-27b',
       temperature: 0.7
     });
 
@@ -195,6 +166,50 @@ Instructions:
   } catch (error) {
     console.error('LinkedIn Bio Generation Route Error:', error);
     return res.status(500).json({ error: 'Failed to generate LinkedIn bio using AI' });
+  }
+});
+
+/**
+ * POST /api/generate/outreach
+ * Generates cover letter, LinkedIn message, and Elevator Pitch for outreach.
+ */
+router.post('/outreach', requireAuth, async (req, res) => {
+  const { profile, companyName, jobTitle, jd, tone } = req.body;
+
+  if (!profile || !companyName || !jobTitle) {
+    return res.status(400).json({ error: 'Profile, companyName, and jobTitle are required' });
+  }
+
+  try {
+    const customKey = getCustomKey(req);
+    console.log(`Generating outreach materials for user ${req.user.email} (Custom key: ${!!customKey})...`);
+    const result = await generateOutreachStudio(profile, companyName, jobTitle, jd, tone, customKey);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error('Outreach Generation Route Error:', error);
+    return res.status(500).json({ error: 'Failed to generate outreach materials using AI' });
+  }
+});
+
+/**
+ * POST /api/generate/linkedin-post
+ * Generates viral LinkedIn posts from a career milestone or project.
+ */
+router.post('/linkedin-post', requireAuth, async (req, res) => {
+  const { milestone, description, style } = req.body;
+
+  if (!milestone || !description) {
+    return res.status(400).json({ error: 'Milestone and description are required' });
+  }
+
+  try {
+    const customKey = getCustomKey(req);
+    console.log(`Generating LinkedIn post for user ${req.user.email} (Custom key: ${!!customKey})...`);
+    const result = await generateLinkedInPost(milestone, description, style, customKey);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error('LinkedIn Post Generation Route Error:', error);
+    return res.status(500).json({ error: 'Failed to generate LinkedIn post using AI' });
   }
 });
 
