@@ -66,6 +66,16 @@ export default function Hub() {
       path: '/liko',
       color: 'from-pink-500/20 to-rose-500/10 hover:border-pink-500/50',
       badge: 'Branding Builder'
+    },
+    {
+      id: 'mali',
+      title: 'Mali AI',
+      subtitle: 'Email Campaigns',
+      desc: 'Compose rich-text email outreaches, inject custom links and styles, and schedule automated dispatches for campaigns.',
+      icon: Mail,
+      path: '/mali',
+      color: 'from-blue-600/20 to-indigo-600/10 hover:border-blue-600/50',
+      badge: 'Email Studio'
     }
   ];
 

@@ -416,3 +416,64 @@ Do not include any explanation or markdown code block wrapper. Only output JSON.
     throw error;
   }
 };
+
+/**
+ * Generates an outreach email draft utilizing candidate details, role, company context, and custom tone.
+ */
+export const generateMaliEmail = async (profile, targetRole, companyContext, tone, promptInstruction, customApiKey = null) => {
+  const activeClient = getClient(customApiKey);
+  const prompt = `
+You are an expert executive outreach copywriter and brand manager.
+Write a highly converting, tailored professional outreach email.
+
+Candidate Profile Details:
+- Name: "${profile.name || 'Candidate'}"
+- Profession: "${profile.profession || 'Professional'}"
+- Tagline: "${profile.tagline || ''}"
+- Summary: "${profile.bio || ''}"
+- Skills: ${Array.isArray(profile.skills) ? profile.skills.join(', ') : '[]'}
+- Achievements: ${Array.isArray(profile.achievements) ? profile.achievements.join(', ') : '[]'}
+
+Target Details:
+- Job Title / Role: "${targetRole || 'Target Role'}"
+- Target Company / Context: "${companyContext || 'Target Company'}"
+- Desired Tone: "${tone || 'Professional'}"
+- Additional Custom Instructions: "${promptInstruction || ''}"
+
+Instructions:
+1. Formulate a strong, high-open-rate subject line.
+2. Formulate the email body. The body MUST be formatted as valid HTML (using paragraphs <p>, bold <strong>, breaks <br>, list elements <ul>/<li>, etc.). Do NOT output <html>, <body>, or <head> tags, just the inner HTML snippet.
+3. If appropriate, style important text or links. If the candidate has contact info, inject it naturally at the bottom.
+4. If a portfolio link is present, write a clean hyperlink: <a href="[Portfolio]" style="color: #3b82f6; text-decoration: underline;">view my portfolio</a>.
+5. Return ONLY a valid JSON object matching the schema below:
+{
+  "subject": "Email Subject Line",
+  "body": "<p>Dear Recruiter...</p>"
+}
+Do not include any explanation or markdown code block wrapper. Only output JSON.
+`;
+
+  try {
+    const chatCompletion = await activeClient.chat.completions.create({
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an expert career email ghostwriter. You output ONLY valid JSON.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      model: 'qwen/qwen3.8-27b',
+      temperature: 0.7,
+      response_format: { type: 'json_object' }
+    });
+
+    const content = chatCompletion.choices[0]?.message?.content || '{}';
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error during Groq Mali Email generation:', error);
+    throw error;
+  }
+};

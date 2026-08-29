@@ -11,6 +11,7 @@ import PublicPortfolio from './pages/PublicPortfolio';
 import TaloMatcher from './pages/TaloMatcher';
 import CovoOutreach from './pages/CovoOutreach';
 import LikoPost from './pages/LikoPost';
+import MaliEmail from './pages/MaliEmail';
 import Hub from './pages/Hub';
 import Settings from './pages/Settings';
 
@@ -147,6 +148,14 @@ function MainAppLayout() {
             element={
               <ProtectedRoute>
                 <LikoPost />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mali"
+            element={
+              <ProtectedRoute>
+                <MaliEmail />
               </ProtectedRoute>
             }
           />

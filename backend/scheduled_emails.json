@@ -1,0 +1,44 @@
+[
+  {
+    "id": "mali-1787993946352-y2u0tdnqc",
+    "userId": "a4fa2630-8198-47de-92dd-29f2ce6b0ef3",
+    "toEmail": "dubeydhruv2007@gmail.com",
+    "subject": "Thank you - [Your Profession] Interview",
+    "body": "<p>Hi [Interviewer Name],</p>\n<p>Thank you so much for your time today. I really enjoyed learning more about the engineering team and the <strong>[Your Profession]</strong> position at [Company].</p>\n<p>Our conversation regarding your scaling goals and cloud-native services reinforced my excitement for this opportunity. I am confident my experience in building robust React dashboards and optimized Node services aligns perfectly with your immediate needs.</p>\n<p>Please let me know if you require any additional references. I look forward to hearing from you.</p>\n<p>Best regards,<br><strong>[Your Name]</strong></p>",
+    "scheduledAt": "2026-08-29T09:00:00.000Z",
+    "status": "sent",
+    "replyTo": "devildhruv2007@gmail.com",
+    "createdAt": "2026-08-29T08:59:06.352Z",
+    "sentAt": "2026-08-29T09:00:06.731Z"
+  },
+  {
+    "id": "mali-1787994632064-2h4mmcd8y",
+    "userId": "a4fa2630-8198-47de-92dd-29f2ce6b0ef3",
+    "toEmail": "dubeydhruv2007@gmail.com",
+    "subject": "Thank you - AI & Data Engineering Student Interview",
+    "body": "<p>Hi [Interviewer Name],</p>\n<p>Thank you so much for your time today. I really enjoyed learning more about the engineering team and the <strong>AI &amp; Data Engineering Student</strong> position at [Company].</p>\n<p>Our conversation regarding your scaling goals and cloud-native services reinforced my excitement for this opportunity. I am confident my experience in building robust React dashboards and optimized Node services aligns perfectly with your immediate needs.</p>\n<p>Please let me know if you require any additional references. I look forward to hearing from you.</p>\n<p>Best regards,<br><strong>Dhruv Dubey</strong></p>",
+    "scheduledAt": "2026-08-29T09:10:32.064Z",
+    "status": "sent",
+    "replyTo": "devildhruv2007@gmail.com",
+    "senderName": "Dhruv Dubey (Mali AI)",
+    "fontFamily": "Georgia, Cambria, serif",
+    "bgTheme": "#ffffff",
+    "createdAt": "2026-08-29T09:10:32.064Z",
+    "sentAt": "2026-08-29T09:10:44.314Z"
+  },
+  {
+    "id": "mali-1787995169875-5if6zbzry",
+    "userId": "a4fa2630-8198-47de-92dd-29f2ce6b0ef3",
+    "toEmail": "To: dubeydhruv2007@gmail.com",
+    "subject": "Thank you - AI & Data Engineering Student Interview",
+    "body": "<p>Hi [Interviewer Name],</p>\n<p>Thank you so much for your time today. I really enjoyed learning more about the engineering team and the <strong>AI &amp; Data Engineering Student</strong> position at [Company].</p>\n<p>Our conversation regarding your scaling goals and cloud-native services reinforced my excitement for this opportunity. I am confident my experience in building robust React dashboards and optimized Node services aligns perfectly with your immediate needs.</p>\n<p>Please let me know if you require any additional references. I look forward to hearing from you.</p>\n<p>Best regards,<br><strong>Dhruv Dubey</strong></p>",
+    "scheduledAt": "2026-08-29T09:20:00.000Z",
+    "status": "sent",
+    "replyTo": "devildhruv2007@gmail.com",
+    "senderName": "Dhruv Dubey (Mali AI)",
+    "fontFamily": "Arial, Helvetica, sans-serif",
+    "bgTheme": "#c2f0d0",
+    "createdAt": "2026-08-29T09:19:29.875Z",
+    "sentAt": "2026-08-29T09:20:07.451Z"
+  }
+]

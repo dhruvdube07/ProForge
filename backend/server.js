@@ -7,6 +7,8 @@ import authRoutes from './routes/authRoutes.js';
 import analyzeRoutes from './routes/analyzeRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import generateRoutes from './routes/generateRoutes.js';
+import maliRoutes from './routes/maliRoutes.js';
+import { startEmailScheduler } from './emailScheduler.js';
 
 const app = express();
 const PORT = 5000;
@@ -25,6 +27,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/analyze', analyzeRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/generate', generateRoutes);
+app.use('/api/mali', maliRoutes);
+
+// Start background email queue worker
+startEmailScheduler();
 
 // Health check endpoint
 app.get('/', (req, res) => {

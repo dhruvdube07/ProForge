@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Sparkles, History, LogOut, LayoutDashboard, User, Settings, X, Briefcase, Globe, FileText, Linkedin, ChevronDown } from 'lucide-react';
+import { Sparkles, History, LogOut, LayoutDashboard, User, Settings, X, Briefcase, Globe, FileText, Linkedin, ChevronDown, Mail } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import ThemeToggle from './ThemeToggle';
 
@@ -169,6 +169,19 @@ export default function Navbar() {
                 <Linkedin className="h-3.5 w-3.5" />
                 <span>Liko AI</span>
               </Link>
+
+              <Link
+                to="/mali"
+                className={`flex items-center gap-1 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                  isActive('/mali')
+                    ? 'bg-themePrimary text-white shadow-md'
+                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/40'
+                }`}
+                title="Mali AI Email Scheduling"
+              >
+                <Mail className="h-3.5 w-3.5" />
+                <span>Mali AI</span>
+              </Link>
             </div>
           )}
 
@@ -300,6 +313,15 @@ export default function Navbar() {
           >
             <Linkedin className="h-4 w-4" />
             <span>Liko</span>
+          </Link>
+          <Link
+            to="/mali"
+            className={`flex flex-col items-center gap-0.5 text-[9px] font-bold ${
+              isActive('/mali') ? 'text-themePrimary' : 'text-themeTextSecondary'
+            }`}
+          >
+            <Mail className="h-4 w-4" />
+            <span>Mali</span>
           </Link>
         </div>
       )}

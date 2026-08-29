@@ -158,3 +158,26 @@ export const sendTestEmail = async (toEmail) => {
     throw error;
   }
 };
+
+/**
+ * Sends a custom formatted HTML email to the recipient with replyTo configured to the sender.
+ */
+export const sendCustomEmail = async (toEmail, subject, htmlBody, replyToEmail, senderName = 'ProForge AI Mali Studio') => {
+  const mailOptions = {
+    from: `"${senderName}" <playnest@zohomail.in>`,
+    to: toEmail,
+    subject: subject,
+    html: htmlBody,
+    replyTo: replyToEmail
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Custom Email sent successfully to:', toEmail, info.messageId);
+    return info;
+  } catch (error) {
+    console.error('Error sending Custom Email:', error);
+    throw error;
+  }
+};
+

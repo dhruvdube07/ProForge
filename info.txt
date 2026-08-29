@@ -1,0 +1,150 @@
+========================================================================
+                      PROFORGE AI SYSTEM DOCUMENTATION
+========================================================================
+Project Name: Proforge AI
+Sub-Suite:    Remo AI, Folio AI, Talo AI, Covo AI, Liko AI, Mali AI
+Description:   End-to-End Career Intelligence & Branding Suite
+Status:        ACTIVE & RUNNING (Local Development)
+               - Backend Server:  http://localhost:5000
+               - Frontend Client: http://localhost:5173
+
+------------------------------------------------------------------------
+1. TECHNOLOGY STACK
+------------------------------------------------------------------------
+* Frontend:
+  - React 18, Vite (Fast build and HMR)
+  - Tailwind CSS v3 & PostCSS (Responsive layout frameworks)
+  - Lucide Icons (Premium icon sets)
+  - Vanilla CSS Transitions & Cubic-bezier curves (Apple-smooth animations)
+* Backend:
+  - Node.js & Express (API Routing & Middleware pipeline)
+  - Groq SDK (Llama 3 / Qwen integration for AI features)
+  - Nodemailer (Zoho SMTP mail dispatch client)
+  - PDFKit (Dynamic PDF rendering with custom A4 coordinates mapping)
+  - JSZip (Client/Server file archiving for zero-dependency exports)
+  - jsonwebtoken (Native JWT token decoding and authorization guards)
+* Database & Auth:
+  - Supabase Database (Profiles schema, OTP management)
+  - Supabase Auth (User credentials registration)
+  - Local JSON database file backing (login history, email schedules)
+
+------------------------------------------------------------------------
+2. DIRECTORY STRUCTURE
+------------------------------------------------------------------------
+proforge/
+├── backend/
+│   ├── server.js               # Express server runner & CORS configuration
+│   ├── supabaseClient.js       # Supabase service role client initialization
+│   ├── emailClient.js          # Zoho SMTP transporter & HTML email templates
+│   ├── emailScheduler.js       # Background email queue checker & sender [Mali AI]
+│   ├── groqClient.js           # Groq SDK AI completion controller
+│   ├── pdfGenerator.js         # PDFKit resume & cover letter rendering pipeline
+│   ├── loginHistory.js         # Security login logs auditing & IP trackers
+│   ├── routes/                 # Express API routing controllers
+│   │   ├── authRoutes.js       # OTP generation, login, registry, and test mail routing
+│   │   ├── profileRoutes.js    # Profile CRUD and public JSONB packing/unpacking
+│   │   ├── analyzeRoutes.js    # Groq AI parsing, ATS Scoring, and bullet refiners
+│   │   ├── generateRoutes.js   # PDF compilation, LinkedIn bio/post, and outreach studio
+│   │   └── maliRoutes.js       # Schedules management and AI email drafting [Mali AI]
+│   └── middleware/
+│       └── auth.js             # RequireAuth JWT token interceptors
+├── frontend/
+│   ├── index.html              # Core font declarations & DOM mounting entry wrapper
+│   ├── postcss.config.js       # CSS pre-processing config
+│   ├── tailwind.config.js      # Utility class overrides & theme setups
+│   ├── vite.config.js          # Proxy setup (routes /api to localhost:5000)
+│   └── src/
+│       ├── App.jsx             # React routing paths & navigation guards
+│       ├── main.jsx            # React root mount point
+│       ├── hooks/              # Custom context and authentication hooks
+│       ├── components/         # Common UI forms, loaders, modals, and navigation bars
+│       └── pages/              # Active sub-AI suite editor dashboards
+│           ├── Auth.jsx        # OTP signup and security validation page
+│           ├── Dashboard.jsx   # Interactive Profile Editor, Resume Builder, & AI Refiner
+│           ├── FolioEditor.jsx # Portfolio manager (Exportable standalone templates)
+│           ├── TaloMatcher.jsx # Real-time ATS Alignment auditor (Percentage matching)
+│           ├── CovoOutreach.jsx# Cold email, pitch outreach, and cover letter suite
+│           ├── LikoPost.jsx    # Personal brand LinkedIn post generator
+│           ├── MaliEmail.jsx   # Visual HTML email composer & scheduled queue [Mali AI]
+│           ├── MyProfiles.jsx  # Multi-profile dashboard switcher
+│           ├── ProfileDetail.jsx# View-only detail drawer
+│           ├── PublicPortfolio.# Guest portfolio visitor rendering
+│           └── Settings.jsx    # BYOK API settings, diagnostics checks
+└── info.txt                    # [This File] Project features & reference document
+
+------------------------------------------------------------------------
+3. CORE SYSTEM FEATURES
+------------------------------------------------------------------------
+* Remo AI — Smart Resume Builder:
+  - In-place AI bullet points refinement and dynamic A4 PDF page formatting.
+  - Renders print-ready, multi-page PDFs cleanly with over 105 layout combinations.
+* Folio AI — Web Portfolio Publisher:
+  - Customize bio highlights, title overrides, and case study parameters.
+  - 4 responsive templates: Bento Grid, Cyber Terminal, Modern Executive, Clean Glassmorphism.
+  - Zero-dependency ZIP exports containing clean HTML, CSS, and JS.
+  - Open Profile Switcher to switch active profile data on the fly.
+* Talo AI — ATS Alignment Auditor:
+  - Real-time job description parsing vs candidate profile.
+  - Generates comparative score percentage, keyword gaps, and feedback reports.
+* Covo AI — Recruiter Outreach Studio:
+  - Generates personalized cold emails, LinkedIn pitches, and elevator pitches.
+  - Tailored cover letter generator with dynamic PDF downloading.
+* Liko AI — LinkedIn Architect:
+  - Milestone-to-social post converter with dynamic hook styles.
+  - LinkedIn "About" section bio optimizer.
+* Mali AI — Email scheduling & Campaign Studio:
+  - AI-assisted custom outreach email drafts from active profile details.
+  - Visual rich-text HTML composer supporting colors, hyperlinks, font sizes, alignments.
+  - Live Preview & Custom Styling Console (Simulated browser sandbox to preview and refine outreach).
+  - Customize fonts (12 premium Google typography options) and backgrounds (7 contrasting themes, including dark styles).
+  - Dual custom time pickers: visual inline React calendar picker and 12-Hour (AM/PM) / 24-Hour clock toggle selectors.
+  - Custom SMTP sender display name override and personal reply-to header routing.
+  - Instant dispatch or background scheduled queue manager.
+  - Built-in visual template examples.
+* Visual Theme System:
+  - 10 premium themes that dynamically randomize: Luna, Moon, Solara Gold, Aurora Emerald,
+    Nebula Crimson, Cyber Neon, Glacier Blue, Vulcan Orange, Forest Olive, Monochrome Silver.
+  - Apple-style cubic-bezier responsive transitions and tap scale sizing.
+* Security Alerts:
+  - Monitors login attempts (IP + User Agent tracking).
+  - Automatically dispatches alert emails and flags locks on 3+ distinct device accesses 
+    or consecutive failures on a signature.
+
+------------------------------------------------------------------------
+4. KEY BACKEND API ENDPOINTS
+------------------------------------------------------------------------
+* Authentication (/api/auth)
+  - POST /signup         : Validates registry details, dispatches a 6-digit OTP via Zoho SMTP.
+  - POST /verify-otp     : Verifies OTP, signs up Supabase user, registers active login signature.
+  - POST /login          : Verifies credentials, generates JWT access token, audits signature.
+  - POST /resend-otp     : Clears old OTP sessions, triggers new email dispatch.
+  - PUT  /update-profile : Updates user metadata.
+  - POST /send-test-email: Dispatches SMTP diagnostic testing email.
+* Profile Management (/api/profiles)
+  - GET  /               : Fetches all candidate profiles belonging to the user.
+  - GET  /:id            : Fetches specific profile detail.
+  - POST /               : Creates new profile. Serializes custom fields (like experience,
+                           education, contact) into the JSONB 'values' column.
+  - PUT  /:id            : Updates owned profile.
+  - DELETE /:id          : Deletes owned profile.
+  - GET  /public/:idOrSlug: Read-only guest public endpoint. Resolves by UUID or custom slug.
+* AI Analysis (/api/analyze)
+  - POST /               : Analyzes raw text bio and structures it into JSON profile parameters.
+  - POST /refine         : AI refinement based on sliders (creativity, length) & company context.
+  - POST /ats-score      : Scores profile matching vs job description, lists missing keywords.
+  - POST /ats-rewrite    : Rewrites a resume bullet to match targeted JD context.
+* PDF & AI Generation (/api/generate)
+  - POST /resume         : Downloads rendered PDF resume.
+  - POST /resume-preview : Previews rendered PDF resume in browser.
+  - POST /cover-letter   : Downloads cover letter PDF.
+  - POST /linkedin       : Generates custom professional LinkedIn About summaries.
+  - POST /outreach       : Generates pitch packages (LinkedIn, cold email, cover letter).
+  - POST /linkedin-post  : Generates milestone-driven social media posts.
+* Email Scheduling & Campaigns (/api/mali)
+  - GET  /schedules      : Retrieves user's pending, sent, and failed email schedules. Seeding
+                           mock example schedules on first retrieval.
+  - POST /schedules      : Adds a scheduled or immediate email dispatch to the queue.
+  - PUT  /schedules/:id  : Edits details of a pending scheduled email.
+  - DELETE /schedules/:id: Cancels and removes email from the queue.
+  - POST /generate       : Groq AI email draft generator using candidate details and target context.
+========================================================================
