@@ -91,6 +91,12 @@
       "ip": "1",
       "userAgent": "node",
       "device": "1-node"
+    },
+    {
+      "timestamp": "2026-09-25T10:45:27.510Z",
+      "ip": "1",
+      "userAgent": "node",
+      "device": "1-node"
     }
   ],
   "testuser@example.com": [

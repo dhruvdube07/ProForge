@@ -8,7 +8,10 @@ const safeJson = async (response) => {
   try {
     return text ? JSON.parse(text) : {};
   } catch (err) {
-    return { error: response.statusText || 'Unexpected server response' };
+    if (text && text.length < 150 && !text.startsWith('<')) {
+      return { error: text.replace(/\n+/g, ' ').trim() };
+    }
+    return { error: response.statusText || 'Server responded with an unexpected status code' };
   }
 };
 

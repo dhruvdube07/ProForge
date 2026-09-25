@@ -3,18 +3,34 @@ dotenv.config();
 
 import Groq from 'groq-sdk';
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY
-});
+let defaultGroq = null;
+const getDefaultGroq = () => {
+  const key = process.env.GROQ_API_KEY;
+  if (key && key.trim() !== '') {
+    if (!defaultGroq) {
+      try {
+        defaultGroq = new Groq({ apiKey: key.trim() });
+      } catch (err) {
+        console.warn('Groq client initialization warning:', err.message);
+      }
+    }
+    return defaultGroq;
+  }
+  return null;
+};
 
 /**
  * Returns the default Groq client or instantiates a custom one if a custom key is provided.
  */
 const getClient = (customApiKey) => {
   if (customApiKey && customApiKey.trim() !== '') {
-    return new Groq({ apiKey: customApiKey });
+    return new Groq({ apiKey: customApiKey.trim() });
   }
-  return groq;
+  const client = getDefaultGroq();
+  if (client) {
+    return client;
+  }
+  throw new Error('Groq API Key is not configured. Please supply a custom API key in Settings or set GROQ_API_KEY in your environment.');
 };
 
 /**

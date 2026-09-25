@@ -22,12 +22,43 @@ app.use(cors({
 // Parse incoming request JSON bodies
 app.use(express.json());
 
-// Register API routes
+// Register API routes with dual prefixes for full serverless / proxy compatibility
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
 app.use('/api/analyze', analyzeRoutes);
+app.use('/analyze', analyzeRoutes);
+
 app.use('/api/profiles', profileRoutes);
+app.use('/profiles', profileRoutes);
+
 app.use('/api/generate', generateRoutes);
+app.use('/generate', generateRoutes);
+
 app.use('/api/mali', maliRoutes);
+app.use('/mali', maliRoutes);
+
+// Health check endpoints
+const healthHandler = (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy', 
+    project: 'ProfileForge API Server', 
+    timestamp: new Date().toISOString(),
+    env: process.env.VERCEL ? 'vercel-serverless' : 'local-node'
+  });
+};
+
+app.get('/api/health', healthHandler);
+app.get('/health', healthHandler);
+app.get('/', healthHandler);
+
+// Global error handling middleware - returns JSON error rather than crashing container
+app.use((err, req, res, next) => {
+  console.error('Express Error Handler:', err);
+  res.status(err.status || 500).json({ 
+    error: err.message || 'Internal Server Error' 
+  });
+});
 
 import { fileURLToPath } from 'url';
 
@@ -38,15 +69,6 @@ const isDirectRun = Boolean(process.argv[1] && path.resolve(process.argv[1]) ===
 if (isDirectRun) {
   startEmailScheduler();
 }
-
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'healthy', project: 'ProfileForge API Server', timestamp: new Date().toISOString() });
-});
-
-app.get('/', (req, res) => {
-  res.status(200).json({ status: 'healthy', project: 'ProfileForge API Server' });
-});
 
 // Start Express Server only when run directly (e.g. node backend/server.js)
 if (isDirectRun) {

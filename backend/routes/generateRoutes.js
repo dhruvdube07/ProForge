@@ -7,9 +7,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const router = express.Router();
-const defaultGroq = new Groq({
-  apiKey: process.env.GROQ_API_KEY
-});
+
+let defaultGroq = null;
 
 /**
  * Helper to extract custom API key and return correct Groq instance
@@ -17,9 +16,16 @@ const defaultGroq = new Groq({
 const getGroqClient = (req) => {
   const customKey = req.headers['x-custom-groq-key'] || req.headers['x-custom-api-key'];
   if (customKey && customKey.trim() !== '') {
-    return new Groq({ apiKey: customKey });
+    return new Groq({ apiKey: customKey.trim() });
   }
-  return defaultGroq;
+  const key = process.env.GROQ_API_KEY;
+  if (key && key.trim() !== '') {
+    if (!defaultGroq) {
+      defaultGroq = new Groq({ apiKey: key.trim() });
+    }
+    return defaultGroq;
+  }
+  throw new Error('Groq API Key is not configured. Please supply a custom API key in Settings or set GROQ_API_KEY in environment variables.');
 };
 
 const getCustomKey = (req) => {
