@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,400..800&family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -17,7 +17,19 @@
   --color-primary-dark: #1D4ED8;
   --color-secondary: #F97316;        /* Warm amber orange */
   --color-accent-gold: #F59E0B;
-  --radius-custom: 20px;
+  --radius-custom: 14px;
+
+  /* Dynamic UI Glow Variables */
+  --ui-glow-color: rgba(59, 130, 246, 0.28);
+  --ui-glow-secondary: rgba(249, 115, 22, 0.18);
+
+  /* Dynamic Typography Engine Defaults (Executive Pro) */
+  --font-ui-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-ui-heading: 'Plus Jakarta Sans', sans-serif;
+  --font-ui-display: 'Outfit', sans-serif;
+  --font-ui-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --ui-heading-letter-spacing: -0.028em;
+  --ui-heading-weight: 700;
 }
 
 :root.light {
@@ -33,7 +45,79 @@
   --color-secondary: #E2E8F0;
   --color-accent-gold: #F59E0B;
   --radius-custom: 16px;
+
+  /* Dynamic UI Glow Variables in Light Mode */
+  --ui-glow-color: rgba(37, 99, 235, 0.15);
+  --ui-glow-secondary: rgba(147, 197, 253, 0.22);
 }
+
+/* =========================================================================
+   DYNAMIC UI TYPOGRAPHY PERSONALITY MODES
+   ========================================================================= */
+
+/* 1. Executive Pro (Default Silicon Valley SaaS) */
+:root[data-font-mode="executive"],
+:root.font-mode-executive {
+  --font-ui-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-ui-heading: 'Plus Jakarta Sans', sans-serif;
+  --font-ui-display: 'Plus Jakarta Sans', sans-serif;
+  --ui-heading-letter-spacing: -0.03em;
+  --ui-heading-weight: 700;
+}
+
+/* 2. Futuristic Neo (Outfit + Space Grotesk) */
+:root[data-font-mode="futuristic"],
+:root.font-mode-futuristic {
+  --font-ui-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-ui-heading: 'Space Grotesk', sans-serif;
+  --font-ui-display: 'Space Grotesk', sans-serif;
+  --ui-heading-letter-spacing: -0.025em;
+  --ui-heading-weight: 700;
+}
+
+/* 3. Studio Avant-Garde (Syne + Plus Jakarta Sans) */
+:root[data-font-mode="studio"],
+:root.font-mode-studio {
+  --font-ui-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-ui-heading: 'Syne', sans-serif;
+  --font-ui-display: 'Syne', sans-serif;
+  --ui-heading-letter-spacing: -0.02em;
+  --ui-heading-weight: 800;
+}
+
+/* 4. Tech Terminal (Space Grotesk + JetBrains Mono) */
+:root[data-font-mode="tech"],
+:root.font-mode-tech {
+  --font-ui-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-ui-heading: 'Space Grotesk', sans-serif;
+  --font-ui-display: 'JetBrains Mono', monospace;
+  --ui-heading-letter-spacing: -0.015em;
+  --ui-heading-weight: 700;
+}
+
+/* 5. Bricolage Vibe (Bricolage Grotesque + DM Sans) */
+:root[data-font-mode="bricolage"],
+:root.font-mode-bricolage {
+  --font-ui-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-ui-heading: 'Bricolage Grotesque', sans-serif;
+  --font-ui-display: 'Bricolage Grotesque', sans-serif;
+  --ui-heading-letter-spacing: -0.025em;
+  --ui-heading-weight: 700;
+}
+
+/* 6. Swiss Minimal (Inter + DM Sans) */
+:root[data-font-mode="swiss"],
+:root.font-mode-swiss {
+  --font-ui-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-ui-heading: 'Inter', sans-serif;
+  --font-ui-display: 'Inter', sans-serif;
+  --ui-heading-letter-spacing: -0.02em;
+  --ui-heading-weight: 600;
+}
+
+/* =========================================================================
+   THEME DEFINITIONS WITH REFINED PALETTES AND DYNAMIC GLOWS
+   ========================================================================= */
 
 /* LUNA Theme (Cyan / Cobalt Blue) */
 :root.theme-luna,
@@ -48,6 +132,8 @@
   --color-primary-dark: #0369A1;
   --color-secondary: #38BDF8;
   --color-accent-gold: #06B6D4;
+  --ui-glow-color: rgba(56, 189, 248, 0.35);
+  --ui-glow-secondary: rgba(14, 165, 233, 0.22);
 }
 
 /* MOON Theme (Deep Amethyst / Lavender) */
@@ -55,7 +141,7 @@
 :root.theme-moon:not(.light) {
   --color-bg: #0B0516;
   --color-card: #140A24;
-  --color-border: rgba(167, 139, 250, 0.15);
+  --color-border: rgba(167, 139, 250, 0.16);
   --color-text: #F8FAFC;
   --color-text-secondary: #C084FC;
   --color-primary: #A78BFA;
@@ -63,14 +149,16 @@
   --color-primary-dark: #6D28D9;
   --color-secondary: #EC4899;
   --color-accent-gold: #F472B6;
+  --ui-glow-color: rgba(167, 139, 250, 0.38);
+  --ui-glow-secondary: rgba(236, 72, 153, 0.25);
 }
 
-/* SOLARA Theme (Solar Gold / Yellow) */
+/* SOLARA Theme (Solar Gold / Amber) */
 :root.theme-solara,
 :root.theme-solara:not(.light) {
   --color-bg: #0C0A04;
   --color-card: #1C160C;
-  --color-border: rgba(245, 158, 11, 0.15);
+  --color-border: rgba(245, 158, 11, 0.16);
   --color-text: #FDFBF7;
   --color-text-secondary: #FDE047;
   --color-primary: #EAB308;
@@ -78,6 +166,8 @@
   --color-primary-dark: #A16207;
   --color-secondary: #F97316;
   --color-accent-gold: #EAB308;
+  --ui-glow-color: rgba(234, 179, 8, 0.35);
+  --ui-glow-secondary: rgba(249, 115, 22, 0.22);
 }
 
 /* AURORA Theme (Emerald Forest Green) */
@@ -85,7 +175,7 @@
 :root.theme-aurora:not(.light) {
   --color-bg: #022C22;
   --color-card: #064E3B;
-  --color-border: rgba(52, 211, 153, 0.15);
+  --color-border: rgba(52, 211, 153, 0.16);
   --color-text: #ECFDF5;
   --color-text-secondary: #A7F3D0;
   --color-primary: #34D399;
@@ -93,6 +183,8 @@
   --color-primary-dark: #047857;
   --color-secondary: #10B981;
   --color-accent-gold: #34D399;
+  --ui-glow-color: rgba(52, 211, 153, 0.35);
+  --ui-glow-secondary: rgba(16, 185, 129, 0.22);
 }
 
 /* NEBULA Theme (Crimson Ruby Red) */
@@ -100,7 +192,7 @@
 :root.theme-nebula:not(.light) {
   --color-bg: #1A0505;
   --color-card: #2D0B0B;
-  --color-border: rgba(248, 113, 113, 0.15);
+  --color-border: rgba(248, 113, 113, 0.16);
   --color-text: #FEF2F2;
   --color-text-secondary: #FCA5A5;
   --color-primary: #F87171;
@@ -108,14 +200,16 @@
   --color-primary-dark: #B91C1C;
   --color-secondary: #EF4444;
   --color-accent-gold: #F87171;
+  --ui-glow-color: rgba(248, 113, 113, 0.38);
+  --ui-glow-secondary: rgba(239, 68, 68, 0.24);
 }
 
-/* CYBER Theme (Cyberpunk Neon Pink) */
+/* CYBER Theme (Cyberpunk Neon Pink & Cyan) */
 :root.theme-cyber,
 :root.theme-cyber:not(.light) {
   --color-bg: #0B001A;
   --color-card: #180036;
-  --color-border: rgba(236, 72, 153, 0.2);
+  --color-border: rgba(236, 72, 153, 0.22);
   --color-text: #FDF2F8;
   --color-text-secondary: #F472B6;
   --color-primary: #EC4899;
@@ -123,6 +217,8 @@
   --color-primary-dark: #BE185D;
   --color-secondary: #06B6D4;
   --color-accent-gold: #06B6D4;
+  --ui-glow-color: rgba(236, 72, 153, 0.4);
+  --ui-glow-secondary: rgba(6, 182, 212, 0.3);
 }
 
 /* GLACIER Theme (Ice Blue / Arctic) */
@@ -130,7 +226,7 @@
 :root.theme-glacier:not(.light) {
   --color-bg: #0F172A;
   --color-card: #1E293B;
-  --color-border: rgba(14, 165, 233, 0.15);
+  --color-border: rgba(14, 165, 233, 0.16);
   --color-text: #F0F9FF;
   --color-text-secondary: #7DD3FC;
   --color-primary: #0EA5E9;
@@ -138,6 +234,8 @@
   --color-primary-dark: #0369A1;
   --color-secondary: #22D3EE;
   --color-accent-gold: #06B6D4;
+  --ui-glow-color: rgba(14, 165, 233, 0.35);
+  --ui-glow-secondary: rgba(56, 189, 248, 0.22);
 }
 
 /* VULCAN Theme (Volcanic Flame Orange) */
@@ -145,7 +243,7 @@
 :root.theme-vulcan:not(.light) {
   --color-bg: #0F0904;
   --color-card: #20130A;
-  --color-border: rgba(249, 115, 22, 0.15);
+  --color-border: rgba(249, 115, 22, 0.16);
   --color-text: #FFF7ED;
   --color-text-secondary: #FDBA74;
   --color-primary: #F97316;
@@ -153,6 +251,8 @@
   --color-primary-dark: #C2410C;
   --color-secondary: #EF4444;
   --color-accent-gold: #F59E0B;
+  --ui-glow-color: rgba(249, 115, 22, 0.38);
+  --ui-glow-secondary: rgba(239, 68, 68, 0.24);
 }
 
 /* FOREST Theme (Olive Sage Green) */
@@ -160,7 +260,7 @@
 :root.theme-forest:not(.light) {
   --color-bg: #0F140C;
   --color-card: #1F281B;
-  --color-border: rgba(132, 204, 22, 0.15);
+  --color-border: rgba(132, 204, 22, 0.16);
   --color-text: #F7FEE7;
   --color-text-secondary: #BEF264;
   --color-primary: #84CC16;
@@ -168,6 +268,8 @@
   --color-primary-dark: #4D7C0F;
   --color-secondary: #65A30D;
   --color-accent-gold: #84CC16;
+  --ui-glow-color: rgba(132, 204, 22, 0.35);
+  --ui-glow-secondary: rgba(101, 163, 13, 0.22);
 }
 
 /* MONOCHROME Theme (Sterling Silver) */
@@ -175,7 +277,7 @@
 :root.theme-monochrome:not(.light) {
   --color-bg: #111827;
   --color-card: #1F2937;
-  --color-border: rgba(156, 163, 175, 0.15);
+  --color-border: rgba(156, 163, 175, 0.16);
   --color-text: #F9FAFB;
   --color-text-secondary: #D1D5DB;
   --color-primary: #9CA3AF;
@@ -183,122 +285,273 @@
   --color-primary-dark: #4B5563;
   --color-secondary: #6B7280;
   --color-accent-gold: #9CA3AF;
+  --ui-glow-color: rgba(156, 163, 175, 0.28);
+  --ui-glow-secondary: rgba(107, 114, 128, 0.2);
 }
+
+/* =========================================================================
+   BASE BODY & TYPOGRAPHY APPLICATION
+   ========================================================================= */
 
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: 'Raleway', 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif;
-  background-image: radial-gradient(circle at 50% -20%, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
-  background-attachment: fixed;
-  letter-spacing: -0.011em;
-  transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-              color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-ui-sans);
+  letter-spacing: -0.012em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s ease, 
+              color 0.4s ease,
+              border-color 0.4s ease;
 }
 
-/* Dynamic Radial background accents per theme */
-:root.theme-luna body {
-  background-image: radial-gradient(circle at 50% -20%, rgba(56, 189, 248, 0.09) 0%, transparent 65%);
+h1, h2, h3, h4, .font-heading {
+  font-family: var(--font-ui-heading);
+  letter-spacing: var(--ui-heading-letter-spacing);
+  font-weight: var(--ui-heading-weight);
 }
 
-:root.theme-moon body {
-  background-image: radial-gradient(circle at 50% -20%, rgba(167, 139, 250, 0.1) 0%, transparent 65%);
+.font-display {
+  font-family: var(--font-ui-display);
+  letter-spacing: var(--ui-heading-letter-spacing);
 }
 
-:root.theme-solara body {
-  background-image: radial-gradient(circle at 50% -20%, rgba(245, 158, 11, 0.09) 0%, transparent 65%);
+.font-mono, code, pre, .font-mono-tag {
+  font-family: var(--font-ui-mono);
+  letter-spacing: -0.02em;
 }
 
-:root.theme-aurora body {
-  background-image: radial-gradient(circle at 50% -20%, rgba(52, 211, 153, 0.09) 0%, transparent 65%);
+/* =========================================================================
+   DYNAMIC AMBIENT AURORA & PRECISION GRID OVERLAYS
+   ========================================================================= */
+
+.ambient-glow-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.7;
+  transition: opacity 0.5s ease;
 }
 
-:root.theme-nebula body {
-  background-image: radial-gradient(circle at 50% -20%, rgba(248, 113, 113, 0.09) 0%, transparent 65%);
+.light .ambient-glow-container {
+  opacity: 0.45;
 }
 
-:root.theme-cyber body {
-  background-image: radial-gradient(circle at 50% -20%, rgba(236, 72, 153, 0.1) 0%, transparent 65%);
+.ambient-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(100px);
+  will-change: transform, opacity;
+  pointer-events: none;
+  transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 1s ease;
 }
 
-:root.theme-glacier body {
-  background-image: radial-gradient(circle at 50% -20%, rgba(14, 165, 233, 0.09) 0%, transparent 65%);
+.ambient-orb-1 {
+  top: -15%;
+  left: 20%;
+  width: 50vw;
+  height: 50vw;
+  max-width: 800px;
+  max-height: 800px;
+  background: radial-gradient(circle, var(--ui-glow-color, rgba(59, 130, 246, 0.28)) 0%, transparent 70%);
+  animation: floatOrb1 20s ease-in-out infinite alternate;
 }
 
-:root.theme-vulcan body {
-  background-image: radial-gradient(circle at 50% -20%, rgba(249, 115, 22, 0.09) 0%, transparent 65%);
+.ambient-orb-2 {
+  top: 35%;
+  right: -10%;
+  width: 45vw;
+  height: 45vw;
+  max-width: 700px;
+  max-height: 700px;
+  background: radial-gradient(circle, var(--ui-glow-secondary, rgba(249, 115, 22, 0.18)) 0%, transparent 70%);
+  animation: floatOrb2 24s ease-in-out infinite alternate;
 }
 
-:root.theme-forest body {
-  background-image: radial-gradient(circle at 50% -20%, rgba(132, 204, 22, 0.09) 0%, transparent 65%);
+.ambient-orb-3 {
+  bottom: -15%;
+  left: 10%;
+  width: 40vw;
+  height: 40vw;
+  max-width: 650px;
+  max-height: 650px;
+  background: radial-gradient(circle, var(--ui-glow-color, rgba(59, 130, 246, 0.18)) 0%, transparent 70%);
+  animation: floatOrb3 22s ease-in-out infinite alternate;
 }
 
-:root.theme-monochrome body {
-  background-image: radial-gradient(circle at 50% -20%, rgba(156, 163, 175, 0.08) 0%, transparent 65%);
+@keyframes floatOrb1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, 35px) scale(1.08); }
+  100% { transform: translate(-30px, 20px) scale(0.95); }
 }
 
-/* Premium Card frames with subtle ambient shadow */
+@keyframes floatOrb2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-45px, -30px) scale(1.12); }
+  100% { transform: translate(35px, -50px) scale(0.94); }
+}
+
+@keyframes floatOrb3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(35px, -40px) scale(1.06); }
+  100% { transform: translate(-25px, 25px) scale(0.98); }
+}
+
+.ambient-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 25%, #000 30%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 25%, #000 30%, transparent 85%);
+}
+
+.light .ambient-grid-overlay {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.025) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0, 0, 0, 0.025) 1px, transparent 1px);
+}
+
+/* =========================================================================
+   GLASS PANEL 2.0 & CARD FRAMES
+   ========================================================================= */
+
 .premium-frame {
   border: 1px solid var(--color-border);
   border-radius: 24px;
   background-color: var(--color-card);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
 }
 
 .light .premium-frame {
   border: 1px solid var(--color-border);
   background-color: var(--color-card);
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.03);
+  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
 }
 
-/* High Fidelity Frosted Glass Panel Container */
 .glass-panel {
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease, border-color 0.5s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.4s ease, 
+              border-color 0.4s ease;
 }
 
 :root:not(.light) .glass-panel {
   background: rgba(15, 23, 42, 0.65);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.36), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
 }
 
-/* Title text tracking */
-h1, h2, h3, h4 {
-  letter-spacing: -0.022em;
+.light .glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.06), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
 }
 
-/* Futuristic inputs with neon border animations */
+/* Dynamic Interactive Cards with Shimmer Border */
+.pro-card {
+  position: relative;
+  border-radius: var(--radius-custom, 16px);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root:not(.light) .pro-card {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.pro-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px -10px var(--ui-glow-color, rgba(59, 130, 246, 0.35)),
+              inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+}
+
+/* =========================================================================
+   INPUTS & BUTTONS WITH DYNAMIC MICRO-INTERACTIONS
+   ========================================================================= */
+
 input, select, textarea {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 input:focus, select:focus, textarea:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-  transform: translateY(-0.5px);
+  box-shadow: 0 0 0 3px var(--ui-glow-color, rgba(59, 130, 246, 0.25));
+  border-color: var(--color-primary) !important;
 }
 
-/* Apple-style spring hover lift triggers */
+/* Spring hover lift */
 .hover-lift {
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hover-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 15px 30px -10px rgba(59, 130, 246, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px -8px var(--ui-glow-color, rgba(59, 130, 246, 0.3));
 }
 
-/* Apple-like click scaling for all interactive buttons/cards */
 button, a.btn-primary, .cursor-pointer {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, opacity 0.25s ease;
 }
 
 button:active, a.btn-primary:active, .cursor-pointer:active {
   transform: scale(0.97) !important;
+}
+
+/* Dynamic Button Shimmer Sheen */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 80%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.75s ease;
+  pointer-events: none;
+}
+
+.btn-shimmer:hover::after {
+  transform: translateX(100%);
+}
+
+/* Modern Gradient Text Utilities */
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(135deg, var(--color-text) 30%, var(--color-primary) 100%);
+}
+
+.text-gradient-primary {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
 }
 
 /* Standard Premium Scrollbars */
@@ -312,15 +565,24 @@ button:active, a.btn-primary:active, .cursor-pointer:active {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 99px;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-primary);
 }
 
-/* Typography mappings */
+.scroll-premium {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+/* Typography mappings for previewing fonts */
 .font-inter { font-family: 'Inter', sans-serif; }
 .font-poppins { font-family: 'Poppins', sans-serif; }
 .font-roboto { font-family: 'Roboto', sans-serif; }
@@ -330,3 +592,8 @@ button:active, a.btn-primary:active, .cursor-pointer:active {
 .font-montserrat { font-family: 'Montserrat', sans-serif; }
 .font-lora { font-family: 'Lora', serif; }
 .font-outfit { font-family: 'Outfit', sans-serif; }
+.font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif; }
+.font-syne { font-family: 'Syne', sans-serif; }
+.font-tech { font-family: 'Space Grotesk', sans-serif; }
+.font-bricolage { font-family: 'Bricolage Grotesque', sans-serif; }
+.font-dmsans { font-family: 'DM Sans', sans-serif; }

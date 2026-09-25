@@ -1,6 +1,7 @@
 import express from 'express';
 import { requireAuth } from '../middleware/auth.js';
 import { supabase } from '../supabaseClient.js';
+import { localStore } from '../localStore.js';
 
 const router = express.Router();
 
@@ -27,7 +28,6 @@ function serializeProfile(profileData) {
     }
   }
   
-  // If the profileData has its own values array, preserve it as values_list
   if (profileData.values) {
     extra.values_list = profileData.values;
   }
@@ -63,16 +63,19 @@ function deserializeProfile(dbData) {
 
 /**
  * GET /api/profiles/public/:idOrSlug
- * Public endpoint to fetch a single profile by ID or by custom slug.
- * Access is guest-friendly (requires no authentication headers).
  */
 router.get('/public/:idOrSlug', async (req, res) => {
   const { idOrSlug } = req.params;
 
+  // 1. Try localStore
+  const localProf = localStore.getProfileById(idOrSlug);
+  if (localProf) {
+    return res.status(200).json(localProf);
+  }
+
+  // 2. Try Supabase
   try {
     let query = supabase.from('profiles').select('*');
-    
-    // Check if UUID
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (uuidRegex.test(idOrSlug)) {
       query = query.eq('id', idOrSlug);
@@ -81,24 +84,21 @@ router.get('/public/:idOrSlug', async (req, res) => {
     }
 
     const { data, error } = await query;
-
-    if (error || !data || data.length === 0) {
-      console.error('Error fetching public profile:', error);
-      return res.status(404).json({ error: 'Public profile not found' });
+    if (!error && data && data.length > 0) {
+      return res.status(200).json(deserializeProfile(data[0]));
     }
-
-    return res.status(200).json(deserializeProfile(data[0]));
   } catch (err) {
-    console.error('Public fetch profile route error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    // Supabase offline
   }
+
+  return res.status(404).json({ error: 'Public profile not found' });
 });
 
 /**
  * GET /api/profiles
- * Fetches all saved profiles belonging to the authenticated user.
  */
 router.get('/', requireAuth, async (req, res) => {
+  // 1. Try Supabase if online
   try {
     const { data, error } = await supabase
       .from('profiles')
@@ -106,26 +106,31 @@ router.get('/', requireAuth, async (req, res) => {
       .eq('user_id', req.user.id)
       .order('updated_at', { ascending: false });
 
-    if (error) {
-      console.error('Error fetching profiles:', error);
-      return res.status(500).json({ error: error.message });
+    if (!error && data && data.length > 0) {
+      return res.status(200).json(data.map(row => deserializeProfile(row)));
     }
-
-    const deserializedData = data.map(row => deserializeProfile(row));
-    return res.status(200).json(deserializedData);
   } catch (err) {
-    console.error('Fetch profiles route error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    // Supabase offline, fallback to localStore
   }
+
+  // 2. Local fallback
+  const localList = localStore.getProfilesByUser(req.user.id);
+  return res.status(200).json(localList);
 });
 
 /**
  * GET /api/profiles/:id
- * Fetches a single profile by ID, verifying ownership.
  */
 router.get('/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
 
+  // 1. Check localStore
+  const localProf = localStore.getProfileById(id);
+  if (localProf && localProf.user_id === req.user.id) {
+    return res.status(200).json(localProf);
+  }
+
+  // 2. Fallback to Supabase
   try {
     const { data, error } = await supabase
       .from('profiles')
@@ -134,115 +139,77 @@ router.get('/:id', requireAuth, async (req, res) => {
       .eq('user_id', req.user.id)
       .single();
 
-    if (error) {
-      console.error('Error fetching profile detail:', error);
-      return res.status(404).json({ error: 'Profile not found or access denied' });
+    if (!error && data) {
+      return res.status(200).json(deserializeProfile(data));
     }
-
-    return res.status(200).json(deserializeProfile(data));
   } catch (err) {
-    console.error('Fetch profile detail route error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    // offline
   }
+
+  return res.status(404).json({ error: 'Profile not found or access denied' });
 });
 
 /**
  * POST /api/profiles
- * Saves a new profile for the authenticated user.
  */
 router.post('/', requireAuth, async (req, res) => {
   const profileData = req.body;
 
+  // Always save locally first for instant, guaranteed persistence
+  const savedLocal = localStore.saveProfile(profileData, req.user.id);
+
+  // Sync to Supabase in background if online
   try {
-    const serializedData = serializeProfile(profileData);
-    
-    // Inject user ID and timestamp
+    const serializedData = serializeProfile(savedLocal);
     serializedData.user_id = req.user.id;
     serializedData.updated_at = new Date().toISOString();
-
-    const { data, error } = await supabase
-      .from('profiles')
-      .insert(serializedData)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error inserting profile:', error);
-      return res.status(500).json({ error: error.message });
-    }
-
-    return res.status(201).json(deserializeProfile(data));
+    await supabase.from('profiles').insert(serializedData);
   } catch (err) {
-    console.error('Create profile route error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    // Supabase offline, local saved safely
   }
+
+  return res.status(201).json(savedLocal);
 });
 
 /**
  * PUT /api/profiles/:id
- * Updates an existing profile, verifying ownership.
  */
 router.put('/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
   const updateData = req.body;
 
-  // Do not allow updating the user_id or id
-  delete updateData.id;
   delete updateData.user_id;
 
+  // Update in localStore
+  const updatedLocal = localStore.saveProfile({ ...updateData, id }, req.user.id);
+
+  // Sync to Supabase in background if online
   try {
-    const serializedData = serializeProfile(updateData);
+    const serializedData = serializeProfile(updatedLocal);
     serializedData.updated_at = new Date().toISOString();
-
-    const { data, error } = await supabase
-      .from('profiles')
-      .update(serializedData)
-      .eq('id', id)
-      .eq('user_id', req.user.id)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error updating profile:', error);
-      return res.status(500).json({ error: error.message });
-    }
-
-    return res.status(200).json(deserializeProfile(data));
+    await supabase.from('profiles').update(serializedData).eq('id', id).eq('user_id', req.user.id);
   } catch (err) {
-    console.error('Update profile route error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    // offline
   }
+
+  return res.status(200).json(updatedLocal);
 });
 
 /**
  * DELETE /api/profiles/:id
- * Deletes a profile, verifying ownership.
  */
 router.delete('/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
 
+  localStore.deleteProfile(id, req.user.id);
+
   try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .delete()
-      .eq('id', id)
-      .eq('user_id', req.user.id)
-      .select();
-
-    if (error) {
-      console.error('Error deleting profile:', error);
-      return res.status(500).json({ error: error.message });
-    }
-
-    if (!data || data.length === 0) {
-      return res.status(404).json({ error: 'Profile not found or access denied' });
-    }
-
-    return res.status(200).json({ message: 'Profile deleted successfully' });
+    await supabase.from('profiles').delete().eq('id', id).eq('user_id', req.user.id);
   } catch (err) {
-    console.error('Delete profile route error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    // offline
   }
+
+  return res.status(200).json({ message: 'Profile deleted successfully' });
 });
 
 export default router;

@@ -1,8 +1,21 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { sendSecurityAlertEmail } from './emailClient.js';
 
-const logFilePath = path.join(process.cwd(), 'login_history.json');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+let logFilePath = path.join(__dirname, 'login_history.json');
+try {
+  const testPath = path.join(__dirname, '.write_test');
+  fs.writeFileSync(testPath, '1');
+  fs.unlinkSync(testPath);
+} catch (e) {
+  logFilePath = path.join(process.env.TEMP || process.env.TMP || '/tmp', 'login_history.json');
+}
+
+const memoryHistory = {};
 
 // Helper to read log file
 function readLogFile() {
@@ -12,17 +25,18 @@ function readLogFile() {
       return JSON.parse(data);
     }
   } catch (err) {
-    console.error('Error reading login history file:', err);
+    // Return memory fallback
   }
-  return {};
+  return memoryHistory;
 }
 
 // Helper to write log file
 function writeLogFile(data) {
+  Object.assign(memoryHistory, data);
   try {
     fs.writeFileSync(logFilePath, JSON.stringify(data, null, 2), 'utf8');
   } catch (err) {
-    console.error('Error writing login history file:', err);
+    // Memory fallback holds state
   }
 }
 

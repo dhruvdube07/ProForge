@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Sparkles, History, LogOut, LayoutDashboard, User, Settings, X, Briefcase, Globe, FileText, Linkedin, ChevronDown, Mail } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import ThemeToggle from './ThemeToggle';
+import DynamicUIFontPill from './DynamicUIFontPill';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -86,101 +87,109 @@ export default function Navbar() {
   const activeProfileName = activeProfile ? (activeProfile.name || 'Untitled') : 'No Profiles';
 
   return (
-    <nav className="sticky top-0 z-40 w-full border-b border-themeBorder bg-themeCard/85 backdrop-blur-lg transition-all duration-300">
+    <nav className="sticky top-0 z-40 w-full border-b border-themeBorder/80 bg-themeCard/80 backdrop-blur-xl transition-all duration-300 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-2">
+        <div className="flex items-center justify-between h-16 gap-3">
           {/* Logo and Brand - Directs to Hub (Home) if logged in */}
-          <Link to={user ? "/hub" : "/"} className="flex items-center gap-2 group flex-shrink-0">
-            <div className="p-2 bg-themePrimary/10 rounded-theme group-hover:bg-themePrimary/20 transition-colors">
-              <Sparkles className="h-5 w-5 text-themePrimary" />
+          <Link to={user ? "/hub" : "/"} className="flex items-center gap-2.5 group flex-shrink-0">
+            <div className="relative p-2 bg-gradient-to-br from-themePrimary/20 via-themePrimary/10 to-transparent border border-themePrimary/30 rounded-xl group-hover:scale-105 group-hover:border-themePrimary transition-all duration-300 shadow-sm shadow-themePrimary/10">
+              <Sparkles className="h-5 w-5 text-themePrimary group-hover:rotate-12 transition-transform duration-300" />
             </div>
-            <span className="font-black text-lg tracking-tight text-themeText flex items-center gap-1.5">
-              Proforge
-              <span className="text-xxs px-1.5 py-0.5 rounded-full bg-themePrimary/15 text-themePrimary font-semibold uppercase tracking-wider">
+            <div className="flex items-center gap-1.5">
+              <span className="font-heading font-black text-xl tracking-tight text-themeText">
+                Proforge
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-themePrimary/15 border border-themePrimary/30 text-themePrimary font-mono font-bold uppercase tracking-wider">
                 AI
               </span>
-            </span>
+            </div>
           </Link>
 
           {/* Centered Segmented Navigation Bar */}
           {user && (
-            <div className="hidden lg:flex items-center bg-themeBg/80 border border-themeBorder p-1 rounded-full shadow-inner">
+            <div className="hidden lg:flex items-center bg-themeBg/80 border border-themeBorder/80 p-1 rounded-full shadow-inner backdrop-blur-md">
               <Link
                 to="/dashboard"
-                className={`flex items-center gap-1 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
                   isActive('/dashboard')
-                    ? 'bg-themePrimary text-white shadow-md'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/40'
+                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
                 }`}
                 title="Remo AI Resume Builder"
               >
                 <LayoutDashboard className="h-3.5 w-3.5" />
                 <span>Remo AI</span>
+                {isActive('/dashboard') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
               </Link>
 
               <Link
                 to="/folio"
-                className={`flex items-center gap-1 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
                   isActive('/folio')
-                    ? 'bg-themePrimary text-white shadow-md'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/40'
+                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
                 }`}
                 title="Folio AI Portfolio Generator"
               >
                 <Globe className="h-3.5 w-3.5" />
                 <span>Folio AI</span>
+                {isActive('/folio') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
               </Link>
 
               <Link
                 to="/talo"
-                className={`flex items-center gap-1 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
                   isActive('/talo')
-                    ? 'bg-themePrimary text-white shadow-md'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/40'
+                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
                 }`}
                 title="Talo AI ATS Matcher"
               >
                 <Briefcase className="h-3.5 w-3.5" />
                 <span>Talo AI</span>
+                {isActive('/talo') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
               </Link>
 
               <Link
                 to="/covo"
-                className={`flex items-center gap-1 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
                   isActive('/covo')
-                    ? 'bg-themePrimary text-white shadow-md'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/40'
+                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
                 }`}
                 title="Covo AI Outreach Studio"
               >
                 <FileText className="h-3.5 w-3.5" />
                 <span>Covo AI</span>
+                {isActive('/covo') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
               </Link>
 
               <Link
                 to="/liko"
-                className={`flex items-center gap-1 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
                   isActive('/liko')
-                    ? 'bg-themePrimary text-white shadow-md'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/40'
+                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
                 }`}
                 title="Liko AI LinkedIn Architect"
               >
                 <Linkedin className="h-3.5 w-3.5" />
                 <span>Liko AI</span>
+                {isActive('/liko') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
               </Link>
 
               <Link
                 to="/mali"
-                className={`flex items-center gap-1 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
                   isActive('/mali')
-                    ? 'bg-themePrimary text-white shadow-md'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/40'
+                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
                 }`}
                 title="Mali AI Email Scheduling"
               >
                 <Mail className="h-3.5 w-3.5" />
                 <span>Mali AI</span>
+                {isActive('/mali') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
               </Link>
             </div>
           )}
@@ -238,6 +247,9 @@ export default function Navbar() {
                 )}
               </div>
             )}
+
+            {/* Dynamic UI Typography Engine Switcher */}
+            <DynamicUIFontPill />
 
             <ThemeToggle />
 

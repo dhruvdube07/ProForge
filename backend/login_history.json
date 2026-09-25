@@ -53,6 +53,52 @@
       "ip": "1",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
       "device": "1-Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+    },
+    {
+      "timestamp": "2026-09-25T10:23:32.438Z",
+      "ip": "1",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+      "device": "1-Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+    }
+  ],
+  "demo@profileforge.ai": [
+    {
+      "timestamp": "2026-09-25T09:48:55.315Z",
+      "ip": "1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.19041.7725",
+      "device": "1-Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.19041.7725"
+    },
+    {
+      "timestamp": "2026-09-25T09:55:09.073Z",
+      "ip": "1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.19041.7725",
+      "device": "1-Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.19041.7725"
+    },
+    {
+      "timestamp": "2026-09-25T10:15:32.762Z",
+      "ip": "1",
+      "userAgent": "node",
+      "device": "1-node"
+    },
+    {
+      "timestamp": "2026-09-25T10:15:50.925Z",
+      "ip": "1",
+      "userAgent": "node",
+      "device": "1-node"
+    },
+    {
+      "timestamp": "2026-09-25T10:16:05.837Z",
+      "ip": "1",
+      "userAgent": "node",
+      "device": "1-node"
+    }
+  ],
+  "testuser@example.com": [
+    {
+      "timestamp": "2026-09-25T09:56:33.853Z",
+      "ip": "1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.19041.7725",
+      "device": "1-Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.19041.7725"
     }
   ]
 }

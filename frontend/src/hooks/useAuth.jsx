@@ -3,6 +3,15 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 // Create Auth Context
 const AuthContext = createContext(null);
 
+const safeJson = async (response) => {
+  const text = await response.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch (err) {
+    return { error: response.statusText || 'Unexpected server response' };
+  }
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -56,7 +65,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password, firstName, lastName, gender })
       });
 
-      const data = await response.json();
+      const data = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to request signup verification OTP');
@@ -80,7 +89,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password, otp, firstName, lastName, gender })
       });
 
-      const data = await response.json();
+      const data = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(data.error || 'OTP verification failed.');
@@ -110,7 +119,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
+      const data = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(data.error || 'Invalid email or password.');
@@ -139,12 +148,67 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email })
       });
 
-      const data = await response.json();
+      const data = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to resend verification OTP');
       }
       return data.message;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  /**
+   * Request password reset OTP.
+   */
+  const forgotPassword = async (email) => {
+    setError(null);
+    try {
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await safeJson(response);
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to request password reset code.');
+      }
+      return data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  /**
+   * Verify OTP and reset password.
+   */
+  const resetPassword = async (email, otp, newPassword) => {
+    setError(null);
+    try {
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp, newPassword })
+      });
+
+      const data = await safeJson(response);
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to reset password.');
+      }
+
+      if (data.token && data.user) {
+        localStorage.setItem('pf_token', data.token);
+        localStorage.setItem('pf_user', JSON.stringify(data.user));
+        setToken(data.token);
+        setUser(data.user);
+      }
+      return data;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -166,7 +230,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ firstName, lastName, gender })
       });
 
-      const data = await response.json();
+      const data = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to update user profile settings.');
@@ -201,7 +265,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, error, signup, verifyOtp, login, resendOtp, logout, updateUserProfile }}>
+    <AuthContext.Provider value={{ user, token, loading, error, signup, verifyOtp, login, resendOtp, forgotPassword, resetPassword, logout, updateUserProfile }}>
       {children}
     </AuthContext.Provider>
   );

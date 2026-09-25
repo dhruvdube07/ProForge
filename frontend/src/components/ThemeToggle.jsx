@@ -5,7 +5,6 @@ export default function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    // Check local storage or system preference
     const savedTheme = localStorage.getItem('pf_theme');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
@@ -14,8 +13,10 @@ export default function ThemeToggle() {
     setIsDark(useDark);
     if (useDark) {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
     }
   }, []);
 
@@ -24,24 +25,30 @@ export default function ThemeToggle() {
     setIsDark(nextDark);
     if (nextDark) {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
       localStorage.setItem('pf_theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
       localStorage.setItem('pf_theme', 'light');
     }
+    window.dispatchEvent(new Event('pfThemeModeChanged'));
   };
 
   return (
     <button
       onClick={toggleTheme}
-      className="p-2.5 rounded-theme glass-panel hover-lift text-themePrimary hover:bg-themePrimaryLight hover:text-white transition-all duration-300"
-      aria-label="Toggle theme"
+      className="relative p-2 rounded-full border border-themeBorder bg-themeCard/80 hover:bg-themeCard text-themeText hover:border-themePrimary/50 shadow-sm backdrop-blur-md transition-all duration-300 hover-lift cursor-pointer flex items-center justify-center group"
+      aria-label="Toggle theme mode"
+      title={isDark ? "Switch to Radiant Light Mode" : "Switch to Slate Dark Mode"}
     >
-      {isDark ? (
-        <Sun className="h-5 w-5 animate-pulse" />
-      ) : (
-        <Moon className="h-5 w-5" />
-      )}
+      <div className="relative w-5 h-5 flex items-center justify-center">
+        {isDark ? (
+          <Sun className="h-4.5 w-4.5 text-amber-400 group-hover:rotate-45 group-hover:scale-110 transition-all duration-300" />
+        ) : (
+          <Moon className="h-4.5 w-4.5 text-themePrimary group-hover:-rotate-12 group-hover:scale-110 transition-all duration-300" />
+        )}
+      </div>
     </button>
   );
 }

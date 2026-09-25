@@ -162,3 +162,19 @@ npm install
 npm run dev
 ```
 The client app boots on [http://localhost:5173](http://localhost:5173). All API requests proxy seamlessly to the backend server.
+
+---
+
+## ☁️ Deploying to Vercel
+
+ProForge is pre-configured with root `vercel.json` and an automated serverless entry point (`api/index.js`) for seamless zero-config deployment on Vercel:
+
+1. Push your changes to GitHub.
+2. In your [Vercel Dashboard](https://vercel.com/dashboard), click **"Add New Project"** and select your repository.
+3. Keep the default settings:
+   - **Root Directory**: `./` (leave default)
+   - **Build Command**: `npm --prefix frontend install && npm --prefix frontend run build` (configured automatically in `vercel.json`)
+   - **Output Directory**: `frontend/dist` (configured automatically in `vercel.json`)
+4. *(Optional)* In Project Settings > Environment Variables, configure any optional keys (`GROQ_API_KEY`, `SUPABASE_URL`, etc.). The app includes built-in offline/hybrid storage and a pre-seeded demo account (`demo@profileforge.ai` / `password123`) so authentication and all suites work immediately on Vercel.
+5. Click **Deploy**. Vercel will build the frontend SPA and route all `/api/*` endpoints to the serverless Express backend automatically.
+

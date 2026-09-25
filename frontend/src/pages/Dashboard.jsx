@@ -588,30 +588,40 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-themeBorder pb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-themeBorder/80 pb-5">
         <div>
-          <h1 className="text-3xl font-black tracking-wider text-themeText flex items-center gap-2">
-            <Sparkles className="h-7 w-7 text-themePrimary" />
-            REMO AI STUDIO
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[10px] font-mono uppercase px-2.5 py-0.5 rounded-full bg-themePrimary/15 text-themePrimary font-bold border border-themePrimary/30">
+              Resume Studio
+            </span>
+            <span className="text-[10px] font-mono text-themeTextSecondary">
+              105+ Bespoke Schemes Active
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-themeText flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-themePrimary/10 border border-themePrimary/20 text-themePrimary shadow-sm">
+              <Sparkles className="h-6 w-6" />
+            </div>
+            <span>Remo AI Resume Intelligence</span>
           </h1>
-          <p className="text-xs text-themeTextSecondary mt-1 uppercase tracking-widest font-semibold">
-            Forge Personal Brand assets with Llama 3 AI
+          <p className="text-xs text-themeTextSecondary mt-1 font-medium">
+            Synthesize ATS-optimized resumes and executive personal branding with state-of-the-art AI parsing
           </p>
         </div>
 
         {isEditing && (
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <button
               onClick={handleReset}
-              className="flex items-center gap-1.5 py-2 px-3 border border-themeBorder hover:bg-themeBorder rounded-theme text-xs font-semibold text-themeText transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 py-2 px-3.5 border border-themeBorder hover:bg-themeCard rounded-xl text-xs font-semibold text-themeText transition-colors cursor-pointer"
             >
-              <RefreshCw className="h-4 w-4" />
+              <RefreshCw className="h-3.5 w-3.5" />
               Reset
             </button>
             <button
               onClick={handleSaveProfile}
               disabled={localLoading}
-              className="flex items-center gap-1.5 py-2 px-4 bg-themePrimary hover:bg-themePrimaryDark text-white rounded-theme text-xs font-semibold shadow hover-lift transition-all duration-300 cursor-pointer disabled:opacity-50"
+              className="flex items-center gap-1.5 py-2 px-4.5 bg-themePrimary hover:bg-themePrimaryDark text-white rounded-xl text-xs font-bold shadow-md hover-lift transition-all duration-300 cursor-pointer disabled:opacity-50 btn-shimmer"
             >
               {localLoading ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -901,13 +911,13 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
           <div className="lg:col-span-2 space-y-6">
             
             {/* Tab switch buttons */}
-            <div className="flex bg-themeBg p-1 rounded-theme border border-themeBorder max-w-sm">
+            <div className="flex bg-themeBg/80 p-1.5 rounded-2xl border border-themeBorder/80 max-w-md backdrop-blur-md shadow-inner">
               <button
                 onClick={() => setActiveTab('edit')}
-                className={`flex-1 py-2 px-3 text-xs font-bold rounded-theme transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`flex-1 py-2 px-3.5 text-xs font-heading font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
                   activeTab === 'edit'
-                    ? 'bg-themeCard text-themePrimary shadow-sm'
-                    : 'text-themeTextSecondary hover:text-themeText'
+                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 ring-1 ring-white/20'
+                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
                 }`}
               >
                 <Edit3 className="h-4 w-4" />
@@ -915,10 +925,10 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
               </button>
               <button
                 onClick={() => setActiveTab('preview')}
-                className={`flex-1 py-2 px-3 text-xs font-bold rounded-theme transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`flex-1 py-2 px-3.5 text-xs font-heading font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
                   activeTab === 'preview'
-                    ? 'bg-themeCard text-themePrimary shadow-sm'
-                    : 'text-themeTextSecondary hover:text-themeText'
+                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 ring-1 ring-white/20'
+                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
                 }`}
               >
                 <Eye className="h-4 w-4" />

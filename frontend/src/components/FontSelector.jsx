@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Type, X, Check } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Type, X, Check, Search } from 'lucide-react';
 
 const fontsList = [
   // --- Sans-Serif (40 fonts) ---
@@ -118,10 +118,26 @@ const fontsList = [
 
 export default function FontSelector({ value = 'inter', onChange }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const visibleFonts = fontsList.slice(0, 3);
+  // Top recommended modern fonts for rapid selection
+  const featuredIds = ['plus jakarta sans', 'outfit', 'inter'];
+  const visibleFonts = featuredIds.map(id => fontsList.find(f => f.id === id) || fontsList[0]);
   const activeFont = fontsList.find(f => f.id === value?.toLowerCase()) || fontsList[0];
-  const categories = [...new Set(fontsList.map(f => f.category))];
+
+  const filteredFonts = useMemo(() => {
+    if (!searchQuery.trim()) return fontsList;
+    const q = searchQuery.toLowerCase().trim();
+    return fontsList.filter(f => 
+      f.name.toLowerCase().includes(q) || 
+      f.category.toLowerCase().includes(q) || 
+      f.desc.toLowerCase().includes(q)
+    );
+  }, [searchQuery]);
+
+  const categories = useMemo(() => {
+    return [...new Set(filteredFonts.map(f => f.category))];
+  }, [filteredFonts]);
 
   return (
     <div className="space-y-2">
@@ -182,48 +198,83 @@ export default function FontSelector({ value = 'inter', onChange }) {
               </button>
             </div>
 
+            {/* Instant Search Bar */}
+            <div className="relative flex-shrink-0">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-themeTextSecondary" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search fonts by name, style, or category (e.g. 'Plus Jakarta', 'Serif', 'Mono')..."
+                className="w-full pl-9 pr-8 py-2 rounded-xl border border-themeBorder bg-themeBg focus:outline-none focus:border-themePrimary text-xs text-themeText"
+                autoFocus
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-themeTextSecondary hover:text-themeText p-0.5"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+
             {/* Scrollable category list */}
             <div className="overflow-y-auto pr-1 space-y-6 flex-1 py-2 scroll-premium">
-              {categories.map((category) => (
-                <div key={category} className="space-y-2">
-                  <h4 className="text-xxs font-bold text-themePrimary uppercase tracking-widest pl-1">
-                    {category}
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {fontsList
-                      .filter((f) => f.category === category)
-                      .map((f) => (
-                        <button
-                          key={f.id}
-                          type="button"
-                          onClick={() => {
-                            onChange(f.id);
-                            setIsOpen(false);
-                          }}
-                          style={{ fontFamily: f.id }}
-                          className={`p-3 text-left rounded-theme border transition-all duration-300 flex items-center gap-3 cursor-pointer w-full relative ${
-                            value?.toLowerCase() === f.id
-                              ? 'border-themePrimary bg-themePrimary/10 text-themeText ring-1 ring-themePrimary'
-                              : 'border-themeBorder bg-themeCard text-themeTextSecondary hover:border-themePrimary'
-                          }`}
-                        >
-                          <span className="text-lg p-1.5 bg-themeBg border border-themeBorder rounded-theme flex items-center justify-center w-9 h-9 flex-shrink-0 text-themePrimary font-bold">
-                            Aa
-                          </span>
-                          <div className="min-w-0 flex-1">
-                            <div className="font-extrabold text-xs text-themeText flex items-center gap-1">
-                              {f.name}
-                              {value?.toLowerCase() === f.id && <Check className="h-3 w-3 text-themePrimary flex-shrink-0" />}
-                            </div>
-                            <div className="text-[10px] text-themeTextSecondary mt-0.5 leading-normal font-sans truncate">
-                              {f.desc}
-                            </div>
-                          </div>
-                        </button>
-                      ))}
-                  </div>
+              {categories.length === 0 ? (
+                <div className="text-center py-10 space-y-2 text-themeTextSecondary">
+                  <p className="text-xs">No fonts matched "{searchQuery}"</p>
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="text-xs text-themePrimary font-bold hover:underline"
+                  >
+                    Clear search filter
+                  </button>
                 </div>
-              ))}
+              ) : (
+                categories.map((category) => (
+                  <div key={category} className="space-y-2">
+                    <h4 className="text-xxs font-bold text-themePrimary uppercase tracking-widest pl-1">
+                      {category}
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {filteredFonts
+                        .filter((f) => f.category === category)
+                        .map((f) => (
+                          <button
+                            key={f.id}
+                            type="button"
+                            onClick={() => {
+                              onChange(f.id);
+                              setIsOpen(false);
+                            }}
+                            style={{ fontFamily: f.id }}
+                            className={`p-3 text-left rounded-theme border transition-all duration-300 flex items-center gap-3 cursor-pointer w-full relative ${
+                              value?.toLowerCase() === f.id
+                                ? 'border-themePrimary bg-themePrimary/10 text-themeText ring-1 ring-themePrimary'
+                                : 'border-themeBorder bg-themeCard text-themeTextSecondary hover:border-themePrimary'
+                            }`}
+                          >
+                            <span className="text-lg p-1.5 bg-themeBg border border-themeBorder rounded-theme flex items-center justify-center w-9 h-9 flex-shrink-0 text-themePrimary font-bold">
+                              Aa
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <div className="font-extrabold text-xs text-themeText flex items-center gap-1">
+                                {f.name}
+                                {value?.toLowerCase() === f.id && <Check className="h-3 w-3 text-themePrimary flex-shrink-0" />}
+                              </div>
+                              <div className="text-[10px] text-themeTextSecondary mt-0.5 leading-normal font-sans truncate">
+                                {f.desc}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
 
           </div>

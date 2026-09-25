@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import Navbar from './components/Navbar';
+import AmbientBackground from './components/AmbientBackground';
 import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import MyProfiles from './pages/MyProfiles';
@@ -64,9 +65,10 @@ function MainAppLayout() {
   const hideNavbar = location.pathname.startsWith('/p/');
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen relative">
+      <AmbientBackground />
       {!hideNavbar && <Navbar />}
-      <main className="flex-grow">
+      <main className="flex-grow relative z-10">
         <Routes>
           {/* Guest Only Routes */}
           <Route

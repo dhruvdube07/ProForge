@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internship Report - PROFORGE - Dhruv R. Dubey</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #4b5563;
+    font-family: "Times New Roman", Times, serif;
+    color: #000000;
+    line-height: 1.25;
+    font-size: 11pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Fixed Top Toolbar for In-Browser Controls */
+  .toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #111827;
+    color: #f9fafb;
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    font-family: Arial, sans-serif;
+  }
+
+  .toolbar h1 {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .toolbar-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .toolbar-btn {
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .toolbar-btn:hover {
+    background: #1d4ed8;
+  }
+
+  .doc-container {
+    padding-top: 60px;
+    padding-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* Exact A4 Canvas */
+  .page {
+    width: 210mm;
+    height: 297mm;
+    background: #ffffff;
+    padding: 12mm 14mm;
+    box-sizing: border-box;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    page-break-after: always;
+    page-break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* Authentic Single-Line Frame Border */
+  .page-frame {
+    border: 1.2px solid #000000;
+    width: 100%;
+    height: 100%;
+    padding: 11mm 13mm 6mm 13mm;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .page-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Authentic Footer Line */
+  .page-footer {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 4px;
+    margin-top: auto;
+    font-size: 8pt;
+    font-family: "Times New Roman", Times, serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #111827;
+    letter-spacing: 0.2px;
+  }
+
+  /* Typography Styles */
+  h1.report-main-title {
+    font-size: 22pt;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 2px;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    font-family: "Times New Roman", Times, serif;
+  }
+
+  h2.chapter-header {
+    font-size: 13.5pt;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  h3.chapter-title {
+    font-size: 12pt;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.35;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .sub-heading {
+    font-size: 11pt;
+    font-weight: bold;
+    margin-top: 9px;
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: 10.5pt;
+    line-height: 1.3;
+    text-align: justify;
+    text-justify: inter-word;
+    margin-bottom: 7px;
+  }
+
+  ul {
+    margin-left: 18px;
+    margin-bottom: 8px;
+  }
+
+  li {
+    font-size: 10pt;
+    line-height: 1.28;
+    margin-bottom: 4px;
+    text-align: justify;
+    list-style-type: circle;
+  }
+
+  li.disc {
+    list-style-type: disc;
+  }
+
+  /* Cover Page Styles */
+  .cover-top-notice {
+    text-align: center;
+    font-size: 12.5pt;
+    line-height: 1.35;
+    margin-top: 15px;
+  }
+
+  .cover-project-subtitle {
+    text-align: center;
+    font-size: 11pt;
+    font-style: italic;
+    color: #374151;
+    margin-bottom: 25px;
+  }
+
+  .cover-meta-section {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .cover-meta-section .label {
+    font-size: 11.5pt;
+    margin-bottom: 3px;
+  }
+
+  .cover-meta-section .name-highlight {
+    font-size: 12.5pt;
+    font-weight: bold;
+  }
+
+  .mentor-block {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .mentor-block .mentor-line {
+    font-size: 11.5pt;
+    font-weight: bold;
+    margin-top: 3px;
+  }
+
+  .college-emblem-box {
+    text-align: center;
+    margin: 15px 0 25px 0;
+  }
+
+  .cover-bottom-college {
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+
+  .cover-bottom-college .dept {
+    font-size: 12pt;
+    font-weight: bold;
+  }
+
+  .cover-bottom-college .institution {
+    font-size: 13pt;
+    font-weight: bold;
+    margin: 2px 0;
+  }
+
+  .cover-bottom-college .location {
+    font-size: 11pt;
+    font-weight: bold;
+  }
+
+  .cover-bottom-college .ac-year {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 4px;
+  }
+
+  /* Table of Contents Grid */
+  table.content-index-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+
+  table.content-index-table th, table.content-index-table td {
+    border: 1.2px solid #000000;
+    padding: 6px 10px;
+    font-size: 10.5pt;
+  }
+
+  table.content-index-table th {
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* Chapter 1 Org Chart Box */
+  .org-chart-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0 16px 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .node-box {
+    background: #003366;
+    color: #ffffff;
+    font-size: 9.5pt;
+    font-weight: bold;
+    padding: 5px 16px;
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    min-width: 140px;
+  }
+
+  .node-box.sub {
+    font-size: 8.5pt;
+    font-weight: normal;
+  }
+
+  .node-line-down {
+    width: 1.5px;
+    height: 10px;
+    background: #000000;
+  }
+
+  .team-columns-row {
+    display: flex;
+    gap: 25px;
+    margin-top: 2px;
+  }
+
+  .team-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .team-header-pill {
+    background: #003366;
+    color: #ffffff;
+    font-size: 9pt;
+    font-weight: bold;
+    padding: 4px 18px;
+    border-radius: 3px;
+  }
+
+  .member-pill {
+    border: 1px solid #718096;
+    background: #ffffff;
+    color: #000000;
+    font-size: 8pt;
+    padding: 3px 10px;
+    border-radius: 3px;
+    width: 125px;
+    text-align: center;
+  }
+
+  /* Elite Forums Badge */
+  .elite-logo-card {
+    background: #000000;
+    color: #ffffff;
+    padding: 10px;
+    text-align: center;
+    margin: 8px auto 14px auto;
+    width: 260px;
+    border-radius: 4px;
+  }
+
+  .elite-logo-card .company-title {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15pt;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+
+  .elite-logo-card .tagline {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 6.5pt;
+    letter-spacing: 2.5px;
+    color: #d1d5db;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* Chapter 3 Tools Table */
+  table.tools-grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+
+  table.tools-grid-table th, table.tools-grid-table td {
+    border: 1px solid #000000;
+    padding: 5px 6px;
+    font-size: 8.5pt;
+    line-height: 1.25;
+    vertical-align: middle;
+  }
+
+  table.tools-grid-table th {
+    font-weight: bold;
+    text-align: center;
+    background-color: #fafafa;
+  }
+
+  @media print {
+    body {
+      background: none;
+      padding: 0;
+    }
+    .toolbar {
+      display: none !important;
+    }
+    .doc-container {
+      padding: 0;
+      gap: 0;
+    }
+    .page {
+      box-shadow: none;
+      width: 100%;
+      height: 100vh;
+      padding: 10mm 12mm;
+    }
+    .page-frame {
+      padding: 11mm 12mm 6mm 12mm;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <h1>VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY &bull; INTERNSHIP REPORT</h1>
+    <span style="font-size: 12px; color: #9ca3af;">PROFORGE &bull; Dhruv R. Dubey (25112400240 – TYCO - B)</span>
+  </div>
+  <div class="toolbar-actions">
+    <button class="toolbar-btn" onclick="window.print()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+</div>
+
+<div class="doc-container">
+
+  <!-- ========================================================
+       PAGE 1: COVER PAGE
+       ======================================================== -->
+  <div class="page" id="page-1">
+    <div class="page-frame">
+      <div class="page-body">
+        <div class="cover-top-notice">
+          Internship Report submitted in Partial Fulfillment for Diploma In<br>
+          <strong>Computer Engineering</strong>
+        </div>
+
+        <h1 class="report-main-title">PROFORGE</h1>
+        <div class="cover-project-subtitle">End-to-End Career Intelligence &amp; Branding Suite</div>
+
+        <div class="cover-meta-section">
+          <div class="label">Presented By</div>
+          <div class="name-highlight">Dhruv R. Dubey - 25112400240 – TYCO - B</div>
+        </div>
+
+        <div class="mentor-block">
+          <div style="font-size: 11pt; margin-bottom: 2px;">Under the Guidance of</div>
+          <div class="mentor-line">Industry Mentor:- Prof. Harsh Tambade</div>
+          <div class="mentor-line">College Mentor:- Prathamesh Sir</div>
+        </div>
+
+        <!-- VIVA College / Trust Emblem SVG -->
+        <div class="college-emblem-box">
+          <svg width="125" height="125" viewBox="0 0 160 160">
+            <!-- Shield Outline -->
+            <path d="M80 15 L135 35 L135 90 C135 125 80 150 80 150 C80 150 25 125 25 90 L25 35 Z" fill="#ffffff" stroke="#c5221f" stroke-width="4.5"/>
+            <!-- Inner Shield -->
+            <path d="M80 23 L127 40 L127 88 C127 118 80 140 80 140 C80 140 33 118 33 88 L33 40 Z" fill="#f8fafc" stroke="#003366" stroke-width="2.5"/>
+            <!-- VIVA Banner -->
+            <rect x="42" y="58" width="76" height="26" fill="#c5221f" rx="3"/>
+            <text x="80" y="77" font-family="Arial, sans-serif" font-weight="900" font-size="19" fill="#ffffff" text-anchor="middle" letter-spacing="2">VIVA</text>
+            <!-- Flame & Book Icon -->
+            <path d="M72 48 C72 40 80 34 80 34 C80 34 88 40 88 48 C88 53 84 55 80 55 C76 55 72 53 72 48 Z" fill="#f59e0b"/>
+            <!-- Open Book Graphic -->
+            <path d="M50 102 Q80 92 80 105 Q80 92 110 102 L110 114 Q80 104 80 116 Q80 104 50 114 Z" fill="#003366"/>
+            <!-- Trust Ribbon Arc -->
+            <path d="M22 135 Q80 160 138 135" fill="none" stroke="#003366" stroke-width="4" stroke-linecap="round"/>
+            <text x="80" y="146" font-family="'Times New Roman', serif" font-weight="bold" font-size="7.5" fill="#003366" text-anchor="middle">VISHNU WAMAN THAKUR CHARITABLE TRUST</text>
+          </svg>
+        </div>
+
+        <div class="cover-bottom-college">
+          <div class="dept">DEPARTMENT OF COMPUTER ENGINEERING</div>
+          <div class="institution">VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY</div>
+          <div class="location">VIRAR (E), PALGHAR – 401305.</div>
+          <div class="ac-year">2026-2027</div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>1</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 2: INDEX / CONTENT
+       ======================================================== -->
+  <div class="page" id="page-2">
+    <div class="page-frame">
+      <div class="page-body">
+        <table class="content-index-table">
+          <thead>
+            <tr>
+              <th style="width: 14%;">Sr.no.</th>
+              <th style="width: 72%;">Content</th>
+              <th style="width: 14%;">Page no.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="text-align: center;">1</td><td>Abstract</td><td style="text-align: center;">1</td></tr>
+            <tr><td style="text-align: center;">2</td><td>Acknowledgement</td><td style="text-align: center;">2</td></tr>
+            <tr><td style="text-align: center;">3</td><td>Chapter 1- Organization Structure Of Industry and General Layout</td><td style="text-align: center;">3</td></tr>
+            <tr><td style="text-align: center;">4</td><td>Chapter 2- Introduction to Industry/Organization</td><td style="text-align: center;">4</td></tr>
+            <tr><td style="text-align: center;">5</td><td>Chapter 3- Major Software Tools Used</td><td style="text-align: center;">5-7</td></tr>
+            <tr><td style="text-align: center;">6</td><td>Chapter 4- Processes / Methodologies Followed</td><td style="text-align: center;">8-9</td></tr>
+            <tr><td style="text-align: center;">7</td><td>Chapter 5- Testing Of Software</td><td style="text-align: center;">10-11</td></tr>
+            <tr><td style="text-align: center;">8</td><td>Chapter 6- Safety Procedures And Cybersecurity</td><td style="text-align: center;">12-13</td></tr>
+            <tr><td style="text-align: center;">9</td><td>Chapter 7- Practical Experiences</td><td style="text-align: center;">14-16</td></tr>
+            <tr><td style="text-align: center;">10</td><td>Chapter 8- Detailed Report of Tasks Undertaken</td><td style="text-align: center;">17-20</td></tr>
+            <tr><td style="text-align: center;">11</td><td>Chapter 9- Challenges And Solutions</td><td style="text-align: center;">21-23</td></tr>
+            <tr><td style="text-align: center;">12</td><td>Chapter 10- Conclusion</td><td style="text-align: center;">24</td></tr>
+            <tr><td style="text-align: center;">13</td><td>Chapter 11- References</td><td style="text-align: center;">25</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>2</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 3: ABSTRACT
+       ======================================================== -->
+  <div class="page" id="page-3">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header" style="text-decoration: underline; margin-top: 15px; margin-bottom: 25px;">ABSTRACT</h2>
+
+        <p>Industrial training is an important part of diploma education because it connects classroom learning with practical work. I completed my twelve-week industrial training at <strong>Elite Forums</strong>, located at Vasai (East), from <strong>25 May 2026 to 15 August 2026</strong>, where I received exposure to Web Development, Python Programming and Generative AI. The training included technical learning, practical exercises, assessments, discussions and project-oriented activities.</p>
+
+        <p>As part of the project work, I worked on the concept of <strong>PROFORGE — End-to-End Career Intelligence &amp; Branding Suite</strong>, also represented through the ProForge engineering repository. ProForge is a comprehensive career intelligence and automated branding platform designed to connect aspiring engineers and professionals with industry-grade career optimization tools. The platform unifies six specialized sub-suites: <strong>Remo AI</strong> (smart resume builder with in-place AI bullet refinement and dynamic A4 PDF coordinate rendering), <strong>Folio AI</strong> (web portfolio publisher featuring Bento Grid, Cyber Terminal, Modern Executive, and Clean Glassmorphism templates with zero-dependency ZIP export), <strong>Talo AI</strong> (real-time ATS alignment auditor comparing resumes against target job descriptions with keyword gap detection), <strong>Covo AI</strong> (recruiter outreach studio generating personalized cold emails, LinkedIn pitches, and dynamic PDF cover letters), <strong>Liko AI</strong> (personal branding LinkedIn post architect and bio optimizer), and <strong>Mali AI</strong> (visual HTML email composer, Google typography controls, sandbox preview, and background campaign queue scheduling).</p>
+
+        <p>The project interface contains an interactive dashboard, visual theme switcher (10 dynamic themes), resume layout customizer (over 105 design permutations), ATS scoring analytics, outreach studio, scheduled email queues, and secure multi-device authentication guards. This report explains the organization structure, industry introduction, software tools, methodologies, testing procedures, safety practices, practical experiences, tasks undertaken, challenges, conclusion and references.</p>
+
+        <p>The training experience improved my understanding of planning, reusable components, user interface design, validation, version control, deployment, documentation, teamwork and continuous testing.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>1</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 4: ACKNOWLEDGEMENT
+       ======================================================== -->
+  <div class="page" id="page-4">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header" style="text-decoration: underline; margin-top: 20px; margin-bottom: 30px;">Acknowledgement</h2>
+
+        <p>We sincerely acknowledge the support and guidance provided by all those who contributed to the successful completion of this project. We are especially grateful to our mentor, <strong>Prathamesh Sir</strong>, for his valuable assistance, academic guidance, and continuous encouragement throughout the process.</p>
+
+        <p>We also extend our heartfelt thanks to <strong>Prof. Harsh Tambade</strong> (Founder and CEO, Elite Forums) for giving us the opportunity to undertake this industrial internship at Elite Forums, Vasai (East), and for providing his technical insights and leadership during the Generative AI and web engineering sessions.</p>
+
+        <p>We express our sincere gratitude to the faculty and management of the <strong>Department of Computer Engineering at VIVA Institute of Engineering &amp; Technology, Virar (E)</strong>, for their institutional backing, academic platform, and encouragement toward industrial skill acquisition.</p>
+
+        <p>Finally, we would like to express our appreciation to the entire <strong>Elite Forums</strong> organization for providing us with comprehensive knowledge, state-of-the-art tools, and practical exposure during the training period.</p>
+
+        <div style="margin-top: 60px; text-align: right; line-height: 1.4;">
+          <div style="font-weight: bold; font-size: 11.5pt;">Dhruv R. Dubey</div>
+          <div style="font-size: 10.5pt;">Enrollment No: 25112400240 – TYCO - B</div>
+          <div style="font-size: 10.5pt;">Department of Computer Engineering</div>
+          <div style="font-size: 10.5pt;">VIVA Institute of Engineering &amp; Technology</div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>2</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 5: CHAPTER 1 - ORG STRUCTURE
+       ======================================================== -->
+  <div class="page" id="page-5">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header">CHAPTER 1</h2>
+
+        <!-- Exact Visual Corporate Hierarchy Tree -->
+        <div class="org-chart-wrapper">
+          <div class="node-box" style="background:#0f2b5c; font-size:10.5pt; padding:6px 24px;">Elite Forums</div>
+          <div class="node-line-down"></div>
+          <div class="node-box" style="background:#1e3a8a;">Founder &amp; CEO<br><span style="font-size:8.5pt; font-weight:normal;">Harsh Tambade</span></div>
+          <div class="node-line-down"></div>
+          <div style="display:flex; gap:16px;">
+            <div class="node-box" style="background:#1e40af;">General Manager<br><span style="font-size:8.5pt; font-weight:normal;">Jeet Gharat</span></div>
+            <div class="node-box" style="background:#1e40af;">COO<br><span style="font-size:8.5pt; font-weight:normal;">Siddhant Mandlik</span></div>
+          </div>
+          <div class="node-line-down"></div>
+          <div class="node-box" style="background:#2563eb;">Project Manager<br><span style="font-size:8.5pt; font-weight:normal;">Suchita Nigam</span></div>
+          <div class="node-line-down"></div>
+          <div class="team-columns-row">
+            <div class="team-column">
+              <div class="team-header-pill">Developers</div>
+              <div class="member-pill">Anshu Jaiswal</div>
+              <div class="member-pill">Adarsh Pandey</div>
+              <div class="member-pill">Mithilesh Vichare</div>
+              <div class="member-pill">Yuvraj Singh</div>
+            </div>
+            <div class="team-column">
+              <div class="team-header-pill">Instructors</div>
+              <div class="member-pill">Shreya Mishra</div>
+              <div class="member-pill">Prathamesh Jakkula</div>
+              <div class="member-pill">Nandini Singh</div>
+              <div class="member-pill">Shreya Mulik</div>
+              <div class="member-pill">Shashank Singh</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="chapter-title" style="margin-top: 10px;">ORGANIZATION STRUCTURE OF INDUSTRY AND GENERAL LAYOUT</h3>
+
+        <p><strong>Elite Forums</strong> is headed by its Founder and CEO, <strong>Harsh Tambade</strong>. Supporting him in leadership are <strong>Jeet Gharat</strong>, who serves as the General Manager, and <strong>Siddhant Mandlik</strong>, the Chief Operating Officer (COO). Day-to-day operations are coordinated by <strong>Suchita Nigam</strong>, the Project Manager, who supervises two major teams within the organization.</p>
+
+        <p>The <strong>Developers Team</strong> includes Anshu Jaiswal, Adarsh Pandey, Mithilesh Vichare, and Yuvraj Singh, while the <strong>Instructors Team</strong> is composed of Shreya Mishra, Prathamesh Jakkula, Nandini Singh, Shreya Mulik, and Shashank Singh. This well-structured hierarchy ensures effective communication, smooth workflow, and strong collaboration between leadership, management, and execution, ultimately driving efficiency and organizational growth.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>3</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 6: CHAPTER 2 - INTRO TO INDUSTRY
+       ======================================================== -->
+  <div class="page" id="page-6">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header">CHAPTER 2</h2>
+        <h3 class="chapter-title">INTRODUCTION TO INDUSTRY (HISTORY, TYPES OF PRODUCTS AND SERVICES, TURN OVER AND NUMBERS OF EMPLOYEES)</h3>
+
+        <!-- Exact Elite Forums Badge -->
+        <div class="elite-logo-card">
+          <svg width="42" height="42" viewBox="0 0 100 100" style="margin: 0 auto 4px auto; display: block;">
+            <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="#ffffff" stroke-width="6"/>
+            <polygon points="50,25 72,38 72,62 50,75 28,62 28,38" fill="none" stroke="#ffffff" stroke-width="4"/>
+            <circle cx="50" cy="50" r="8" fill="#ffffff"/>
+          </svg>
+          <div class="company-title">ELITE FORUMS</div>
+          <div class="tagline">UNLOCKING YOUR IT POTENTIAL</div>
+        </div>
+
+        <div class="sub-heading">IT Services and Consulting</div>
+        <p>The company where I carried out my internship functions in the field of <strong>Information Technology services and consulting</strong>. It is an independent firm, based in Vasai (East), Mumbai, Maharashtra, and was established in <strong>2023</strong>. Though fairly new, it has made noticeable progress in the areas of <strong>IT education, consulting, and solution development</strong>.</p>
+
+        <p>The organization operates with a small but skilled workforce of around <strong>11–50 people</strong>, which allows it to remain flexible and efficient. This structure supports <strong>quick innovation, faster decisions, and personalized approaches</strong> to meet the needs of both learners and business clients. The company places strong emphasis on <strong>practical learning for students</strong> as well as providing <strong>consulting support for businesses</strong> to overcome technological challenges.</p>
+
+        <div class="sub-heading">Range of Services</div>
+        <p>The services offered by the company are divided into three major categories:</p>
+
+        <p><strong>1. Training Programs</strong></p>
+        <ul>
+          <li>Focused learning on modern technologies such as <strong>Generative AI, Machine Learning, Cybersecurity, Cloud Computing, and Web Development</strong>.</li>
+          <li>Interactive sessions and coding workshops covering <strong>Git, GitHub, APIs, and JavaScript</strong>.</li>
+          <li>Well-structured modules that include <strong>MCQs, quizzes, coding challenges, and project assignments</strong>.</li>
+          <li>One-on-one guidance to help learners build job-ready skills.</li>
+        </ul>
+
+        <p><strong>2. Consultancy Services</strong></p>
+        <ul>
+          <li>Professional advice for startups and established firms in adopting digital technologies.</li>
+          <li>Assistance in creating websites, automation workflows, and scalable IT frameworks.</li>
+          <li>Consulting expertise in areas such as cloud solutions, database systems, and AI-driven tools.</li>
+        </ul>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>4</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 7: CHAPTER 2 (CONT.) - CUSTOMIZED SOLUTIONS
+       ======================================================== -->
+  <div class="page" id="page-7">
+    <div class="page-frame">
+      <div class="page-body">
+        <div style="height: 15px;"></div>
+        <p><strong>3. Customized IT Solutions</strong></p>
+        <ul>
+          <li>Developing web and mobile applications based on client needs.</li>
+          <li>Offering <strong>API-based integrations</strong> to improve connectivity between platforms.</li>
+          <li>Delivering complete software solutions—from basic front-end structures to advanced user-centric platforms.</li>
+          <li>Providing <strong>deployment, ongoing maintenance, and security support</strong> for enterprise-level applications.</li>
+        </ul>
+
+        <div class="sub-heading" style="margin-top: 30px;">Strategic Focus on Emerging Technologies &amp; Generative AI</div>
+        <p>Elite Forums places strong strategic emphasis on the convergence of modern web engineering with <strong>Generative AI and Large Language Models (LLMs)</strong>. Unlike conventional software firms that focus solely on static development, Elite Forums trains developers to build intelligence-infused applications—integrating automated text synthesis, dynamic document rendering, ATS parsing algorithms, and transactional background automation.</p>
+
+        <p>This hands-on, innovation-driven philosophy provided the foundation for engineering <strong>ProForge AI</strong>, where complex career intelligence workflows were decoupled into responsive, modular web services with sub-second AI inference.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>5</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 8: CHAPTER 3 - MAJOR SOFTWARE TOOLS USED
+       ======================================================== -->
+  <div class="page" id="page-8">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header">CHAPTER 3</h2>
+        <h3 class="chapter-title">TYPES OF MAJOR EQUIPMENT/RAW MATERIALS/INSTRUMENTS/MACHINES/HARDWARE/SOFTWARE USED IN INDUSTRY WITH THEIR SPECIFICATION, APPROXIMATELY COST, SPECIFIC USE AND ROUTINE MAINTENANCE DONE.</h3>
+
+        <p>During the course of training, we were introduced to a wide range of <strong>tools and technologies</strong> that are commonly used in the IT industry. These included both development frameworks and supporting software for building, managing, and analyzing applications.</p>
+
+        <ul style="margin-left: 20px;">
+          <li class="disc"><strong>Frontend Technologies:</strong> React 18, Vite, Tailwind CSS v3, PostCSS, Lucide React Icons</li>
+          <li class="disc"><strong>Backend Technologies:</strong> Node.js, Express.js REST API pipeline, CORS, Dotenv</li>
+          <li class="disc"><strong>Databases &amp; Storage:</strong> Supabase (PostgreSQL relational engine with JSONB columns), Local JSON audit logging</li>
+          <li class="disc"><strong>Version Control:</strong> Git, GitHub</li>
+          <li class="disc"><strong>Authentication Services:</strong> Supabase Auth, JWT verification guards, Zoho SMTP 6-digit OTP verification</li>
+          <li class="disc"><strong>AI Inference Engine:</strong> Groq SDK (Llama 3 70B &amp; Qwen models for sub-second NLP reasoning)</li>
+          <li class="disc"><strong>Document &amp; Archive Engines:</strong> PDFKit (dynamic A4 coordinate mapping), JSZip (zero-dependency client bundles)</li>
+          <li class="disc"><strong>Email Dispatch &amp; Scheduling:</strong> Nodemailer, Zoho SMTP transporter, background queue scheduler (Mali AI)</li>
+          <li class="disc"><strong>Security &amp; Intrusion Auditing:</strong> IP &amp; User-Agent signature trackers, multi-device access alerts</li>
+          <li class="disc"><strong>Developer Environments:</strong> Visual Studio Code, Postman API client, Chrome DevTools</li>
+        </ul>
+
+        <p>This combination of technologies provided us with exposure to full-stack development, generative AI integration, document compilation, and cloud database administration, ensuring a balanced learning experience across different domains of computer engineering.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>6</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 9: CHAPTER 3 (CONT.) - TOOLS SPECIFICATION TABLE
+       ======================================================== -->
+  <div class="page" id="page-9">
+    <div class="page-frame">
+      <div class="page-body">
+        <table class="tools-grid-table">
+          <thead>
+            <tr>
+              <th style="width: 17%;">Equipment / Software</th>
+              <th style="width: 20%;">Specification</th>
+              <th style="width: 15%;">Approx. Cost</th>
+              <th style="width: 24%;">Specific Use</th>
+              <th style="width: 24%;">Routine Maintenance (Explained with JS async/await)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Laptops / Workstations</strong></td>
+              <td>Intel i5/i7 processor, 16gb RAM, 512 SSD, Integrated Graphics</td>
+              <td style="text-align:center;">₹45,000 – ₹60,000</td>
+              <td>Primary hardware for coding, local server runtime, AI testing</td>
+              <td>Regular OS updates, disk cleanup, node_modules cache cleaning</td>
+            </tr>
+            <tr>
+              <td><strong>Git &amp; GitHub</strong></td>
+              <td>Cloud-based version control</td>
+              <td style="text-align:center;">Free / Pro ₹350–₹700 per month</td>
+              <td>Source code hosting, collaboration, version control</td>
+              <td>Repo backup, branch cleanup (async commits &amp; merges)</td>
+            </tr>
+            <tr>
+              <td><strong>VS Code (IDE)</strong></td>
+              <td>Open-source extensible editor</td>
+              <td style="text-align:center;">Free</td>
+              <td>Writing, debugging, and testing frontend/backend code</td>
+              <td>Extension updates, cache cleaning, settings sync</td>
+            </tr>
+            <tr>
+              <td><strong>React 18 &amp; Vite</strong></td>
+              <td>Component library with lightning HMR</td>
+              <td style="text-align:center;">Free (MIT)</td>
+              <td>Web app development (SPA, reactive state, UI themes)</td>
+              <td>Updating dependencies via npm/yarn, tree-shaking dead code</td>
+            </tr>
+            <tr>
+              <td><strong>Node.js &amp; Express</strong></td>
+              <td>V8 asynchronous JavaScript runtime</td>
+              <td style="text-align:center;">Free (MIT)</td>
+              <td>Backend API routing, token validation, PDF &amp; email pipelines</td>
+              <td>Monitoring async request loops and unhandled promise rejections</td>
+            </tr>
+            <tr>
+              <td><strong>Groq SDK (LLM)</strong></td>
+              <td>LPU-accelerated inference engine</td>
+              <td style="text-align:center;">Pay-as-you-go / Free tier</td>
+              <td>ATS keyword analysis, bullet point refiners, email drafting</td>
+              <td>Handling async rate limits with exponential backoff retries</td>
+            </tr>
+            <tr>
+              <td><strong>PDFKit &amp; JSZip</strong></td>
+              <td>Vector document renderer &amp; archive tool</td>
+              <td style="text-align:center;">Free (MIT)</td>
+              <td>A4 PDF resume/cover letter rendering, standalone portfolio ZIPs</td>
+              <td>Flushing output streams asynchronously, memory buffer cleanup</td>
+            </tr>
+            <tr>
+              <td><strong>Supabase &amp; PostgreSQL</strong></td>
+              <td>Open-source Firebase alternative</td>
+              <td style="text-align:center;">Free tier + Paid (~₹2,000/mo)</td>
+              <td>Backend-as-a-Service (auth, JSONB profiles, security)</td>
+              <td>Regular DB backups, connection pool health checks, index tuning</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>7</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 10: CHAPTER 4 - PROCESSES & METHODOLOGIES
+       ======================================================== -->
+  <div class="page" id="page-10">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header">CHAPTER 4</h2>
+        <h3 class="chapter-title">PROCESSES/MANUFACTURING TECHNIQUES AND METHODOLOGIES AND MATERIAL HANDLING PROCEDURES</h3>
+
+        <p>In the IT Services and Consulting sector, the concept of manufacturing can be compared to the <strong>development and deployment of software systems</strong>, where digital solutions such as web applications, APIs, and backend services are created, tested, and delivered to end-users. During my internship at Elite Forums – Web Dev, Python &amp; Generative AI Program, I was exposed to modern software engineering practices that emphasize efficiency, scalability, and reliability in project execution.</p>
+
+        <div class="sub-heading">1. Software Development Process</div>
+        <p>The organization primarily follows an <strong>Agile workflow</strong>, where work is divided into short, iterative sprints. Each sprint involves continuous testing, regular feedback, and incremental improvements. This approach enables <strong>faster delivery, flexibility to adapt to changes</strong>, and better-quality outcomes.</p>
+
+        <div class="sub-heading">2. Methodologies in Practice</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc"><strong>Agile &amp; Scrum:</strong> Weekly sprint cycles, daily stand-up meetings, and teamwork-driven tasks.</li>
+          <li class="disc"><strong>Version Control (Git/GitHub):</strong> Used for branching, merging, and collaborative code management.</li>
+          <li class="disc"><strong>CI/CD Pipelines:</strong> Automated testing and deployment ensured quick releases with minimal downtime.</li>
+          <li class="disc"><strong>API-First Development:</strong> Applications were designed with modular APIs, improving reusability and system integration.</li>
+        </ul>
+
+        <div class="sub-heading">3. Handling of Digital Assets</div>
+        <p>Unlike traditional industries, IT deals with <strong>digital resources</strong> rather than physical materials. Some key assets included:</p>
+        <ul style="margin-left: 20px;">
+          <li class="disc"><strong>Source Code (GitHub):</strong> Managed through proper commits, pull requests, and branching strategies.</li>
+          <li class="disc"><strong>Frontend &amp; Backend Files:</strong> HTML templates, Tailwind CSS stylesheets, JavaScript ES6 modules, and React components.</li>
+          <li class="disc"><strong>APIs and Endpoints:</strong> Integrated using asynchronous functions (<code>async/await</code>) for smooth data handling.</li>
+          <li class="disc"><strong>Databases (Supabase/PostgreSQL):</strong> CRUD operations were performed with secure queries and authentication measures.</li>
+        </ul>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>8</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 11: CHAPTER 4 (CONT.) - HANDS-ON LEARNING
+       ======================================================== -->
+  <div class="page" id="page-11">
+    <div class="page-frame">
+      <div class="page-body">
+        <div style="height: 15px;"></div>
+        <div class="sub-heading">4. Hands-On Learning During Internship</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc">Built scalable micro-modular projects using <strong>React 18 and Vite</strong> (Counter App, routing-based applications, multi-page dashboards).</li>
+          <li class="disc">Configured <strong>GitHub repositories</strong> for team collaboration, semantic branch management, and continuous version tracking.</li>
+          <li class="disc">Connected <strong>Supabase backend</strong> for passwordless OTP authentication and JSONB profile data storage.</li>
+          <li class="disc">Strengthened JavaScript skills with <strong>ES6 concepts, async/await functions, and RESTful API handling</strong>.</li>
+          <li class="disc">Engineered vector document generation pipelines in <strong>PDFKit</strong> calculating dynamic vertical coordinates and A4 page breaks.</li>
+          <li class="disc">Integrated <strong>Groq SDK</strong> for real-time ATS scoring, keyword extraction, and bullet point refinement.</li>
+          <li class="disc">Took part in <strong>MCQ tests, rapid-fire rounds, and coding challenges</strong>, which reinforced both theoretical and practical knowledge.</li>
+        </ul>
+
+        <div class="sub-heading" style="margin-top: 35px;">5. Component Modularity &amp; Design Consistency</div>
+        <p>A major focus of the technical training was achieving high component reusability and clean architecture. Reusable UI elements—including theme toggle selectors, font pickers, interactive sliders, loaders, and modal dialogs—were systematically decoupled into dedicated component files. This modular pattern ensured that styling updates across the 10 custom themes propagated consistently across all six sub-suites without redundant code rewriting.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>9</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 12: CHAPTER 5 - TESTING OF SOFTWARE
+       ======================================================== -->
+  <div class="page" id="page-12">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header">CHAPTER 5</h2>
+        <h3 class="chapter-title">TESTING AND HANDLING PROCEDURES</h3>
+
+        <div class="sub-heading">Testing and Evaluation</div>
+        <p>Testing played a vital role throughout the internship, serving as a continuous measure of both technical growth and problem-solving ability. At Elite Forums, weekly assessments were designed to simulate real-world scenarios and ensure a balance between theoretical understanding and practical application. These evaluations helped strengthen logical reasoning, coding efficiency, and overall confidence in tackling professional challenges.</p>
+
+        <div class="sub-heading">Weekly Assessment Formats</div>
+        <p><strong>1. Quizzes</strong><br>
+        Short, time-bound quizzes were conducted on core topics such as <strong>JavaScript fundamentals, Git/GitHub commands, React component lifecycles, and Supabase operations</strong>. These quick tests reinforced key concepts and improved recall speed.</p>
+
+        <p><strong>2. Multiple Choice Questions (MCQs)</strong><br>
+        MCQs assessed knowledge of workflows, coding syntax, and theoretical aspects of software development. They ensured clarity of concepts while highlighting areas that required revision.</p>
+
+        <p><strong>3. Coding Rounds</strong><br>
+        Hands-on coding challenges required interns to develop small features, debug errors, and handle API calls in real time. For example, tasks included building a Counter App using React or integrating async/await functions. These exercises enhanced analytical thinking and coding proficiency.</p>
+
+        <p><strong>4. Mock Exams</strong><br>
+        Comprehensive tests combined MCQs, descriptive questions, and coding tasks, replicating real evaluation environments. They were designed to check readiness for both academic requirements and industry-level expectations.</p>
+
+        <p><strong>5. Presentations (PPTs)</strong><br>
+        Interns were asked to prepare and deliver presentations on technical topics, which not only polished technical communication skills but also improved public speaking, teamwork, and confidence—crucial qualities for client-facing roles in IT.</p>
+
+        <div class="sub-heading">Handling &amp; Learning Approaches</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc"><strong>Confidence Building:</strong> Exposure to different test formats like quizzes, coding tasks, and presentations promoted both technical mastery and soft skill development.</li>
+          <li class="disc"><strong>Collaborative Learning:</strong> After assessments, group discussions and doubt-solving sessions encouraged peer learning, making the training more interactive and engaging.</li>
+        </ul>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>10</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 13: CHAPTER 6 - SAFETY & CYBERSECURITY
+       ======================================================== -->
+  <div class="page" id="page-13">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header">CHAPTER 6</h2>
+        <h3 class="chapter-title">SAFETY PROCEDURES FOLLOWED AND SAFETY GEARS USED BY INDUSTRY</h3>
+
+        <div class="sub-heading">Safety Practices During Internship</div>
+        <p>Although my internship was in the IT consulting and services sector, the organization emphasized that <strong>safety—both digital and professional—was an essential part of day-to-day work</strong>. Interns were guided to adopt secure habits that protected data, systems, and overall workplace efficiency.</p>
+
+        <div class="sub-heading">1. Digital Protection</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc"><strong>Confidentiality:</strong> Sensitive files, repositories, and API keys were safeguarded, with clear instructions not to share credentials.</li>
+          <li class="disc"><strong>Strong Authentication:</strong> Accounts on platforms such as GitHub and Supabase were secured using complex passwords and two-factor verification.</li>
+          <li class="disc"><strong>Coding Security:</strong> All code was reviewed regularly to prevent vulnerabilities like SQL injection or XSS. Input sanitization was applied across resume data fields and prompt forms.</li>
+          <li class="disc"><strong>Intrusion Detection &amp; Security Auditing:</strong> The platform integrated active security monitoring (<code>loginHistory.js</code>) that logs IP addresses and User-Agent signatures. It automatically triggers warning alerts and flags potential account locks upon detecting access from 3+ distinct devices or consecutive failed logins.</li>
+          <li class="disc"><strong>Data Backup:</strong> Repositories and databases were systematically backed up to avoid data loss.</li>
+          <li class="disc"><strong>Safe Browsing Habits:</strong> Only verified websites and resources were accessed, preventing exposure to malicious links.</li>
+        </ul>
+
+        <div class="sub-heading">2. System &amp; Workspace Safety</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc"><strong>Regular Maintenance:</strong> Devices were updated with patches, antivirus software, and firewalls.</li>
+          <li class="disc"><strong>Hardware Handling:</strong> External devices such as USB drives were used carefully to reduce security risks.</li>
+          <li class="disc"><strong>Ergonomic Care:</strong> Proper seating, posture, and screen breaks were encouraged to ensure comfort during long coding hours.</li>
+        </ul>
+
+        <div class="sub-heading">3. Collaboration &amp; Communication Protocols</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc"><strong>Version Control Discipline:</strong> GitHub contributions were monitored through pull requests and code reviews to avoid errors.</li>
+          <li class="disc"><strong>Secure API Use:</strong> API requests were handled responsibly to prevent misuse and quota exhaustion.</li>
+          <li class="disc"><strong>Professional Communication:</strong> Respectful and clear interaction was maintained in meetings and team discussions.</li>
+        </ul>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>11</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 14: CHAPTER 6 (CONT.) - EMERGENCY MEASURES
+       ======================================================== -->
+  <div class="page" id="page-14">
+    <div class="page-frame">
+      <div class="page-body">
+        <div style="height: 15px;"></div>
+        <div class="sub-heading">4. Emergency Measures</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc"><strong>System Recovery:</strong> Backup mechanisms in GitHub and Supabase allowed smooth recovery during technical failures.</li>
+          <li class="disc"><strong>Incident Response:</strong> Interns were trained to report breaches, credential leaks, or suspicious activity immediately.</li>
+          <li class="disc"><strong>Workplace Awareness:</strong> During offline sessions at the Vasai center, safety guidelines such as fire exits and emergency contacts were explained.</li>
+        </ul>
+
+        <div class="sub-heading" style="margin-top: 30px;">5. Professional Conduct &amp; Personal Safety</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc"><strong>Adherence to company policies</strong> and confidentiality rules was mandatory.</li>
+          <li class="disc"><strong>Online collaboration tools</strong> like Slack, Zoom, and Google Meet were used securely.</li>
+          <li class="disc">While interns were encouraged to be inquisitive, they were advised to remain careful when discussing project-related details outside official channels.</li>
+        </ul>
+
+        <div class="sub-heading" style="margin-top: 30px;">6. Ethical AI Implementation Protocols</div>
+        <p>A dedicated discussion at Elite Forums explored ethical guidelines regarding AI usage. When generating resumes, cover letters, and outreach pitches, algorithms were structured to prevent false factual generation, uphold privacy standards for personal contact information, and ensure transparency in automated email scheduling workflows.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>12</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 15: CHAPTER 7 - PRACTICAL EXPERIENCES
+       ======================================================== -->
+  <div class="page" id="page-15">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header">CHAPTER 7</h2>
+        <h3 class="chapter-title">PARTICULAR OF PRACTICAL EXPERIENCES IN INDUSTRY IF ANY IN PRODUCTION/ASSEMBLY/TESTING/MAINTENANCE</h3>
+
+        <div class="sub-heading">Practical Experiences During Internship</div>
+        <p>During my internship at Elite Forums – Generative AI Program, I gained practical exposure to the complete cycle of software development. The work was divided into four main stages—<strong>production, assembly, testing, and maintenance</strong>—similar to the workflow of traditional industries, but adapted to the IT environment.</p>
+
+        <div class="sub-heading">1. Production (Development &amp; Implementation)</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc">Built a basic Counter App and multi-view profile editors in React to understand <strong>component design and state management</strong>.</li>
+          <li class="disc">Created both static and dynamic pages in Vite/React, learning how web platforms balance <strong>speed with interactivity</strong>.</li>
+          <li class="disc">Implemented API integrations using JavaScript (<code>async/await</code>) for smooth data exchange and error handling.</li>
+          <li class="disc">Added authentication and database connectivity through <strong>Supabase</strong>, simulating a real-world backend system.</li>
+          <li class="disc">Engineered <strong>Remo AI</strong>: dynamic A4 coordinate calculation in PDFKit ensuring print-ready resumes with zero margin clipping across 105+ layout combinations.</li>
+          <li class="disc">Developed <strong>Folio AI</strong>: 4 responsive portfolio designs (Bento Grid, Cyber Terminal, Modern Executive, Clean Glassmorphism) with client-side ZIP packaging via JSZip.</li>
+          <li class="disc">Implemented <strong>Talo AI</strong>: ATS alignment algorithms parsing job descriptions vs candidate profiles to generate percentage match scores and keyword gap reports.</li>
+        </ul>
+
+        <div class="sub-heading">2. Assembly (System Integration &amp; Configuration)</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc">Integrated different elements such as frontend, backend, APIs, and databases into a unified system.</li>
+          <li class="disc">Configured <strong>GitHub repositories</strong> to enable collaboration, version control, and project backups.</li>
+          <li class="disc">Practiced React routing and layout guards to organize multiple sub-suites into a structured workflow.</li>
+          <li class="disc">Configured <strong>Zoho SMTP mail pipelines</strong> for secure 6-digit OTP verification and automated email campaign dispatches.</li>
+        </ul>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>13</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 16: CHAPTER 7 (CONT.) - TESTING & MAINTENANCE
+       ======================================================== -->
+  <div class="page" id="page-16">
+    <div class="page-frame">
+      <div class="page-body">
+        <div style="height: 10px;"></div>
+        <div class="sub-heading">3. Testing (Ensuring Quality &amp; Performance)</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc">Took part in weekly assessments including quizzes, coding rounds, MCQs, and mock exams.</li>
+          <li class="disc">Performed <strong>unit tests for small components</strong> (like counter functionality, theme switches) and integration tests for API calls.</li>
+          <li class="disc">Used debugging tools in VS Code and Postman to troubleshoot and fix issues in JavaScript and Express routes.</li>
+          <li class="disc">Delivered presentations (PPTs) on technical topics, which helped strengthen communication and technical explanation skills.</li>
+          <li class="disc">Stress-tested PDFKit rendering across various resume lengths to ensure seamless multi-page pagination.</li>
+        </ul>
+
+        <div class="sub-heading" style="margin-top: 25px;">4. Maintenance (Ongoing Improvements &amp; Security)</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc">Regularly updated npm packages and project dependencies to keep systems compatible.</li>
+          <li class="disc">Managed Supabase databases through CRUD operations and scheduled backups.</li>
+          <li class="disc">Maintained GitHub repositories by cleaning branches, organizing commits, and configuring workflows.</li>
+          <li class="disc">Applied JavaScript <code>async/await</code> to maintain stable and responsive applications.</li>
+          <li class="disc">Followed security practices, including API key management, environment variable configuration, and safe coding guidelines.</li>
+          <li class="disc">Constructed automated queue workers (<code>emailScheduler.js</code>) monitoring pending emails and dispatching them reliably.</li>
+        </ul>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>14</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 17: CHAPTER 8 - DETAILED REPORT (WEEKS 1-4)
+       ======================================================== -->
+  <div class="page" id="page-17">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header">CHAPTER 8</h2>
+        <h3 class="chapter-title">DETAILED REPORT OF THE TASKS UNDERTAKEN DURING THE TRAINING</h3>
+
+        <div class="sub-heading">Internship Structure and Weekly Progress</div>
+        <p>The internship at Elite Forums – Generative AI Program was systematically designed in a <strong>week-by-week format</strong>, gradually building expertise in full-stack development and machine learning. Each stage combined theoretical lessons with practical tasks, ensuring that concepts were not only learned but also applied in real-world scenarios. The journey concluded with industry-level projects that showcased our acquired skills.</p>
+
+        <div class="sub-heading">Weeks 1–2: Foundations in Full-Stack Development</div>
+        <p>The training started with full-stack fundamentals (HTML5 boilerplates, CSS layouts, and modern JavaScript), which form the backbone of many modern web applications. Alongside this, I worked on form handling and DOM manipulation to strengthen my basics.</p>
+        <p>I also practiced JavaScript fundamentals such as variables, loops, ES6 features, and asynchronous programming with <code>async/await</code>. Simultaneously, we were introduced to <strong>Git and GitHub</strong> for version control—learning repository setup, branching, commits, and pull requests.</p>
+        <p>The basics of Node.js and Express were also covered, including routing, middleware pipelines, and RESTful API endpoints. To apply our knowledge, we completed assignments like implementing CRUD operations, which improved our confidence in handling databases and backend integration.</p>
+
+        <div class="sub-heading">Weeks 3–4: Authentication, Integrations, and Profile Systems</div>
+        <p>In the third and fourth weeks, the focus shifted toward <strong>authentication and system integration</strong>. Using Supabase and Nodemailer, we implemented secure login and session handling via 6-digit OTP verification. We also explored rate-limiting strategies to improve scalability and prevent misuse of system resources.</p>
+        <p>Additional integrations included <strong>Zoho SMTP for transactional email dispatching</strong> and security audit logging. This phase simulated real-world SaaS projects, exposing us to API-driven workflows.</p>
+        <p>We also participated in a <strong>Pitch Deck Event</strong>, where we learned how to combine technical explanations with effective business presentations. By the end of this stage, we deployed the core foundation for ProForge, bringing together all the concepts learned so far into a functioning full-stack application.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>15</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 18: CHAPTER 8 (CONT.) - (WEEKS 5-11)
+       ======================================================== -->
+  <div class="page" id="page-18">
+    <div class="page-frame">
+      <div class="page-body">
+        <div style="height: 10px;"></div>
+        <div class="sub-heading">Weeks 5–6: Remo AI Resume Builder &amp; PDFKit Dynamic Coordinate Engine</div>
+        <p>In the fifth and sixth weeks, the emphasis moved to dynamic document generation and AI integration. We engineered <strong>Remo AI</strong>, developing a dynamic resume editor with real-time text synchronization. Developed the backend rendering engine in <strong>PDFKit</strong>, calculating exact A4 coordinate positions, line wraps, font embeddings, and pagination across 105+ layout combinations. Integrated <strong>Groq SDK</strong> (Llama 3 70B) for real-time resume bullet refinement based on tone and length sliders.</p>
+
+        <div class="sub-heading">Weeks 7–8: Folio AI Portfolio Studio &amp; Talo AI ATS Alignment Auditor</div>
+        <p>Weeks seven and eight were application-driven. We developed <strong>Folio AI</strong>, creating four distinct responsive portfolio templates (Bento Grid, Cyber Terminal, Modern Executive, Clean Glassmorphism). Implemented <strong>JSZip</strong> for zero-dependency client exports containing clean standalone HTML, CSS, and JS.</p>
+        <p>We then built <strong>Talo AI</strong>, an ATS matching engine parsing job descriptions vs candidate profiles to compute match scores, identify missing keyword competencies, and generate targeted bullet rewrites.</p>
+
+        <div class="sub-heading">Week 9: Covo AI Outreach Studio &amp; Liko AI LinkedIn Architect</div>
+        <p>The ninth week introduced automated recruiter outreach and personal branding. Developed <strong>Covo AI</strong> for generating personalized cold emails, LinkedIn connection requests, and dynamic PDF cover letters. Created <strong>Liko AI</strong>, transforming career milestones into engaging social media posts with customizable hooks, hashtags, and LinkedIn bio optimization.</p>
+
+        <div class="sub-heading">Weeks 10–11: Mali AI Campaign Studio &amp; Background Scheduling Engine</div>
+        <p>The tenth and eleventh weeks marked the development of <strong>Mali AI</strong>. Built a visual rich-text HTML email composer with 12 Google fonts, 7 theme palettes, and a simulated browser preview console. Integrated dual time pickers (calendar and clock selectors) and engineered an automated background queue scheduler (<code>emailScheduler.js</code>) that checks pending emails and dispatches them via Zoho SMTP.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>16</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 19: CHAPTER 8 (CONT.) - (WEEK 12 & EVALUATION)
+       ======================================================== -->
+  <div class="page" id="page-19">
+    <div class="page-frame">
+      <div class="page-body">
+        <div style="height: 15px;"></div>
+        <div class="sub-heading">Week 12: Security Auditing, Multi-Theme System and Final Evaluation</div>
+        <p>The final week was dedicated to cybersecurity auditing, visual polish, and project evaluation. We implemented an <strong>active security audit monitor</strong> (<code>loginHistory.js</code>) tracking IP addresses and User-Agent signatures, issuing email alerts upon multi-device access attempts.</p>
+        <p>We also implemented a <strong>visual theme system</strong> featuring 10 dynamic color themes with Apple-style cubic-bezier transitions, optimized frontend and backend code, and ensured deployment readiness.</p>
+        <p>The internship concluded with a <strong>final project evaluation</strong> at Elite Forums, where ProForge was reviewed based on technical accuracy, code modularity, innovation, and presentation quality.</p>
+
+        <div class="sub-heading" style="margin-top: 35px;">Comprehensive Learning Synthesis</div>
+        <p>This progressive 12-week roadmap ensured that by the end of the internship, we had strong exposure to <strong>modern web development, generative AI orchestration, document generation, and real-world project deployment</strong>, making the experience both comprehensive and industry-relevant.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>17</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 20: CHAPTER 9 - CHALLENGES & SOLUTIONS
+       ======================================================== -->
+  <div class="page" id="page-20">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header">CHAPTER 9</h2>
+        <h3 class="chapter-title">SPECIAL/CHALLENGING EXPERIENCES ENCOUNTERED DURING TRAINING IF ANY (MAY INCLUDE STUDENTS LIKING AND DISLIKING OF WORKPLACES)</h3>
+
+        <div class="sub-heading">Challenges and Learning Experiences</div>
+        <p>My internship at Elite Forums offered me valuable exposure to both the technical and professional aspects of working in the IT services and consulting sector. The experience was highly rewarding but not without its share of challenges. Many tasks pushed me beyond my comfort zone, testing my patience, adaptability, and problem-solving skills. At the same time, the supportive work environment, structured assessments, and access to advanced tools enabled me to grow as both a learner and a professional.</p>
+
+        <div class="sub-heading">1. Grasping Dynamic Coordinate Math &amp; Pagination in PDFKit</div>
+        <p>One of the first difficulties I faced was learning server-side coordinate-based document generation. Unlike web pages where elements flow naturally, PDFKit operates on absolute vector coordinates on a fixed A4 canvas. When rendering resumes with variable amounts of content, text frequently overflowed past the page boundaries or split awkwardly across page breaks. With mentor guidance, I formulated a mathematical coordinate tracker that measures text height (<code>doc.heightOfString()</code>) in advance, automatically adding pages and resetting headers cleanly.</p>
+
+        <div class="sub-heading">2. Schema Enforcement from Non-Deterministic LLM Responses</div>
+        <p>Integrating Groq's Llama 3 models for ATS scoring initially led to errors when the model returned conversational markdown instead of pure JSON. Initially, spending hours debugging parsing exceptions was discouraging. However, I adopted systematic prompt framing and backend regex extractors. This structured approach overcame the difficulty and made AI integration one of the highlights of the project.</p>
+
+        <div class="sub-heading">3. Reliable Background Queue Scheduling for Email Campaigns</div>
+        <p>Managing scheduled email campaigns in Mali AI without relying on heavy external queue infrastructure required a lightweight yet fail-safe scheduler that would not block the Node.js event loop. Building an internal asynchronous queue scheduler utilizing atomic state transitions ('pending', 'processing', 'sent', 'failed') solved this challenge.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>18</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 21: CHAPTER 9 (CONT.) - REFLECTIONS
+       ======================================================== -->
+  <div class="page" id="page-21">
+    <div class="page-frame">
+      <div class="page-body">
+        <div style="height: 15px;"></div>
+        <div class="sub-heading">4. Handling Environment Files in CI/CD Deployment</div>
+        <p>Another challenge was learning how to manage environment (<code>.env</code>) files securely during development and deployment. Early on, I mistakenly pushed sensitive credentials to GitHub, which served as a wake-up call about the importance of cybersecurity, even in smaller projects. I quickly learned to use <code>gitignore</code>, configure environment variables on deployment platforms, and distinguish between development and production setups. Although I initially disliked working on configurations, I later realized their importance and appreciated how these practices improved my attention to detail.</p>
+
+        <div class="sub-heading">5. Time Management in Collaborative Projects</div>
+        <p>On the non-technical side, time management in team projects was a significant challenge. Coordinating responsibilities for tasks such as building the multi-suite dashboard or preparing pitch decks often created stressful situations, especially when deadlines overlapped with debugging sessions. While the pressure was difficult at first, I gradually developed teamwork and organizational skills. Tools like GitHub Projects helped streamline task allocation, and I began to value the collaborative aspect of group work as it reflected real industry practices.</p>
+
+        <div class="sub-heading">Reflections on the Workplace</div>
+        <p>Overall, I found the environment at Elite Forums to be supportive and learning-oriented. The mentors were approachable, weekly evaluations encouraged consistency, and the exposure to multiple domains—ranging from React to generative AI to Supabase—was immensely valuable. I particularly appreciated the balance between theoretical sessions, coding practice, and project-based learning.</p>
+
+        <p>On the other hand, the fast pace of training sometimes felt overwhelming, especially when transitioning quickly between diverse technologies. However, this very challenge improved my adaptability, which I believe will be a critical skill in my future career.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>19</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 22: CHAPTER 10 - CONCLUSION
+       ======================================================== -->
+  <div class="page" id="page-22">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header">CHAPTER 10</h2>
+        <h3 class="chapter-title">CONCLUSION</h3>
+
+        <p>My internship experience at <strong>Elite Forums</strong> has been both enriching and transformative, blending technical learning with professional growth. Throughout the program, I was introduced to a broad spectrum of domains, including full-stack web development, React 18, Git &amp; GitHub, authentication systems, Generative AI models, PDFKit rendering, and project deployment. Each stage offered exposure to new tools, methodologies, and real-world practices, allowing me to strengthen not only my foundational knowledge but also my advanced technical expertise.</p>
+
+        <p>The challenges I encountered—such as understanding asynchronous programming, debugging dynamic coordinate pagination in PDFKit, ensuring secure deployments, and managing time during group projects—were not setbacks but steppingstones. They taught me resilience, adaptability, and structured problem-solving, while also building my confidence to handle real-world IT challenges.</p>
+
+        <p>What I valued most was the <strong>balanced approach of the program</strong>. The integration of theory, hands-on coding, weekly assessments, and collaborative projects provided a holistic learning experience. This structure mirrored industry workflows and prepared me for the expectations of a professional IT environment. While the pace of training was at times demanding, it ultimately instilled discipline, focus, and a results-driven mindset.</p>
+
+        <p>Overall, this internship has given me a solid foundation in software development and data-driven problem-solving, while also nurturing essential professional values such as teamwork, accountability, and continuous learning. The opportunity to work with cutting-edge technologies like React, Supabase, Groq AI, and modern backend architectures has broadened my career perspective and motivated me to explore advanced areas of Generative AI and emerging computing technologies.</p>
+
+        <p>In conclusion, the internship was far more than an academic requirement—it was a life-changing experience that successfully bridged the gap between academic concepts and industry applications. It has equipped me with the skills, confidence, and mindset required to face future challenges in the IT sector and has laid a strong foundation for my journey as a computer engineer.</p>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>20</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 23: CHAPTER 11 - REFERENCES
+       ======================================================== -->
+  <div class="page" id="page-23">
+    <div class="page-frame">
+      <div class="page-body">
+        <h2 class="chapter-header">CHAPTER 11</h2>
+        <h3 class="chapter-title">REFERENCES/SOURCE OF INFORMATION</h3>
+
+        <div class="sub-heading">References / Sources of Information</div>
+
+        <p><strong>1. Official Documentation &amp; Guides</strong></p>
+        <ul style="margin-left: 20px;">
+          <li class="disc">React 18 Documentation – https://react.dev/</li>
+          <li class="disc">Vite Next Generation Frontend Tooling – https://vitejs.dev/</li>
+          <li class="disc">Tailwind CSS Documentation – https://tailwindcss.com/docs</li>
+          <li class="disc">Node.js Official Documentation – https://nodejs.org/docs</li>
+          <li class="disc">Express.js API Reference – https://expressjs.com/</li>
+          <li class="disc">Groq SDK &amp; LPU Inference Docs – https://console.groq.com/docs</li>
+          <li class="disc">PDFKit Document Generation Guide – https://pdfkit.org/docs/</li>
+          <li class="disc">Supabase Documentation – https://supabase.com/docs</li>
+          <li class="disc">Git &amp; GitHub Guides – https://docs.github.com/</li>
+          <li class="disc">Nodemailer Email Transport Documentation – https://nodemailer.com/</li>
+          <li class="disc">JSZip Client-Side Zip Library – https://stuk.github.io/jszip/</li>
+        </ul>
+
+        <p><strong>2. Learning Platforms</strong></p>
+        <ul style="margin-left: 20px;">
+          <li class="disc">Elite Forums Internal Training Materials &amp; PPTs</li>
+          <li class="disc">MDN Web Docs (Mozilla Developer Network) – https://developer.mozilla.org/</li>
+          <li class="disc">Code Signals – https://codesignal.com/learn/course-paths</li>
+          <li class="disc">Kaggle Tutorials – https://www.kaggle.com/learn (for AI algorithms &amp; datasets)</li>
+        </ul>
+
+        <p><strong>3. Research Papers &amp; Books</strong></p>
+        <ul style="margin-left: 20px;">
+          <li class="disc"><em>JavaScript: The Definitive Guide</em> – David Flanagan</li>
+          <li class="disc"><em>Learning React: Functional Web Development with React and Redux</em> – Alex Banks, Eve Porcello</li>
+          <li class="disc"><em>Hands-On Machine Learning with Scikit-Learn, Keras &amp; TensorFlow</em> – Aurélien Géron</li>
+        </ul>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>21</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PAGE 24: CHAPTER 11 (CONT.) - TOOLS & COMPANY LINK
+       ======================================================== -->
+  <div class="page" id="page-24">
+    <div class="page-frame">
+      <div class="page-body">
+        <div style="height: 25px;"></div>
+        <div class="sub-heading">4. Tools &amp; Software Used</div>
+        <ul style="margin-left: 20px;">
+          <li class="disc">Visual Studio Code (IDE)</li>
+          <li class="disc">GitHub (Version Control)</li>
+          <li class="disc">Node.js &amp; npm (Runtime &amp; Package Management)</li>
+          <li class="disc">Supabase Cloud Platform</li>
+          <li class="disc">Postman (REST API Endpoint Testing)</li>
+          <li class="disc">Chrome DevTools (UI Inspection &amp; Performance Profiling)</li>
+        </ul>
+
+        <div style="margin-top: 100px; text-align: center;">
+          <div style="font-size: 13pt; font-weight: bold; margin-bottom: 6px;">Elite Forums: - <a href="https://in.linkedin.com/company/eliteforums" target="_blank" style="color: #000000; text-decoration: underline;">https://in.linkedin.com/company/eliteforums</a></div>
+          <div style="font-size: 10.5pt; color: #374151;">IT Services &amp; Consulting &bull; Vasai (East), Maharashtra – 401208</div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span>COPYRIGHT &copy; 2026-2027 VIVA INSTITUTE OF ENGINEERING &amp; TECHNOLOGY, COMPUTER ENGINEERING</span>
+        <span>22</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

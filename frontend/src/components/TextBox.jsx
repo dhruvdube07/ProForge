@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, HelpCircle } from 'lucide-react';
+import { Sparkles, HelpCircle, FileText, Trash2, ArrowRight } from 'lucide-react';
 
 export default function TextBox({ onAnalyze, loading }) {
   const [text, setText] = useState('');
@@ -39,13 +39,31 @@ export default function TextBox({ onAnalyze, loading }) {
     setActiveIndex(index);
   };
 
+  const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const charCount = text.length;
+
   return (
-    <form onSubmit={handleSubmit} className="w-full glass-panel p-6 rounded-theme space-y-5 text-left">
-      <div className="space-y-2">
-        <label className="block text-sm font-semibold text-themeTextSecondary flex items-center gap-1.5">
-          <HelpCircle className="h-4 w-4 text-themePrimary" />
-          Choose a Sample Scenario or Describe Yours
-        </label>
+    <form onSubmit={handleSubmit} className="w-full glass-panel p-6 sm:p-8 rounded-2xl border border-themeBorder/80 space-y-6 text-left shadow-lg">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-xs font-heading font-black text-themeTextSecondary uppercase tracking-wider flex items-center gap-1.5">
+            <HelpCircle className="h-4 w-4 text-themePrimary" />
+            Choose a Sample Scenario or Describe Yours
+          </label>
+          {text && (
+            <button
+              type="button"
+              onClick={() => {
+                setText('');
+                setActiveIndex(null);
+              }}
+              className="text-[10px] font-mono text-themeTextSecondary hover:text-rose-400 flex items-center gap-1 transition-colors cursor-pointer"
+            >
+              <Trash2 className="h-3 w-3" />
+              Clear
+            </button>
+          )}
+        </div>
         
         {/* Profile pills grid */}
         <div className="flex flex-wrap gap-2">
@@ -54,10 +72,10 @@ export default function TextBox({ onAnalyze, loading }) {
               key={index}
               type="button"
               onClick={() => handleProfileSelect(index)}
-              className={`py-1.5 px-3 rounded-full text-xxs font-bold transition-all duration-300 border hover-lift cursor-pointer ${
+              className={`py-1.5 px-3 rounded-full text-[11px] font-bold transition-all duration-300 border hover-lift cursor-pointer ${
                 activeIndex === index
-                  ? 'bg-themePrimary text-white border-themePrimary'
-                  : 'bg-themeCard text-themeTextSecondary border-themeBorder hover:border-themePrimary hover:text-themeText'
+                  ? 'bg-themePrimary text-white border-themePrimary shadow-sm shadow-themePrimary/25'
+                  : 'bg-themeCard text-themeTextSecondary border-themeBorder/80 hover:border-themePrimary/50 hover:text-themeText'
               }`}
             >
               {profile.label}
@@ -66,31 +84,47 @@ export default function TextBox({ onAnalyze, loading }) {
         </div>
       </div>
 
-      <textarea
-        value={text}
-        onChange={(e) => {
-          setText(e.target.value);
-          setActiveIndex(null); // Reset active indicator if user typed custom
-        }}
-        rows={8}
-        placeholder="Select one of the quick profiles above, or type your own experience here (e.g., your achievements, current role, and the job you want to get next)..."
-        className="w-full p-4 rounded-theme border border-themeBorder bg-themeCard focus:border-themePrimary focus:ring-2 focus:ring-themePrimaryLight focus:outline-none transition-all duration-200 text-themeText font-mono text-sm leading-relaxed"
-      />
+      <div className="relative">
+        <textarea
+          value={text}
+          onChange={(e) => {
+            setText(e.target.value);
+            setActiveIndex(null);
+          }}
+          rows={8}
+          placeholder="Select one of the quick profiles above, or type your own experience here (e.g., your achievements, current role, and the job you want to target next)..."
+          className="w-full p-4 rounded-xl border border-themeBorder bg-themeCard/60 focus:bg-themeCard focus:border-themePrimary focus:ring-2 focus:ring-themePrimary/20 focus:outline-none transition-all duration-200 text-themeText font-mono text-xs leading-relaxed"
+        />
+
+        {/* Dynamic metrics bar */}
+        <div className="flex items-center justify-between pt-2 px-1 text-[10px] text-themeTextSecondary font-mono border-t border-themeBorder/40">
+          <span className="flex items-center gap-1">
+            <FileText className="h-3 w-3 text-themePrimary" />
+            AI Parsing Engine Ready
+          </span>
+          <div className="flex items-center gap-3">
+            <span>{wordCount} words</span>
+            <span>•</span>
+            <span>{charCount} chars</span>
+          </div>
+        </div>
+      </div>
 
       <button
         type="submit"
         disabled={loading || !text.trim()}
-        className="w-full flex items-center justify-center gap-2 py-3 px-6 bg-themePrimary hover:bg-themePrimaryDark text-white font-semibold rounded-theme shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover-lift cursor-pointer"
+        className="w-full flex items-center justify-center gap-2 py-3.5 px-6 bg-themePrimary hover:bg-themePrimaryDark text-white font-heading font-bold rounded-xl shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover-lift cursor-pointer btn-shimmer"
       >
         {loading ? (
           <>
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            Analyzing Profile details with Groq AI...
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Analyzing Profile with Groq AI...</span>
           </>
         ) : (
           <>
-            <Sparkles className="h-5 w-5" />
-            Analyze Me
+            <Sparkles className="h-4.5 w-4.5" />
+            <span>Synthesize Career Profile</span>
+            <ArrowRight className="h-4 w-4 ml-1 opacity-70 group-hover:translate-x-1 transition-transform" />
           </>
         )}
       </button>

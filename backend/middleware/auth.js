@@ -1,7 +1,8 @@
 import { supabase } from '../supabaseClient.js';
+import { localStore } from '../localStore.js';
 
 /**
- * Express middleware to enforce authentication via native Supabase JWT verification.
+ * Express middleware to enforce authentication via localStore JWT or native Supabase JWT.
  */
 export const requireAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -12,18 +13,34 @@ export const requireAuth = async (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
 
+  // 1. Try localStore token verification first
+  const decoded = localStore.verifyToken(token);
+  if (decoded) {
+    req.user = {
+      id: decoded.sub,
+      email: decoded.email,
+      user_metadata: {
+        name: decoded.name,
+        first_name: decoded.first_name,
+        last_name: decoded.last_name,
+        gender: decoded.gender
+      }
+    };
+    return next();
+  }
+
+  // 2. Fallback to Supabase verification if online
   try {
     const { data: { user }, error } = await supabase.auth.getUser(token);
     
     if (error || !user) {
-      console.error('Supabase JWT Auth Error:', error?.message || 'User not found');
       return res.status(401).json({ error: 'Invalid or expired authentication token' });
     }
 
-    req.user = user; // Contains id, email, and user_metadata
-    next();
+    req.user = user;
+    return next();
   } catch (error) {
-    console.error('Auth Middleware Exception:', error);
-    return res.status(500).json({ error: 'Internal server error during auth verification' });
+    console.error('Supabase Auth verification unreachable, invalid token');
+    return res.status(401).json({ error: 'Invalid or expired authentication session' });
   }
 };

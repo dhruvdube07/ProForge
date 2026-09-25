@@ -1,0 +1,33 @@
+[
+  {
+    "id": "demo-user-proforge-001",
+    "email": "demo@profileforge.ai",
+    "passwordHash": "66e22df53775e94b4bc21d0d8c3c6f024fc23b2166436060baa394991ed30ff6",
+    "firstName": "Alex",
+    "lastName": "Morgan",
+    "name": "Alex Morgan",
+    "gender": "luna",
+    "createdAt": "2026-09-25T09:48:33.191Z",
+    "updatedAt": "2026-09-25T10:16:05.833Z"
+  },
+  {
+    "id": "6055f26d-5566-42be-836b-9e8ad72f54b6",
+    "email": "testuser@example.com",
+    "passwordHash": "19cf105f611581186bddeb872f3b481f4fd8190fc6446b6b9537a847a6530d3d",
+    "firstName": "Test",
+    "lastName": "User",
+    "name": "Test User",
+    "gender": "luna",
+    "createdAt": "2026-09-25T09:56:33.836Z"
+  },
+  {
+    "id": "54d74f18-21d9-47b6-b4d1-72de552b92e2",
+    "email": "devildhruv2007@gmail.com",
+    "passwordHash": "4ec565e170ed43b5871d980fa8631638ee085b024d4e62e4456e1d21bcfef7b7",
+    "firstName": "Dhruv",
+    "lastName": "Dubey",
+    "name": "Dhruv Dubey",
+    "gender": "moon",
+    "createdAt": "2026-09-25T10:23:32.394Z"
+  }
+]

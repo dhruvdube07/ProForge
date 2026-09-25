@@ -1,6 +1,16 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from './useAuth';
 
+const safeJson = async (res) => {
+  if (!res) return null;
+  const text = await res.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch (err) {
+    return { error: text || 'Invalid JSON response from server' };
+  }
+};
+
 export const useProfile = () => {
   const { token, logout } = useAuth();
   const [profiles, setProfiles] = useState([]);
@@ -54,7 +64,7 @@ export const useProfile = () => {
     if (!response.ok) {
       let errorMsg = 'API request failed';
       try {
-        const errorData = await response.json();
+        const errorData = await safeJson(response);
         errorMsg = errorData.error || errorMsg;
       } catch (e) {
         // Ignore
@@ -73,10 +83,11 @@ export const useProfile = () => {
     setError(null);
     try {
       const res = await authFetch('/api/profiles');
-      const data = await res.json();
-      setProfiles(data);
-      setDbTablesError(false); // Reset if success
-      return data;
+      const data = await safeJson(res);
+      const list = Array.isArray(data) ? data : [];
+      setProfiles(list);
+      setDbTablesError(false);
+      return list;
     } catch (err) {
       checkDbError(err);
       setError(err.message);
@@ -95,7 +106,7 @@ export const useProfile = () => {
     try {
       const res = await authFetch(`/api/profiles/${id}`);
       setDbTablesError(false);
-      return await res.json();
+      return await safeJson(res);
     } catch (err) {
       checkDbError(err);
       setError(err.message);
@@ -116,7 +127,7 @@ export const useProfile = () => {
         method: 'POST',
         body: JSON.stringify(profileData)
       });
-      const data = await res.json();
+      const data = await safeJson(res);
       setProfiles(prev => [data, ...prev]);
       setDbTablesError(false);
       return data;
@@ -140,7 +151,7 @@ export const useProfile = () => {
         method: 'PUT',
         body: JSON.stringify(updateData)
       });
-      const data = await res.json();
+      const data = await safeJson(res);
       setProfiles(prev => prev.map(p => p.id === id ? data : p));
       setDbTablesError(false);
       return data;
@@ -186,7 +197,7 @@ export const useProfile = () => {
         method: 'POST',
         body: JSON.stringify({ text })
       });
-      return await res.json();
+      return await safeJson(res);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -255,7 +266,7 @@ export const useProfile = () => {
         method: 'POST',
         body: JSON.stringify(profile)
       });
-      const data = await res.json();
+      const data = await safeJson(res);
       return data.html;
     } catch (err) {
       setError(err.message);
@@ -273,7 +284,7 @@ export const useProfile = () => {
         method: 'POST',
         body: JSON.stringify(profile)
       });
-      const data = await res.json();
+      const data = await safeJson(res);
       return data.text;
     } catch (err) {
       setError(err.message);
@@ -307,7 +318,7 @@ export const useProfile = () => {
         method: 'POST',
         body: JSON.stringify({ baseProfile, companyContext, sliders })
       });
-      return await res.json();
+      return await safeJson(res);
     } catch (err) {
       setError(err.message);
       throw err;
