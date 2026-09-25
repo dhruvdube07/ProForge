@@ -3,6 +3,8 @@ dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import authRoutes from './routes/authRoutes.js';
 import analyzeRoutes from './routes/analyzeRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
@@ -59,8 +61,6 @@ app.use((err, req, res, next) => {
     error: err.message || 'Internal Server Error' 
   });
 });
-
-import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const isDirectRun = Boolean(process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename));
