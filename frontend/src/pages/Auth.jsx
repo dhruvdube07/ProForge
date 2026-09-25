@@ -252,16 +252,16 @@ export default function Auth() {
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-64px)] flex items-center justify-center px-4 overflow-hidden py-12">
+    <div className="relative min-h-[calc(100vh-64px)] flex items-center justify-center px-3 sm:px-6 md:px-8 overflow-hidden py-6 sm:py-12">
       {/* Decorative background glows */}
       <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-themePrimary/10 blur-[90px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 rounded-full bg-[#f97316]/10 blur-[90px] pointer-events-none"></div>
 
       {/* Main Split-Screen Container with Smooth Frame */}
-      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 rounded-3xl border border-themeBorder/80 bg-themeCard/80 backdrop-blur-xl shadow-2xl overflow-hidden min-h-[550px]">
+      <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 rounded-3xl border border-themeBorder/80 bg-themeCard/80 backdrop-blur-xl shadow-2xl overflow-hidden min-h-[520px]">
         
-        {/* LEFT COLUMN: Starry Sunset Scenic Graphics Panel */}
-        <div className="relative hidden md:flex flex-col justify-between p-10 overflow-hidden text-left bg-gradient-to-b from-[#0A0B10] via-[#131927] to-[#2E1810]">
+        {/* LEFT COLUMN: Starry Sunset Scenic Graphics Panel (Displayed on laptops/desktops & iPad landscape) */}
+        <div className="relative hidden lg:flex flex-col justify-between p-8 xl:p-10 overflow-hidden text-left bg-gradient-to-b from-[#0A0B10] via-[#131927] to-[#2E1810]">
           {/* Star elements */}
           <div className="absolute inset-0 bg-[radial-gradient(1px_1px_at_20px_30px,#fff_1px,transparent_0),radial-gradient(1px_1px_at_60px_120px,#fff_1px,transparent_0),radial-gradient(1px_1px_at_120px_80px,#fff_1px,transparent_0),radial-gradient(1.5px_1.5px_at_200px_180px,#fff_1.5px,transparent_0),radial-gradient(1.5px_1.5px_at_280px_60px,#fff_1.5px,transparent_0)] opacity-60"></div>
           
@@ -293,12 +293,12 @@ export default function Auth() {
           </div>
 
           {/* Tagline / Pitch */}
-          <div className="relative z-10 space-y-3 mb-20">
-            <h2 className="text-3xl font-bold text-white leading-snug tracking-normal">
+          <div className="relative z-10 space-y-3 mb-16 xl:mb-20">
+            <h2 className="text-2xl xl:text-3xl font-bold text-white leading-snug tracking-normal">
               One Text Box.<br />
               AI Extracts Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-themePrimary to-themeSecondary">Personality.</span>
             </h2>
-            <p className="text-sm text-themeTextSecondary/90 leading-relaxed max-w-sm mt-3 font-normal">
+            <p className="text-xs xl:text-sm text-themeTextSecondary/90 leading-relaxed max-w-sm mt-3 font-normal">
               Describe your journey, and instantly forge professional resume assets, cover letters, and email signatures. Saving your versions forever.
             </p>
           </div>
@@ -310,7 +310,7 @@ export default function Auth() {
         </div>
 
         {/* RIGHT COLUMN: Glassmorphism Auth Controller Form */}
-        <div className="p-8 flex flex-col justify-center space-y-6">
+        <div className="p-5 sm:p-8 lg:p-10 flex flex-col justify-center space-y-5 sm:space-y-6">
           
           {/* Tab Headers */}
           <div className="flex bg-themeBg p-1 rounded-theme border border-themeBorder">

@@ -1,8 +1,100 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,400..800&family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@500;600;700;800&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* =========================================================================
+   UNIVERSAL ULTRA-SMOOTH ANTI-ALIASING & RENDERING OPTIMIZATION
+   ========================================================================= */
+
+/* Eliminate DirectWrite and WebKit font aliasing across entire UI */
+html,
+body,
+*,
+*::before,
+*::after {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+html {
+  font-synthesis: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01', 'kern';
+  font-variant-numeric: tabular-nums;
+  font-optical-sizing: auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Sharp SVG icons without pixel distortion or blur */
+svg,
+svg * {
+  shape-rendering: geometricPrecision;
+  text-rendering: geometricPrecision;
+}
+
+/* Hardware rasterization stabilization:
+   Stops Chromium/DirectWrite from dropping to jagged grayscale anti-aliasing during transforms/animations */
+.pro-card,
+.glass-panel,
+.hover-lift,
+button,
+a,
+input,
+textarea,
+select,
+.rounded-theme {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Prevent iOS Safari 100% viewport auto-zoom when tapping inputs */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Safe Area Insets for Edge-to-Edge Displays (iPhones, Android gesture bars) */
+.safe-top {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+.safe-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+/* Bottom clearance on mobile/tablets when dock navigation is present */
+.safe-dock-pb {
+  padding-bottom: max(5rem, calc(4rem + env(safe-area-inset-bottom))) !important;
+}
+
+/* Fluid responsive typography utilities */
+.text-fluid-h1 {
+  font-size: clamp(1.75rem, 4vw + 0.5rem, 3rem);
+  line-height: 1.15;
+}
+
+.text-fluid-h2 {
+  font-size: clamp(1.35rem, 2.5vw + 0.5rem, 2.25rem);
+  line-height: 1.25;
+}
+
+.text-fluid-body {
+  font-size: clamp(0.8125rem, 0.5vw + 0.75rem, 0.9375rem);
+  line-height: 1.6;
+}
 
 /* CSS Custom Properties for Proforge AI */
 :root {

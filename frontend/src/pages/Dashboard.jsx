@@ -526,7 +526,7 @@ export default function Dashboard() {
   const categories = [...new Set(templatesList.map(t => t.category))];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8">
       
       {/* 🎉 Celebratory Welcome Banner */}
       {showWelcome && user && (
@@ -1636,21 +1636,22 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
 
                 {previewMode === 'html' ? (
                   /* SIMULATED HTML LAYOUT PREVIEW */
-                  <div
-                    style={{ backgroundColor: colors.bg, color: colors.text, fontFamily: activeProfile.font_preference }}
-                    className="w-full p-8 rounded-theme shadow-lg min-h-[700px] border transition-all duration-300 text-left"
-                  >
-                    {/* MODERN TEMPLATE PREVIEW */}
-                    {layout === 'modern' && (
-                      <div className="space-y-6">
-                        <div style={{ borderColor: colors.primary }} className="border-b-2 pb-4 text-left">
-                          <h2 style={{ color: colors.primary }} className="text-3xl font-extrabold">{activeProfile.name || 'Your Name'}</h2>
-                          <p className="text-sm font-semibold mt-1 uppercase tracking-wide opacity-80">{activeProfile.profession || 'Profession'}</p>
-                          {activeProfile.tagline && <p style={{ color: colors.secondary }} className="text-xs italic mt-1">"{activeProfile.tagline}"</p>}
-                        </div>
-                        
-                        <div className="grid grid-cols-3 gap-6 text-left">
-                          <div className="col-span-2 space-y-5">
+                  <div className="w-full overflow-x-auto rounded-theme scroll-premium">
+                    <div
+                      style={{ backgroundColor: colors.bg, color: colors.text, fontFamily: activeProfile.font_preference }}
+                      className="w-full p-4 sm:p-6 md:p-8 rounded-theme shadow-lg min-h-[700px] border transition-all duration-300 text-left min-w-[300px]"
+                    >
+                      {/* MODERN TEMPLATE PREVIEW */}
+                      {layout === 'modern' && (
+                        <div className="space-y-6">
+                          <div style={{ borderColor: colors.primary }} className="border-b-2 pb-4 text-left">
+                            <h2 style={{ color: colors.primary }} className="text-2xl sm:text-3xl font-extrabold">{activeProfile.name || 'Your Name'}</h2>
+                            <p className="text-xs sm:text-sm font-semibold mt-1 uppercase tracking-wide opacity-80">{activeProfile.profession || 'Profession'}</p>
+                            {activeProfile.tagline && <p style={{ color: colors.secondary }} className="text-xs italic mt-1">"{activeProfile.tagline}"</p>}
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                            <div className="col-span-1 md:col-span-2 space-y-5">
                             {activeProfile.bio && (
                               <div>
                                 <h4 style={{ color: colors.primary }} className="text-xs font-bold uppercase tracking-wide border-b pb-0.5 mb-1.5">About Me</h4>
@@ -1979,6 +1980,7 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
                       </div>
                     )}
 
+                    </div>
                   </div>
                 ) : (
                   /* 100% REAL PDF DOCUMENT IFRAME PREVIEW */

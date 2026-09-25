@@ -37,24 +37,24 @@ export default function MyProfiles() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center border-b border-themeBorder pb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-themeBorder pb-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-themeText flex items-center gap-2">
-            <History className="h-7 w-7 text-themePrimary" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-themeText flex items-center gap-2">
+            <History className="h-6 w-6 sm:h-7 sm:w-7 text-themePrimary" />
             My Profiles History
           </h1>
-          <p className="text-sm text-themeTextSecondary mt-1">
+          <p className="text-xs sm:text-sm text-themeTextSecondary mt-1">
             Access, download, or edit your saved resumes and branding structures.
           </p>
         </div>
         
         <button
           onClick={() => navigate('/dashboard')}
-          className="flex items-center gap-1.5 py-2.5 px-4 bg-themePrimary hover:bg-themePrimaryDark text-white font-semibold rounded-theme text-sm shadow hover-lift transition-all duration-300 cursor-pointer"
+          className="flex items-center gap-1.5 py-2 px-4 bg-themePrimary hover:bg-themePrimaryDark text-white font-semibold rounded-theme text-xs sm:text-sm shadow hover-lift transition-all duration-300 cursor-pointer"
         >
-          <Sparkles className="h-4.5 w-4.5" />
+          <Sparkles className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
           Create New Profile
         </button>
       </div>
@@ -91,7 +91,7 @@ export default function MyProfiles() {
         </div>
       ) : (
         /* Profiles Grid */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {profiles.map((profile) => (
             <div
               key={profile.id}

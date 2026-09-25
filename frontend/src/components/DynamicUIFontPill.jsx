@@ -37,7 +37,7 @@ export default function DynamicUIFontPill() {
 
       {/* Popover Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl glass-panel p-3.5 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-200 text-left border border-themeBorder/80">
+        <div className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-sm sm:w-96 rounded-2xl glass-panel p-3.5 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-200 text-left border border-themeBorder/80">
           {/* Header */}
           <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-themeBorder">
             <div className="flex items-center gap-2">

@@ -95,27 +95,27 @@ export default function Hub() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-left space-y-10">
+    <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10 text-left space-y-6 sm:space-y-8">
       {/* Header Banner */}
-      <div className="relative glass-panel premium-frame p-8 sm:p-12 overflow-hidden flex flex-col justify-between shadow-xl">
+      <div className="relative glass-panel premium-frame p-5 sm:p-8 lg:p-10 overflow-hidden flex flex-col justify-between shadow-xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-themePrimary/10 rounded-full blur-3xl -z-10 translate-x-20 -translate-y-20 pointer-events-none"></div>
         
-        <div className="space-y-4 max-w-2xl">
+        <div className="space-y-3 sm:space-y-4 max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-themePrimary/15 text-themePrimary text-[10px] font-heading font-black tracking-widest uppercase border border-themePrimary/30">
             <Sparkles className="h-3.5 w-3.5" />
             Unified Workspace Launchpad
           </div>
           
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black tracking-tight text-themeText leading-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-heading font-black tracking-tight text-themeText leading-tight">
             Welcome back, <span className="text-gradient-primary">{userName}</span>
           </h1>
           
-          <p className="text-sm text-themeTextSecondary leading-relaxed">
+          <p className="text-xs sm:text-sm text-themeTextSecondary leading-relaxed">
             Enter your career history once into <strong className="text-themeText font-semibold">Proforge AI</strong>, and dynamically synthesize ATS-ready resumes, responsive web portfolios, recruiter outreach, and LinkedIn thought leadership across all 6 specialized studios.
           </p>
 
           {/* Quick status chips */}
-          <div className="flex flex-wrap items-center gap-2 pt-2">
+          <div className="flex flex-wrap items-center gap-2 pt-1 sm:pt-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-themeBg/80 border border-themeBorder text-[10px] font-mono text-themeTextSecondary">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
               6 Intelligence Engines Ready
@@ -144,14 +144,14 @@ export default function Hub() {
           </span>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5">
           {tools.map((tool) => {
             const Icon = tool.icon;
             return (
               <Link
                 key={tool.id}
                 to={tool.path}
-                className={`group pro-card relative flex flex-col justify-between p-6 rounded-2xl border border-themeBorder/80 bg-gradient-to-br ${tool.gradient} bg-themeCard hover:shadow-xl transition-all duration-300 hover-lift cursor-pointer overflow-hidden ${tool.borderColor}`}
+                className={`group pro-card relative flex flex-col justify-between p-5 sm:p-6 rounded-2xl border border-themeBorder/80 bg-gradient-to-br ${tool.gradient} bg-themeCard hover:shadow-xl transition-all duration-300 hover-lift cursor-pointer overflow-hidden ${tool.borderColor}`}
               >
                 <div className="space-y-4">
                   <div className="flex justify-between items-start">

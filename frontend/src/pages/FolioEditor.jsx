@@ -824,7 +824,7 @@ This site is zero-dependency static HTML/CSS/JS and can be hosted immediately on
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 text-left">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 text-left">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -896,10 +896,10 @@ This site is zero-dependency static HTML/CSS/JS and can be hosted immediately on
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-300">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 animate-in fade-in duration-300">
           
           {/* Left Column: Settings Panel */}
-          <div className="lg:col-span-6 bg-themeCard border border-themeBorder rounded-[24px] p-6 space-y-6 shadow-xl">
+          <div className="lg:col-span-6 bg-themeCard border border-themeBorder rounded-[24px] p-4 sm:p-6 space-y-5 sm:space-y-6 shadow-xl">
             <h2 className="text-sm font-bold text-themeText flex items-center gap-2 border-b border-themeBorder pb-2">
               <Settings className="h-4.5 w-4.5 text-themePrimary" />
               Portfolio Customizer

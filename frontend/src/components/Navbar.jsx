@@ -87,256 +87,288 @@ export default function Navbar() {
   const activeProfileName = activeProfile ? (activeProfile.name || 'Untitled') : 'No Profiles';
 
   return (
-    <nav className="sticky top-0 z-40 w-full border-b border-themeBorder/80 bg-themeCard/80 backdrop-blur-xl transition-all duration-300 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-3">
-          {/* Logo and Brand - Directs to Hub (Home) if logged in */}
-          <Link to={user ? "/hub" : "/"} className="flex items-center gap-2.5 group flex-shrink-0">
-            <div className="relative p-2 bg-gradient-to-br from-themePrimary/20 via-themePrimary/10 to-transparent border border-themePrimary/30 rounded-xl group-hover:scale-105 group-hover:border-themePrimary transition-all duration-300 shadow-sm shadow-themePrimary/10">
-              <Sparkles className="h-5 w-5 text-themePrimary group-hover:rotate-12 transition-transform duration-300" />
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-heading font-black text-xl tracking-tight text-themeText">
-                Proforge
-              </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-themePrimary/15 border border-themePrimary/30 text-themePrimary font-mono font-bold uppercase tracking-wider">
-                AI
-              </span>
-            </div>
-          </Link>
-
-          {/* Centered Segmented Navigation Bar */}
-          {user && (
-            <div className="hidden lg:flex items-center bg-themeBg/80 border border-themeBorder/80 p-1 rounded-full shadow-inner backdrop-blur-md">
-              <Link
-                to="/dashboard"
-                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
-                  isActive('/dashboard')
-                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
-                }`}
-                title="Remo AI Resume Builder"
-              >
-                <LayoutDashboard className="h-3.5 w-3.5" />
-                <span>Remo AI</span>
-                {isActive('/dashboard') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
-              </Link>
-
-              <Link
-                to="/folio"
-                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
-                  isActive('/folio')
-                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
-                }`}
-                title="Folio AI Portfolio Generator"
-              >
-                <Globe className="h-3.5 w-3.5" />
-                <span>Folio AI</span>
-                {isActive('/folio') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
-              </Link>
-
-              <Link
-                to="/talo"
-                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
-                  isActive('/talo')
-                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
-                }`}
-                title="Talo AI ATS Matcher"
-              >
-                <Briefcase className="h-3.5 w-3.5" />
-                <span>Talo AI</span>
-                {isActive('/talo') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
-              </Link>
-
-              <Link
-                to="/covo"
-                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
-                  isActive('/covo')
-                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
-                }`}
-                title="Covo AI Outreach Studio"
-              >
-                <FileText className="h-3.5 w-3.5" />
-                <span>Covo AI</span>
-                {isActive('/covo') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
-              </Link>
-
-              <Link
-                to="/liko"
-                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
-                  isActive('/liko')
-                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
-                }`}
-                title="Liko AI LinkedIn Architect"
-              >
-                <Linkedin className="h-3.5 w-3.5" />
-                <span>Liko AI</span>
-                {isActive('/liko') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
-              </Link>
-
-              <Link
-                to="/mali"
-                className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
-                  isActive('/mali')
-                    ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
-                    : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
-                }`}
-                title="Mali AI Email Scheduling"
-              >
-                <Mail className="h-3.5 w-3.5" />
-                <span>Mali AI</span>
-                {isActive('/mali') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
-              </Link>
-            </div>
-          )}
-
-          {/* Right Controls Area */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Global Profile Switch Dropdown */}
-            {user && profiles.length > 0 && (
-              <div className="relative" ref={profileDropdownRef}>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsProfileDropdownOpen(!isProfileDropdownOpen);
-                  }}
-                  className="flex items-center gap-1.5 py-1.5 px-3 bg-themeCard hover:bg-themeBg border border-themeBorder rounded-theme text-xs font-bold text-themeText transition-all cursor-pointer focus:outline-none"
-                >
-                  <span className="hidden sm:inline text-themeTextSecondary">Active:</span>
-                  <span className="max-w-[100px] truncate text-themePrimary">{activeProfileName}</span>
-                  <ChevronDown className="h-3.5 w-3.5 text-themeTextSecondary transition-colors" />
-                </button>
-                
-                {/* Dropdown Menu */}
-                {isProfileDropdownOpen && (
-                  <div className="absolute right-0 top-full mt-1.5 w-48 bg-themeCard border border-themeBorder rounded-theme shadow-xl py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-200">
-                    <div className="px-3 py-1.5 text-xxs font-black text-themeTextSecondary uppercase border-b border-themeBorder">
-                      Switch Active Profile
-                    </div>
-                    <div className="max-h-48 overflow-y-auto">
-                      {profiles.map(p => (
-                        <button
-                          key={p.id}
-                          onClick={() => handleProfileSelect(p.id)}
-                          className={`w-full text-left px-3 py-2 text-xs truncate hover:bg-themePrimary/10 transition-colors flex items-center justify-between cursor-pointer ${
-                            p.id === activeProfileId ? 'text-themePrimary font-bold bg-themePrimary/5' : 'text-themeText'
-                          }`}
-                        >
-                          <span className="truncate">{p.name || 'Untitled'}</span>
-                          <span className="text-[10px] text-themeTextSecondary opacity-60 shrink-0 ml-1">
-                            {p.profession ? p.profession : 'No Title'}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                    <div className="border-t border-themeBorder pt-1">
-                      <Link
-                        to="/profiles"
-                        onClick={() => setIsProfileDropdownOpen(false)}
-                        className="flex items-center gap-1.5 px-3 py-2 text-xs text-themeTextSecondary hover:text-themeText hover:bg-themeBg transition-colors"
-                      >
-                        <History className="h-3.5 w-3.5" />
-                        Manage All ({profiles.length})
-                      </Link>
-                    </div>
-                  </div>
-                )}
+    <>
+      <nav className="sticky top-0 z-40 w-full border-b border-themeBorder/80 bg-themeCard/80 backdrop-blur-xl transition-all duration-300 shadow-sm">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 gap-2 sm:gap-3">
+            {/* Logo and Brand - Directs to Hub (Home) if logged in */}
+            <Link to={user ? "/hub" : "/"} className="flex items-center gap-2 group flex-shrink-0">
+              <div className="relative p-1.5 sm:p-2 bg-gradient-to-br from-themePrimary/20 via-themePrimary/10 to-transparent border border-themePrimary/30 rounded-xl group-hover:scale-105 group-hover:border-themePrimary transition-all duration-300 shadow-sm shadow-themePrimary/10">
+                <Sparkles className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-themePrimary group-hover:rotate-12 transition-transform duration-300" />
               </div>
-            )}
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <span className="font-heading font-black text-lg sm:text-xl tracking-tight text-themeText">
+                  Proforge
+                </span>
+                <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full bg-themePrimary/15 border border-themePrimary/30 text-themePrimary font-mono font-bold uppercase tracking-wider">
+                  AI
+                </span>
+              </div>
+            </Link>
 
-            {/* Dynamic UI Typography Engine Switcher */}
-            <DynamicUIFontPill />
-
-            <ThemeToggle />
-
+            {/* Centered Segmented Navigation Bar */}
             {user && (
-              <div className="flex items-center gap-1">
-                {/* Direct link to settings screen */}
+              <div className="hidden lg:flex items-center bg-themeBg/80 border border-themeBorder/80 p-1 rounded-full shadow-inner backdrop-blur-md">
                 <Link
-                  to="/settings"
-                  className={`p-2 rounded-theme transition-all duration-200 ${
-                    isActive('/settings') ? 'text-themePrimary bg-themePrimary/10' : 'text-themeTextSecondary hover:text-themePrimary hover:bg-themePrimary/10'
+                  to="/dashboard"
+                  className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                    isActive('/dashboard')
+                      ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                      : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
                   }`}
-                  title="Account Settings"
+                  title="Remo AI Resume Builder"
                 >
-                  <Settings className="h-4.5 w-4.5" />
+                  <LayoutDashboard className="h-3.5 w-3.5" />
+                  <span>Remo AI</span>
+                  {isActive('/dashboard') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
                 </Link>
-                <button
-                  onClick={handleLogout}
-                  className="p-2 rounded-theme text-themeTextSecondary hover:text-red-500 hover:bg-red-500/10 transition-all duration-200 cursor-pointer"
-                  title="Log Out"
+
+                <Link
+                  to="/folio"
+                  className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                    isActive('/folio')
+                      ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                      : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
+                  }`}
+                  title="Folio AI Portfolio Generator"
                 >
-                  <LogOut className="h-4.5 w-4.5" />
-                </button>
+                  <Globe className="h-3.5 w-3.5" />
+                  <span>Folio AI</span>
+                  {isActive('/folio') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                </Link>
+
+                <Link
+                  to="/talo"
+                  className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                    isActive('/talo')
+                      ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                      : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
+                  }`}
+                  title="Talo AI ATS Matcher"
+                >
+                  <Briefcase className="h-3.5 w-3.5" />
+                  <span>Talo AI</span>
+                  {isActive('/talo') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                </Link>
+
+                <Link
+                  to="/covo"
+                  className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                    isActive('/covo')
+                      ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                      : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
+                  }`}
+                  title="Covo AI Outreach Studio"
+                >
+                  <FileText className="h-3.5 w-3.5" />
+                  <span>Covo AI</span>
+                  {isActive('/covo') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                </Link>
+
+                <Link
+                  to="/liko"
+                  className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                    isActive('/liko')
+                      ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                      : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
+                  }`}
+                  title="Liko AI LinkedIn Architect"
+                >
+                  <Linkedin className="h-3.5 w-3.5" />
+                  <span>Liko AI</span>
+                  {isActive('/liko') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                </Link>
+
+                <Link
+                  to="/mali"
+                  className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 ${
+                    isActive('/mali')
+                      ? 'bg-themePrimary text-white shadow-md shadow-themePrimary/25 font-bold ring-1 ring-white/20'
+                      : 'text-themeTextSecondary hover:text-themeText hover:bg-themeCard/50'
+                  }`}
+                  title="Mali AI Email Scheduling"
+                >
+                  <Mail className="h-3.5 w-3.5" />
+                  <span>Mali AI</span>
+                  {isActive('/mali') && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                </Link>
               </div>
             )}
+
+            {/* Right Controls Area */}
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              {/* Global Profile Switch Dropdown */}
+              {user && profiles.length > 0 && (
+                <div className="relative" ref={profileDropdownRef}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsProfileDropdownOpen(!isProfileDropdownOpen);
+                    }}
+                    className="flex items-center gap-1 py-1.5 px-2 sm:px-3 bg-themeCard hover:bg-themeBg border border-themeBorder rounded-theme text-xs font-bold text-themeText transition-all cursor-pointer focus:outline-none"
+                  >
+                    <span className="hidden sm:inline text-themeTextSecondary">Active:</span>
+                    <span className="max-w-[65px] sm:max-w-[100px] truncate text-themePrimary">{activeProfileName}</span>
+                    <ChevronDown className="h-3.5 w-3.5 text-themeTextSecondary transition-colors" />
+                  </button>
+                  
+                  {/* Dropdown Menu */}
+                  {isProfileDropdownOpen && (
+                    <div className="absolute right-0 top-full mt-1.5 w-48 bg-themeCard border border-themeBorder rounded-theme shadow-xl py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-200">
+                      <div className="px-3 py-1.5 text-xxs font-black text-themeTextSecondary uppercase border-b border-themeBorder">
+                        Switch Active Profile
+                      </div>
+                      <div className="max-h-48 overflow-y-auto">
+                        {profiles.map(p => (
+                          <button
+                            key={p.id}
+                            onClick={() => handleProfileSelect(p.id)}
+                            className={`w-full text-left px-3 py-2 text-xs truncate hover:bg-themePrimary/10 transition-colors flex items-center justify-between cursor-pointer ${
+                              p.id === activeProfileId ? 'text-themePrimary font-bold bg-themePrimary/5' : 'text-themeText'
+                            }`}
+                          >
+                            <span className="truncate">{p.name || 'Untitled'}</span>
+                            <span className="text-[10px] text-themeTextSecondary opacity-60 shrink-0 ml-1">
+                              {p.profession ? p.profession : 'No Title'}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                      <div className="border-t border-themeBorder pt-1">
+                        <Link
+                          to="/profiles"
+                          onClick={() => setIsProfileDropdownOpen(false)}
+                          className="flex items-center gap-1.5 px-3 py-2 text-xs text-themeTextSecondary hover:text-themeText hover:bg-themeBg transition-colors"
+                        >
+                          <History className="h-3.5 w-3.5" />
+                          Manage All ({profiles.length})
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Dynamic UI Typography Engine Switcher */}
+              <DynamicUIFontPill />
+
+              <ThemeToggle />
+
+              {user && (
+                <div className="flex items-center gap-0.5 sm:gap-1">
+                  {/* Direct link to settings screen */}
+                  <Link
+                    to="/settings"
+                    className={`p-1.5 sm:p-2 rounded-theme transition-all duration-200 ${
+                      isActive('/settings') ? 'text-themePrimary bg-themePrimary/10' : 'text-themeTextSecondary hover:text-themePrimary hover:bg-themePrimary/10'
+                    }`}
+                    title="Account Settings"
+                  >
+                    <Settings className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="p-1.5 sm:p-2 rounded-theme text-themeTextSecondary hover:text-red-500 hover:bg-red-500/10 transition-all duration-200 cursor-pointer"
+                    title="Log Out"
+                  >
+                    <LogOut className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile / Tablet Responsive Navigation Drawer (Segmented Links fallback) */}
+      {/* Mobile & Tablet Fixed Bottom Navigation Dock */}
       {user && (
-        <div className="lg:hidden flex items-center justify-around border-t border-themeBorder bg-themeCard/90 py-1.5 px-2">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-themeCard/95 backdrop-blur-xl border-t border-themeBorder/80 px-2 py-1.5 shadow-2xl flex items-center justify-around safe-bottom">
+          <Link
+            to="/hub"
+            className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl text-[9px] font-bold transition-all duration-200 min-w-[40px] ${
+              isActive('/hub')
+                ? 'text-themePrimary bg-themePrimary/15 shadow-sm'
+                : 'text-themeTextSecondary hover:text-themeText'
+            }`}
+            title="Unified Workspace Launchpad"
+          >
+            <Sparkles className="h-4 w-4" />
+            <span className="mt-0.5">Hub</span>
+          </Link>
           <Link
             to="/dashboard"
-            className={`flex flex-col items-center gap-0.5 text-[9px] font-bold ${
-              isActive('/dashboard') ? 'text-themePrimary' : 'text-themeTextSecondary'
+            className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl text-[9px] font-bold transition-all duration-200 min-w-[40px] ${
+              isActive('/dashboard')
+                ? 'text-themePrimary bg-themePrimary/15 shadow-sm'
+                : 'text-themeTextSecondary hover:text-themeText'
             }`}
+            title="Remo AI Resume Builder"
           >
             <LayoutDashboard className="h-4 w-4" />
-            <span>Remo</span>
+            <span className="mt-0.5">Remo</span>
           </Link>
           <Link
             to="/folio"
-            className={`flex flex-col items-center gap-0.5 text-[9px] font-bold ${
-              isActive('/folio') ? 'text-themePrimary' : 'text-themeTextSecondary'
+            className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl text-[9px] font-bold transition-all duration-200 min-w-[40px] ${
+              isActive('/folio')
+                ? 'text-themePrimary bg-themePrimary/15 shadow-sm'
+                : 'text-themeTextSecondary hover:text-themeText'
             }`}
+            title="Folio AI Portfolio Generator"
           >
             <Globe className="h-4 w-4" />
-            <span>Folio</span>
+            <span className="mt-0.5">Folio</span>
           </Link>
           <Link
             to="/talo"
-            className={`flex flex-col items-center gap-0.5 text-[9px] font-bold ${
-              isActive('/talo') ? 'text-themePrimary' : 'text-themeTextSecondary'
+            className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl text-[9px] font-bold transition-all duration-200 min-w-[40px] ${
+              isActive('/talo')
+                ? 'text-themePrimary bg-themePrimary/15 shadow-sm'
+                : 'text-themeTextSecondary hover:text-themeText'
             }`}
+            title="Talo AI ATS Matcher"
           >
             <Briefcase className="h-4 w-4" />
-            <span>Talo</span>
+            <span className="mt-0.5">Talo</span>
           </Link>
           <Link
             to="/covo"
-            className={`flex flex-col items-center gap-0.5 text-[9px] font-bold ${
-              isActive('/covo') ? 'text-themePrimary' : 'text-themeTextSecondary'
+            className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl text-[9px] font-bold transition-all duration-200 min-w-[40px] ${
+              isActive('/covo')
+                ? 'text-themePrimary bg-themePrimary/15 shadow-sm'
+                : 'text-themeTextSecondary hover:text-themeText'
             }`}
+            title="Covo AI Outreach Studio"
           >
             <FileText className="h-4 w-4" />
-            <span>Covo</span>
+            <span className="mt-0.5">Covo</span>
           </Link>
           <Link
             to="/liko"
-            className={`flex flex-col items-center gap-0.5 text-[9px] font-bold ${
-              isActive('/liko') ? 'text-themePrimary' : 'text-themeTextSecondary'
+            className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl text-[9px] font-bold transition-all duration-200 min-w-[40px] ${
+              isActive('/liko')
+                ? 'text-themePrimary bg-themePrimary/15 shadow-sm'
+                : 'text-themeTextSecondary hover:text-themeText'
             }`}
+            title="Liko AI LinkedIn Architect"
           >
             <Linkedin className="h-4 w-4" />
-            <span>Liko</span>
+            <span className="mt-0.5">Liko</span>
           </Link>
           <Link
             to="/mali"
-            className={`flex flex-col items-center gap-0.5 text-[9px] font-bold ${
-              isActive('/mali') ? 'text-themePrimary' : 'text-themeTextSecondary'
+            className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl text-[9px] font-bold transition-all duration-200 min-w-[40px] ${
+              isActive('/mali')
+                ? 'text-themePrimary bg-themePrimary/15 shadow-sm'
+                : 'text-themeTextSecondary hover:text-themeText'
             }`}
+            title="Mali AI Email Campaigns"
           >
             <Mail className="h-4 w-4" />
-            <span>Mali</span>
+            <span className="mt-0.5">Mali</span>
           </Link>
         </div>
       )}
-    </nav>
+    </>
   );
 }

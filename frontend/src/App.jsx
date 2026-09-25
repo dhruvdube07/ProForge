@@ -61,6 +61,7 @@ function GuestRoute({ children }) {
 
 function MainAppLayout() {
   const location = useLocation();
+  const { user } = useAuth();
   // Hide navbar on public portfolio pages reactively
   const hideNavbar = location.pathname.startsWith('/p/');
 
@@ -68,7 +69,7 @@ function MainAppLayout() {
     <div className="flex flex-col min-h-screen relative">
       <AmbientBackground />
       {!hideNavbar && <Navbar />}
-      <main className="flex-grow relative z-10">
+      <main className={`flex-grow relative z-10 ${user && !hideNavbar ? 'safe-dock-pb lg:pb-0' : ''}`}>
         <Routes>
           {/* Guest Only Routes */}
           <Route
