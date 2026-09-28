@@ -5,7 +5,7 @@ pt = 1
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT, TA_RIGHT
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image as RLImage
 )
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
@@ -13,13 +13,18 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 PDF_PATH = r"c:\Users\Dhruv's Dell\Desktop\Remo\ProForge_AI_Internship_Report.pdf"
 
-# Register standard Windows TrueType fonts for clean vector typography
+ARCH_IMG = r"C:\Users\Dhruv's Dell\.gemini\antigravity-ide\brain\cabe7b5e-bb1c-4629-b602-adb024fdbee5\proforge_system_architecture_1790598661062.jpg"
+SUITES_IMG = r"C:\Users\Dhruv's Dell\.gemini\antigravity-ide\brain\cabe7b5e-bb1c-4629-b602-adb024fdbee5\proforge_subsuites_diagram_1790598700272.jpg"
+REMO_IMG = r"C:\Users\Dhruv's Dell\.gemini\antigravity-ide\brain\cabe7b5e-bb1c-4629-b602-adb024fdbee5\remo_ai_resume_studio_preview_1790598843692.jpg"
+FOLIO_IMG = r"C:\Users\Dhruv's Dell\.gemini\antigravity-ide\brain\cabe7b5e-bb1c-4629-b602-adb024fdbee5\folio_ai_portfolio_templates_mockup_1790598876670.jpg"
+MALI_IMG = r"C:\Users\Dhruv's Dell\.gemini\antigravity-ide\brain\cabe7b5e-bb1c-4629-b602-adb024fdbee5\mali_covo_ai_campaign_mockup_1790598914427.jpg"
+
+# Register standard Windows TrueType fonts
 pdfmetrics.registerFont(TTFont('ProFont', r'C:\Windows\Fonts\times.ttf'))
 pdfmetrics.registerFont(TTFont('ProFont-Bold', r'C:\Windows\Fonts\timesbd.ttf'))
 pdfmetrics.registerFont(TTFont('ProFont-Italic', r'C:\Windows\Fonts\timesi.ttf'))
 pdfmetrics.registerFont(TTFont('ProFont-BoldItalic', r'C:\Windows\Fonts\timesbi.ttf'))
 
-# Modern Sans-Serif for titles and headers
 pdfmetrics.registerFont(TTFont('HeadFont', r'C:\Windows\Fonts\arial.ttf'))
 pdfmetrics.registerFont(TTFont('HeadFont-Bold', r'C:\Windows\Fonts\arialbd.ttf'))
 
@@ -41,8 +46,8 @@ class NumberedCanvas(canvas.Canvas):
 
     def draw_decorations(self):
         self.saveState()
-        border_x = 28 * pt
-        border_y = 24 * pt
+        border_x = 24 * pt
+        border_y = 20 * pt
         w, h = A4
 
         # Outer Frame
@@ -50,7 +55,7 @@ class NumberedCanvas(canvas.Canvas):
         self.setLineWidth(1.2 * pt)
         self.rect(border_x, border_y, w - 2 * border_x, h - 2 * border_y)
 
-        # Running Footer Divider & Metadata (Just page number as requested)
+        # Running Footer Divider & Metadata
         self.setStrokeColor(colors.HexColor("#94a3b8"))
         self.setLineWidth(0.6 * pt)
         self.line(border_x + 8 * pt, border_y + 18 * pt, w - border_x - 8 * pt, border_y + 18 * pt)
@@ -59,7 +64,6 @@ class NumberedCanvas(canvas.Canvas):
         self.setFillColor(colors.HexColor("#000000"))
         footer_text = "MSBTE DIPLOMA IN COMPUTER ENGINEERING | VIVA INSTITUTE OF TECHNOLOGY, VIRAR"
         self.drawString(border_x + 10 * pt, border_y + 6.5 * pt, footer_text)
-        # ONLY PAGE NUMBER - NO 'Page X of Y'
         self.drawRightString(w - border_x - 10 * pt, border_y + 6.5 * pt, f"{self._pageNumber}")
 
         self.restoreState()
@@ -68,14 +72,14 @@ def generate_pdf():
     doc = SimpleDocTemplate(
         PDF_PATH,
         pagesize=A4,
-        leftMargin=36 * pt,
-        rightMargin=36 * pt,
-        topMargin=32 * pt,
-        bottomMargin=34 * pt
+        leftMargin=32 * pt,
+        rightMargin=32 * pt,
+        topMargin=28 * pt,
+        bottomMargin=30 * pt
     )
 
     # Clean typography styles
-    title_cover = ParagraphStyle('CoverTitle', fontName='HeadFont-Bold', fontSize=24, leading=28, alignment=TA_CENTER, textColor=colors.HexColor("#000000"), spaceAfter=4)
+    title_cover = ParagraphStyle('CoverTitle', fontName='HeadFont-Bold', fontSize=25, leading=29, alignment=TA_CENTER, textColor=colors.HexColor("#000000"), spaceAfter=5)
     subtitle_cover = ParagraphStyle('CoverSub', fontName='ProFont-Italic', fontSize=12, leading=15, alignment=TA_CENTER, textColor=colors.HexColor("#1f2937"), spaceAfter=14)
     center_bold_13 = ParagraphStyle('CBold13', fontName='HeadFont-Bold', fontSize=13, leading=16, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
     center_bold_12 = ParagraphStyle('CBold12', fontName='HeadFont-Bold', fontSize=12, leading=15, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
@@ -83,77 +87,78 @@ def generate_pdf():
     center_reg_12 = ParagraphStyle('CReg12', fontName='ProFont', fontSize=12, leading=15, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
     center_reg_11 = ParagraphStyle('CReg11', fontName='ProFont', fontSize=11, leading=14, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
     
-    chapter_h1 = ParagraphStyle('ChapH1', fontName='HeadFont-Bold', fontSize=13, leading=15.5, alignment=TA_CENTER, spaceBefore=0, spaceAfter=2.5, textColor=colors.HexColor("#000000"))
+    chapter_h1 = ParagraphStyle('ChapH1', fontName='HeadFont-Bold', fontSize=13.5, leading=16, alignment=TA_CENTER, spaceBefore=0, spaceAfter=2.5, textColor=colors.HexColor("#000000"))
     chapter_h2 = ParagraphStyle('ChapH2', fontName='HeadFont-Bold', fontSize=10.5, leading=13.5, alignment=TA_CENTER, spaceAfter=6, textColor=colors.HexColor("#000000"))
     
-    # Body styles with rich line-heights and dense coverage (90%+ page coverage)
-    body = ParagraphStyle('ProBody', fontName='ProFont', fontSize=10, leading=14, alignment=TA_JUSTIFY, spaceAfter=5.5, textColor=colors.HexColor("#000000"))
-    bullet = ParagraphStyle('ProBullet', fontName='ProFont', fontSize=9.5, leading=13.5, alignment=TA_JUSTIFY, leftIndent=14, firstLineIndent=-8, spaceAfter=3.5, textColor=colors.HexColor("#000000"))
+    # Dense body styles
+    body = ParagraphStyle('ProBody', fontName='ProFont', fontSize=10, leading=14.2, alignment=TA_JUSTIFY, spaceAfter=6, textColor=colors.HexColor("#000000"))
+    bullet = ParagraphStyle('ProBullet', fontName='ProFont', fontSize=9.5, leading=13.8, alignment=TA_JUSTIFY, leftIndent=14, firstLineIndent=-8, spaceAfter=4, textColor=colors.HexColor("#000000"))
     subhead = ParagraphStyle('ProSubhead', fontName='HeadFont-Bold', fontSize=10.5, leading=13.5, alignment=TA_LEFT, spaceBefore=5, spaceAfter=2, textColor=colors.HexColor("#000000"))
-    
+    fig_cap = ParagraphStyle('FigCap', fontName='HeadFont-Bold', fontSize=8.5, leading=11, alignment=TA_CENTER, textColor=colors.HexColor("#334155"))
+
     table_heading_style = ParagraphStyle('TblHdr', fontName='HeadFont-Bold', fontSize=8.5, leading=11, alignment=TA_CENTER, textColor=colors.black)
-    table_cell_style = ParagraphStyle('TblCell', fontName='ProFont', fontSize=8.5, leading=11, alignment=TA_LEFT, textColor=colors.black)
-    table_center_style = ParagraphStyle('TblCenter', fontName='ProFont', fontSize=8.5, leading=11, alignment=TA_CENTER, textColor=colors.black)
+    table_cell_style = ParagraphStyle('TblCell', fontName='ProFont', fontSize=8.5, leading=11.5, alignment=TA_LEFT, textColor=colors.black)
+    table_center_style = ParagraphStyle('TblCenter', fontName='ProFont', fontSize=8.5, leading=11.5, alignment=TA_CENTER, textColor=colors.black)
 
     story = []
 
     # ==========================================
     # PAGE 1: COVER PAGE
     # ==========================================
-    story.append(Spacer(1, 10 * pt))
+    story.append(Spacer(1, 15 * pt))
     story.append(Paragraph("A Technical Internship Report Submitted in Partial Fulfillment of the Requirements for the<br/><b>DIPLOMA IN COMPUTER ENGINEERING</b><br/>(Maharashtra State Board of Technical Education – MSBTE)", center_reg_11))
-    story.append(Spacer(1, 20 * pt))
+    story.append(Spacer(1, 24 * pt))
     story.append(Paragraph("PROFORGE", title_cover))
     story.append(Paragraph("AI-Driven Career Intelligence, Automated Resume Studio &amp; Multi-Tenant Portfolio Suite", subtitle_cover))
-    story.append(Spacer(1, 10 * pt))
+    story.append(Spacer(1, 12 * pt))
     story.append(Paragraph("Submitted By", center_reg_12))
-    story.append(Spacer(1, 3 * pt))
-    story.append(Paragraph("Dhruv R. Dubey<br/>Enrollment No: 25112400240 | Class: TYCO - B", center_bold_13))
-    story.append(Spacer(1, 18 * pt))
-    story.append(Paragraph("Under the Direct Supervision &amp; Guidance of", center_reg_12))
     story.append(Spacer(1, 4 * pt))
+    story.append(Paragraph("Dhruv R. Dubey<br/>Enrollment No: 25112400240 | Class: TYCO - B", center_bold_13))
+    story.append(Spacer(1, 22 * pt))
+    story.append(Paragraph("Under the Direct Supervision &amp; Guidance of", center_reg_12))
+    story.append(Spacer(1, 6 * pt))
     
     mentor_box_data = [
         [Paragraph("<b>Industry Mentor</b><br/>Prof. Harsh Tambade<br/><font size=8.5 color='#4b5563'>Founder &amp; CEO, Elite Forums</font>", center_bold_11),
          Paragraph("<b>College Mentor / Guide</b><br/>Ms. Mansi Patil<br/><font size=8.5 color='#4b5563'>Lecturer, Dept. of Computer Engg.</font>", center_bold_11)]
     ]
-    mentor_tbl = Table(mentor_box_data, colWidths=[245 * pt, 245 * pt])
+    mentor_tbl = Table(mentor_box_data, colWidths=[250 * pt, 250 * pt])
     mentor_tbl.setStyle(TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('BOX', (0,0), (-1,-1), 1 * pt, colors.HexColor("#0f2b5c")),
-        ('INNERGRID', (0,0), (-1,-1), 0.5 * pt, colors.HexColor("#cbd5e1")),
+        ('BOX', (0,0), (-1,-1), 1.2 * pt, colors.HexColor("#0f2b5c")),
+        ('INNERGRID', (0,0), (-1,-1), 0.6 * pt, colors.HexColor("#cbd5e1")),
         ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#f8fafc")),
-        ('TOPPADDING', (0,0), (-1,-1), 6 * pt),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 6 * pt),
+        ('TOPPADDING', (0,0), (-1,-1), 7 * pt),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 7 * pt),
     ]))
     story.append(mentor_tbl)
-    story.append(Spacer(1, 18 * pt))
+    story.append(Spacer(1, 22 * pt))
 
     viva_badge_data = [
         [Paragraph("<font size=8.5 color='#b91c1c'><b>VISHNU WAMAN THAKUR CHARITABLE TRUST'S</b></font>", center_bold_11)],
-        [Paragraph("<font size=21 color='#b91c1c'><b>VIVA</b></font>", center_bold_13)],
+        [Paragraph("<font size=22 color='#b91c1c'><b>VIVA</b></font>", center_bold_13)],
         [Paragraph("<font size=8.5 color='#0f2b5c'><b>INSTITUTE OF TECHNOLOGY</b></font>", center_bold_11)]
     ]
-    viva_badge_tbl = Table(viva_badge_data, colWidths=[230 * pt])
+    viva_badge_tbl = Table(viva_badge_data, colWidths=[240 * pt])
     viva_badge_tbl.setStyle(TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('BOX', (0,0), (-1,-1), 2 * pt, colors.HexColor("#b91c1c")),
         ('INNERGRID', (0,0), (-1,-1), 0.5 * pt, colors.HexColor("#e5e7eb")),
         ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#ffffff")),
-        ('TOPPADDING', (0,0), (-1,-1), 4 * pt),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 4 * pt),
+        ('TOPPADDING', (0,0), (-1,-1), 5 * pt),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 5 * pt),
     ]))
     story.append(viva_badge_tbl)
-    story.append(Spacer(1, 16 * pt))
+    story.append(Spacer(1, 20 * pt))
 
     story.append(Paragraph("DEPARTMENT OF COMPUTER ENGINEERING", center_bold_12))
-    story.append(Spacer(1, 2 * pt))
-    story.append(Paragraph("VIVA INSTITUTE OF TECHNOLOGY", center_bold_13))
-    story.append(Spacer(1, 2 * pt))
-    story.append(Paragraph("Shirgaon, Virar (East), Dist. Palghar, Maharashtra – 401305", center_reg_11))
     story.append(Spacer(1, 3 * pt))
+    story.append(Paragraph("VIVA INSTITUTE OF TECHNOLOGY", center_bold_13))
+    story.append(Spacer(1, 3 * pt))
+    story.append(Paragraph("Shirgaon, Virar (East), Dist. Palghar, Maharashtra – 401305", center_reg_11))
+    story.append(Spacer(1, 4 * pt))
     story.append(Paragraph("Academic Year: 2026-2027", center_bold_12))
 
     # ==========================================
@@ -161,7 +166,7 @@ def generate_pdf():
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("<u>TABLE OF CONTENTS / INDEX</u>", chapter_h1))
-    story.append(Spacer(1, 5 * pt))
+    story.append(Spacer(1, 6 * pt))
 
     toc_data = [
         [Paragraph("<b>Sr. No.</b>", center_bold_11), Paragraph("<b>Chapter / Topic Title</b>", center_bold_11), Paragraph("<b>Page No.</b>", center_bold_11)],
@@ -180,27 +185,27 @@ def generate_pdf():
         [Paragraph("13", center_reg_11), Paragraph("Chapter 5 (Contd.): PDFKit A4 Coordinate Math, ATS Validation &amp; Cross-Browser Tests", body), Paragraph("15", center_reg_11)],
         [Paragraph("14", center_reg_11), Paragraph("Chapter 6: Digital Safety Protocols, Cybersecurity &amp; Disaster Recovery", body), Paragraph("16", center_reg_11)],
         [Paragraph("15", center_reg_11), Paragraph("Chapter 6 (Contd.): Ethical AI Principles, Factual Integrity &amp; Anti-Spam Standards", body), Paragraph("17", center_reg_11)],
-        [Paragraph("16", center_reg_11), Paragraph("Chapter 7: Practical Experiences in Production — The 6 ProForge AI Sub-Suites", body), Paragraph("18", center_reg_11)],
-        [Paragraph("17", center_reg_11), Paragraph("Chapter 7 (Contd.): System Assembly, Middleware Routing &amp; Performance Optimization", body), Paragraph("19", center_reg_11)],
+        [Paragraph("16", center_reg_11), Paragraph("Chapter 7: Practical Experiences in Production — System Architecture (Fig 7.1)", body), Paragraph("18", center_reg_11)],
+        [Paragraph("17", center_reg_11), Paragraph("Chapter 7 (Contd.): Ecosystem Overview — The 6 ProForge Sub-Suites (Fig 7.2)", body), Paragraph("19", center_reg_11)],
         [Paragraph("18", center_reg_11), Paragraph("Chapter 8: 12-Week Task Breakdown — Weeks 1 to 4: Foundations &amp; Backend APIs", body), Paragraph("20", center_reg_11)],
-        [Paragraph("19", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown — Weeks 5 to 8: Remo AI &amp; Folio AI", body), Paragraph("21", center_reg_11)],
-        [Paragraph("20", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown — Weeks 9 to 11: Covo, Liko &amp; Mali AI", body), Paragraph("22", center_reg_11)],
-        [Paragraph("21", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown — Week 12: Security Hardening &amp; Final Demo", body), Paragraph("23", center_reg_11)],
+        [Paragraph("19", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown — Weeks 5 to 6: Remo AI Studio (Fig 8.1)", body), Paragraph("21", center_reg_11)],
+        [Paragraph("20", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown — Weeks 7 to 8: Folio AI Templates (Fig 8.2)", body), Paragraph("22", center_reg_11)],
+        [Paragraph("21", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown — Weeks 9 to 12: Mali &amp; Covo AI (Fig 8.3)", body), Paragraph("23", center_reg_11)],
         [Paragraph("22", center_reg_11), Paragraph("Chapter 9: Technical Challenges Encountered &amp; Engineering Solutions", body), Paragraph("24", center_reg_11)],
         [Paragraph("23", center_reg_11), Paragraph("Chapter 9 (Contd.): Background Queueing, Sprint Reflections &amp; Student Learnings", body), Paragraph("25", center_reg_11)],
         [Paragraph("24", center_reg_11), Paragraph("Chapter 10: Conclusion, Industrial Experience &amp; Future Scope", body), Paragraph("26", center_reg_11)],
         [Paragraph("25", center_reg_11), Paragraph("Chapter 11: References, Technical Documentation &amp; Corporate Details", body), Paragraph("27", center_reg_11)]
     ]
 
-    toc_tbl = Table(toc_data, colWidths=[42 * pt, 428 * pt, 50 * pt])
+    toc_tbl = Table(toc_data, colWidths=[42 * pt, 432 * pt, 52 * pt])
     toc_tbl.setStyle(TableStyle([
         ('BOX', (0,0), (-1,-1), 1.2 * pt, colors.HexColor("#000000")),
         ('INNERGRID', (0,0), (-1,-1), 0.6 * pt, colors.HexColor("#000000")),
         ('ALIGN', (0,0), (0,-1), 'CENTER'),
         ('ALIGN', (2,0), (2,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('TOPPADDING', (0,0), (-1,-1), 3.2 * pt),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3.2 * pt),
+        ('TOPPADDING', (0,0), (-1,-1), 3.4 * pt),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3.4 * pt),
         ('LEFTPADDING', (1,0), (1,-1), 6 * pt),
     ]))
     story.append(toc_tbl)
@@ -702,46 +707,52 @@ def generate_pdf():
     story.append(Paragraph("5. <b>Physical Workspace Safety:</b> Interns followed ergonomic posture guidelines and 20-minute eye rest breaks during on-site coding sessions in the Vasai center.", body))
 
     # ==========================================
-    # PAGE 18: CHAPTER 7 - PRACTICAL EXPERIENCES (PART 1)
+    # PAGE 18: CHAPTER 7 - PRACTICAL EXPERIENCES (PART 1 - WITH ARCHITECTURE IMAGE)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 7", chapter_h1))
     story.append(Paragraph("PRACTICAL EXPERIENCES IN PRODUCTION — THE 6 PROFORGE AI SUB-SUITES", chapter_h2))
     
-    story.append(Paragraph("Full-Cycle Software Engineering Exposure", subhead))
+    story.append(Paragraph("Full-Cycle Software Engineering &amp; Platform Architecture", subhead))
     story.append(Paragraph(
-        "During my 12-week internship, I gained hands-on practical experience across the complete software production cycle, architecting and building the six core sub-suites of ProForge:",
+        "During my 12-week internship, I gained hands-on practical experience across the complete software production lifecycle. The architectural diagram below illustrates the decoupled client-server data flow, showing how user actions in React 18 trigger backend Express routes, Groq LPU AI inference, and Supabase cloud storage:",
         body
     ))
-    story.append(Paragraph("• <b>1. Remo AI (Resume Studio):</b> Built an intelligent resume editor with sub-second AI bullet point polishing, real-time live preview, 105+ design combinations, and server-side vector PDFKit rendering.", bullet))
-    story.append(Paragraph("• <b>2. Folio AI (Portfolio Generator):</b> Engineered a dynamic portfolio creator supporting four customizable themes (Bento Grid, Cyber Terminal, Modern Executive, Clean Glassmorphism) with client-side ZIP packaging via JSZip.", bullet))
-    story.append(Paragraph("• <b>3. Talo AI (ATS Alignment Auditor):</b> Developed a semantic comparison engine that parses job descriptions against candidate resumes to compute percentage match scores and detect missing competencies.", bullet))
-    story.append(Paragraph("• <b>4. Covo AI (Outreach Studio):</b> Built a cold outreach generator creating tailored recruiter emails, LinkedIn connection notes, and customized PDF cover letters.", bullet))
-    story.append(Paragraph("• <b>5. Liko AI (Personal Branding Architect):</b> Created an AI tool converting project milestones into engaging LinkedIn posts with customizable tone hooks and hashtag suggestions.", bullet))
-    story.append(Paragraph("• <b>6. Mali AI (Campaign &amp; Scheduling Studio):</b> Engineered a visual HTML email composer with 12 Google fonts, 7 theme palettes, and an automated background queue scheduler (<code>emailScheduler.js</code>).", bullet))
+
+    if os.path.exists(ARCH_IMG):
+        story.append(RLImage(ARCH_IMG, width=515 * pt, height=260 * pt))
+        story.append(Spacer(1, 4 * pt))
+        story.append(Paragraph("<b>Figure 7.1:</b> ProForge AI High-Throughput Cloud &amp; Generative AI Architecture Diagram", fig_cap))
+        story.append(Spacer(1, 5 * pt))
+
+    story.append(Paragraph(
+        "<b>Architectural Workflow:</b> (1) The client browser issues asynchronous REST requests via Axios/Fetch, (2) The Express backend validates JWT tokens and sanitizes parameters, (3) Groq LPU executes inference on Qwen 2.5 and Llama 3 models returning structured JSON in under 800ms, and (4) Supabase PostgreSQL persists dynamic profiles securely.",
+        body
+    ))
 
     # ==========================================
-    # PAGE 19: CHAPTER 7 - PRACTICAL EXPERIENCES (PART 2)
+    # PAGE 19: CHAPTER 7 - PRACTICAL EXPERIENCES (PART 2 - WITH SUB-SUITES IMAGE)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 7 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("SYSTEM ASSEMBLY, MIDDLEWARE ROUTING &amp; PERFORMANCE OPTIMIZATION", chapter_h2))
+    story.append(Paragraph("SYSTEM ASSEMBLY, MIDDLEWARE ROUTING &amp; SUB-SUITES ECOSYSTEM", chapter_h2))
     
-    story.append(Paragraph("Full-Stack System Assembly &amp; API Integration", subhead))
+    story.append(Paragraph("The Six Core Sub-Suites of ProForge", subhead))
     story.append(Paragraph(
-        "The system assembly phase involved connecting decoupled frontend React views with backend Express services and cloud databases into a cohesive, high-performance architecture:",
+        "The infographic below summarizes the six specialized sub-suites engineered during the training, highlighting their specific functionalities, AI models, and document export capabilities:",
         body
     ))
-    story.append(Paragraph("• <b>Modular Express Routing:</b> Organized backend logic into dedicated route controllers: <code>analyzeRoutes.js</code>, <code>profileRoutes.js</code>, <code>generateRoutes.js</code>, <code>authRoutes.js</code>, and <code>maliRoutes.js</code>.", bullet))
-    story.append(Paragraph("• <b>Supabase Cloud Database Connection:</b> Connected backend services to Supabase PostgreSQL using connection pooling and JSONB data types to store dynamic profile objects.", bullet))
-    story.append(Paragraph("• <b>Transactional Email Integration:</b> Configured Nodemailer with Zoho SMTP credentials to handle transactional 6-digit OTP delivery with high deliverability.", bullet))
-    story.append(Paragraph("• <b>Zero-Dependency Client Bundling:</b> Integrated JSZip and FileSaver.js to package standalone portfolio websites directly within the client browser without consuming server bandwidth.", bullet))
-    
-    story.append(Paragraph("Routine Maintenance &amp; Performance Tuning", subhead))
-    story.append(Paragraph("• <b>NPM Package Auditing:</b> Audited dependencies using <code>npm audit</code>, upgrading outdated libraries and resolving security vulnerabilities.", bullet))
-    story.append(Paragraph("• <b>Background Queue Maintenance:</b> Optimized <code>emailScheduler.js</code> to run periodic database polling intervals without creating memory leaks.", bullet))
-    story.append(Paragraph("• <b>PDF Memory Buffer Streaming:</b> Configured PDFKit to stream binary chunks directly into Express HTTP response streams, reducing RAM usage during peak exports.", bullet))
-    story.append(Paragraph("• <b>Frontend Bundle Tree-Shaking:</b> Configured Vite production build settings to eliminate unused code, reducing initial page load times to under 1.2 seconds.", bullet))
+
+    if os.path.exists(SUITES_IMG):
+        story.append(RLImage(SUITES_IMG, width=515 * pt, height=260 * pt))
+        story.append(Spacer(1, 4 * pt))
+        story.append(Paragraph("<b>Figure 7.2:</b> Overview of ProForge AI 6 Sub-Suites Ecosystem and Feature Matrix", fig_cap))
+        story.append(Spacer(1, 5 * pt))
+
+    story.append(Paragraph(
+        "<b>Ecosystem Highlights:</b> Remo AI delivers 105+ resume layout variations; Folio AI generates standalone ZIP portfolio packages with zero external runtime dependencies; Talo AI computes match scores with keyword gap analysis; Covo AI drafts personalized PDF cover letters; Liko AI creates optimized LinkedIn posts; and Mali AI schedules automated email campaigns.",
+        body
+    ))
 
     # ==========================================
     # PAGE 20: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 1-4)
@@ -772,74 +783,76 @@ def generate_pdf():
     ))
 
     # ==========================================
-    # PAGE 21: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 5-8)
+    # PAGE 21: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 5-6 WITH REMO AI IMAGE)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 8 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("12-WEEK TASK BREAKDOWN — WEEKS 5 TO 8: REMO AI &amp; FOLIO AI", chapter_h2))
+    story.append(Paragraph("12-WEEK TASK BREAKDOWN — WEEKS 5 TO 6: REMO AI STUDIO", chapter_h2))
     
     story.append(Paragraph("Weeks 5–6: Remo AI Resume Studio &amp; PDFKit Vector Engine", subhead))
     story.append(Paragraph(
-        "Weeks five and six marked the development of <b>Remo AI</b>. We engineered the interactive resume editor and connected it to Groq SDK (Qwen 2.5 &amp; Llama 3 models) for real-time bullet point refinement. On the backend, we built a coordinate-based rendering engine in <b>PDFKit</b> that maps content onto strict A4 page boundaries with dynamic height calculation.",
+        "Weeks five and six marked the development of <b>Remo AI</b>. We engineered the interactive resume editor, linking form state to real-time live preview rendering and connected it to Groq SDK (Qwen 2.5 &amp; Llama 3 models) for instant bullet point refinement.",
         body
     ))
-    story.append(Paragraph("Week 7: Folio AI Portfolio Generator &amp; JSZip Packaging", subhead))
+
+    if os.path.exists(REMO_IMG):
+        story.append(RLImage(REMO_IMG, width=515 * pt, height=255 * pt))
+        story.append(Spacer(1, 4 * pt))
+        story.append(Paragraph("<b>Figure 8.1:</b> Remo AI Resume Studio — Interactive Split Screen Editor &amp; Vector Preview", fig_cap))
+        story.append(Spacer(1, 5 * pt))
+
     story.append(Paragraph(
-        "Week seven focused on developing <b>Folio AI</b>. We designed four customizable portfolio themes (Bento Grid, Cyber Terminal, Modern Executive, Clean Glassmorphism) and integrated <b>JSZip</b> for zero-dependency client ZIP downloads containing standalone HTML, CSS, and JS.",
-        body
-    ))
-    story.append(Paragraph("Week 8: Talo AI ATS Alignment Engine &amp; Keyword Auditing", subhead))
-    story.append(Paragraph(
-        "In week eight, we built <b>Talo AI</b>, an ATS comparison engine that evaluates candidate resumes against target job descriptions to compute percentage match scores and highlight missing technical keywords.",
+        "On the backend, we built a coordinate-based rendering engine in <b>PDFKit</b> that maps content onto strict A4 page boundaries with dynamic height calculation, ensuring 100% vector sharpness without layout shift.",
         body
     ))
 
     # ==========================================
-    # PAGE 22: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 9-11)
+    # PAGE 22: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 7-8 WITH FOLIO AI IMAGE)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 8 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("12-WEEK TASK BREAKDOWN — WEEKS 9 TO 11: COVO, LIKO &amp; MALI AI", chapter_h2))
+    story.append(Paragraph("12-WEEK TASK BREAKDOWN — WEEKS 7 TO 8: FOLIO AI &amp; TALO AI", chapter_h2))
     
-    story.append(Paragraph("Week 9: Covo AI Outreach Studio &amp; PDF Cover Letter Generator", subhead))
+    story.append(Paragraph("Week 7: Folio AI Web Portfolio Publisher &amp; JSZip Packaging", subhead))
     story.append(Paragraph(
-        "During week nine, we developed <b>Covo AI</b>, creating personalized recruiter cold emails, LinkedIn connection messages, and downloadable PDF cover letters formatted with professional headers and sign-offs.",
+        "Week seven focused on developing <b>Folio AI</b>. We designed four customizable portfolio themes (Bento Grid, Cyber Terminal, Modern Executive, Clean Glassmorphism) and integrated <b>JSZip</b> for zero-dependency client ZIP downloads.",
         body
     ))
-    story.append(Paragraph("Week 10: Liko AI LinkedIn Personal Branding Architect", subhead))
+
+    if os.path.exists(FOLIO_IMG):
+        story.append(RLImage(FOLIO_IMG, width=515 * pt, height=255 * pt))
+        story.append(Spacer(1, 4 * pt))
+        story.append(Paragraph("<b>Figure 8.2:</b> Folio AI Portfolio Generator — Multi-Theme Visual Showcase &amp; Template Picker", fig_cap))
+        story.append(Spacer(1, 5 * pt))
+
     story.append(Paragraph(
-        "Week ten focused on <b>Liko AI</b>, creating a personal branding tool that transforms career achievements into engaging LinkedIn posts with customizable hooks, hashtags, and optimized profile bios.",
-        body
-    ))
-    story.append(Paragraph("Week 11: Mali AI Campaign Studio &amp; Background Queue Scheduler", subhead))
-    story.append(Paragraph(
-        "In week eleven, we developed <b>Mali AI</b>, building a visual HTML email composer with 12 Google fonts, 7 theme palettes, dual time pickers, and an automated background queue worker (<code>emailScheduler.js</code>).",
+        "<b>Week 8 (Talo AI):</b> In week eight, we built <b>Talo AI</b>, an ATS comparison engine evaluating candidate resumes against target job descriptions to compute percentage match scores and detect missing keywords.",
         body
     ))
 
     # ==========================================
-    # PAGE 23: CHAPTER 8 - 12-WEEK ROADMAP (WEEK 12)
+    # PAGE 23: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 9-12 WITH MALI/COVO IMAGE)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 8 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("12-WEEK TASK BREAKDOWN — WEEK 12: SECURITY &amp; FINAL DEMO", chapter_h2))
+    story.append(Paragraph("12-WEEK TASK BREAKDOWN — WEEKS 9 TO 12: MALI, COVO, LIKO &amp; DEMO", chapter_h2))
     
-    story.append(Paragraph("Week 12: Cybersecurity Hardening, Multi-Theme System &amp; Final Evaluation", subhead))
+    story.append(Paragraph("Weeks 9–11: Covo AI, Liko AI &amp; Mali AI Campaign Studio", subhead))
     story.append(Paragraph(
-        "The final week focused on cybersecurity auditing, multi-theme visual polish, and technical project defense. We integrated an active security monitoring system (<code>loginHistory.js</code>) logging IP addresses and User-Agent signatures to issue multi-device alerts.",
+        "During weeks 9 to 11, we engineered <b>Covo AI</b> (cover letters &amp; cold outreach), <b>Liko AI</b> (LinkedIn branding), and <b>Mali AI</b> (automated campaign scheduler with rich HTML email templates):",
         body
     ))
+
+    if os.path.exists(MALI_IMG):
+        story.append(RLImage(MALI_IMG, width=515 * pt, height=255 * pt))
+        story.append(Spacer(1, 4 * pt))
+        story.append(Paragraph("<b>Figure 8.3:</b> Mali AI &amp; Covo AI — Visual HTML Email Editor, Typography Picker &amp; Queue Status", fig_cap))
+        story.append(Spacer(1, 5 * pt))
+
     story.append(Paragraph(
-        "We also finalized the 10-theme visual design system with smooth cubic-bezier transitions, performed end-to-end regression testing, and successfully defended the ProForge AI platform during the final evaluation at Elite Forums.",
+        "<b>Week 12:</b> Finalized the 10-theme visual design system with smooth cubic-bezier transitions, performed end-to-end regression testing, and successfully defended the ProForge AI platform during the final evaluation at Elite Forums.",
         body
     ))
-    story.append(Paragraph("Summary of Core Technical Deliverables Built During Training", subhead))
-    story.append(Paragraph("• <b>Remo AI:</b> Resume Studio with 105+ layout options and strict A4 PDF compilation.", bullet))
-    story.append(Paragraph("• <b>Folio AI:</b> 4 responsive portfolio templates with zero-dependency ZIP export.", bullet))
-    story.append(Paragraph("• <b>Talo AI:</b> ATS alignment engine with keyword gap analysis.", bullet))
-    story.append(Paragraph("• <b>Covo AI:</b> Cold outreach studio &amp; dynamic cover letter generator.", bullet))
-    story.append(Paragraph("• <b>Liko AI:</b> LinkedIn post generator &amp; bio optimizer.", bullet))
-    story.append(Paragraph("• <b>Mali AI:</b> Email campaign composer with background scheduling queue.", bullet))
 
     # ==========================================
     # PAGE 24: CHAPTER 9 - CHALLENGES & SOLUTIONS (PART 1)
@@ -956,7 +969,7 @@ def generate_pdf():
     story.append(elite_link_tbl)
 
     doc.build(story, canvasmaker=NumberedCanvas)
-    print("27-Page ProForge AI Internship Report PDF successfully regenerated.")
+    print("27-Page ProForge AI Internship Report PDF with Rich Images & Dense Text successfully regenerated.")
 
 if __name__ == "__main__":
     generate_pdf()
