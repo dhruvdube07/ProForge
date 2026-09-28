@@ -35,7 +35,7 @@ export default function Settings() {
   const [themeMode, setThemeMode] = useState('luna'); // 'luna' (indigo/blue) or 'moon' (amethyst/slate)
   const { uiFontMode, activeFontMode, fontModes, changeUiFont } = useDynamicUI();
   const [autoHarmonizeFont, setAutoHarmonizeFont] = useState(
-    localStorage.getItem('pf_auto_harmonize_font') !== 'false'
+    localStorage.getItem('pf_auto_harmonize_font') === 'true'
   );
 
   // BYOK state

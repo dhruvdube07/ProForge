@@ -181,28 +181,53 @@ const parseArray = (field) => {
 };
 
 /**
- * Draws a structured experience/education/projects section in the PDF.
+ * Standard A4 page boundary constants (595.28 x 841.89 points)
+ */
+const PAGE_HEIGHT = 842;
+const BOTTOM_SAFE_LIMIT = 795; // 842 - 47pt safe footer boundary
+
+/**
+ * Draws a structured experience/education/projects section in the PDF with strict A4 pagination defense.
  */
 const drawStructuredSection = (doc, title, items, x, y, width, colors, fonts) => {
   if (!items || !Array.isArray(items) || items.length === 0) return y;
   
-  if (y > 720) { doc.addPage(); y = 36; }
+  // Defensive check: If header won't fit with at least one item, start a new page
+  if (y > BOTTOM_SAFE_LIMIT - 40) {
+    doc.addPage();
+    y = 36;
+  }
   
-  doc.fillColor(colors.primary).font(fonts.bold).fontSize(10.5).text(title.toUpperCase(), x, y);
-  doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(x, y + 12).lineTo(x + width, y + 12).stroke();
-  y += 16;
+  doc.fillColor(colors.primary).font(fonts.bold).fontSize(10).text(title.toUpperCase(), x, y);
+  doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(x, y + 11).lineTo(x + width, y + 11).stroke();
+  y += 14;
 
   items.forEach((item) => {
-    if (y > 740) { doc.addPage(); y = 36; }
-    
-    const roleVal = item.role || item.degree || item.title || '';
-    const companyVal = item.company || item.school || item.technologies || '';
+    const roleVal = item.role || item.degree || item.title || item.job_title || '';
+    const companyVal = item.company || item.school || item.technologies || item.employer || '';
     const durationVal = item.duration || '';
+    const desc = item.description || '';
+    
+    // Estimate total height of this item block for "page-break-inside: avoid" behavior
+    let estimatedItemHeight = 0;
+    if (roleVal) estimatedItemHeight += 9.5;
+    if (companyVal || durationVal) estimatedItemHeight += 9.5;
+    if (desc) {
+      estimatedItemHeight += doc.heightOfString(desc, { width, lineGap: 0.8 }) + 4;
+    } else {
+      estimatedItemHeight += 2;
+    }
+
+    // Defensive page boundary check (keeps entire entry together if possible)
+    if (y + estimatedItemHeight > BOTTOM_SAFE_LIMIT) {
+      doc.addPage();
+      y = 36;
+    }
     
     // Role / Title line
     if (roleVal) {
-      doc.fillColor(colors.primary).font(fonts.bold).fontSize(9).text(roleVal, x, y, { width });
-      y += 11;
+      doc.fillColor(colors.primary).font(fonts.bold).fontSize(8.5).text(roleVal, x, y, { width });
+      y += 9.5;
     }
     
     // Sub-header line: Company/School/Tech - Duration
@@ -211,50 +236,57 @@ const drawStructuredSection = (doc, title, items, x, y, width, colors, fonts) =>
     else subHeader = companyVal || durationVal;
     
     if (subHeader) {
-      doc.fillColor(colors.secondary).font(fonts.bold).fontSize(8).text(subHeader, x, y, { width });
-      y += 11;
+      doc.fillColor(colors.secondary).font(fonts.bold).fontSize(7.5).text(subHeader, x, y, { width });
+      y += 9.5;
     }
     
     // Description paragraph
-    if (item.description) {
-      doc.fillColor(colors.text).font(fonts.regular).fontSize(8.5).text(item.description, x, y, { width, align: 'justify', lineGap: 1.25 });
-      y += doc.heightOfString(item.description, { width, lineGap: 1.25 }) + 6;
+    if (desc) {
+      doc.fillColor(colors.text).font(fonts.regular).fontSize(7.5).text(desc, x, y, { width, align: 'justify', lineGap: 0.8 });
+      y += doc.heightOfString(desc, { width, lineGap: 0.8 }) + 3.5;
     } else {
-      y += 3;
+      y += 2;
     }
   });
 
-  return y + 6;
+  return y + 4;
 };
 
 /**
- * Draws a grid of badges for skills, languages, or certifications in the PDF.
+ * Draws a grid of badges for skills, languages, or certifications in the PDF with boundary containment.
  */
 const drawBadgeList = (doc, title, items, x, y, width, colors, fonts) => {
   if (!items || !Array.isArray(items) || items.length === 0) return y;
   
-  if (y > 720) { doc.addPage(); y = 36; }
-  doc.fillColor(colors.primary).font(fonts.bold).fontSize(10).text(title.toUpperCase(), x, y);
-  doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(x, y + 11).lineTo(x + width, y + 11).stroke();
-  y += 15;
+  if (y > BOTTOM_SAFE_LIMIT - 25) {
+    doc.addPage();
+    y = 36;
+  }
+  doc.fillColor(colors.primary).font(fonts.bold).fontSize(9.5).text(title.toUpperCase(), x, y);
+  doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(x, y + 10).lineTo(x + width, y + 10).stroke();
+  y += 13;
   
   let currentX = x;
-  const gap = 4;
+  const gap = 3.5;
   items.forEach(item => {
     const textStr = String(item);
-    const itemWidth = doc.widthOfString(textStr, { size: 7.5 }) + 8;
+    const itemWidth = doc.widthOfString(textStr, { size: 7 }) + 7;
     if (currentX + itemWidth > x + width) {
       currentX = x;
-      y += 13;
+      y += 11;
     }
-    if (y > 750) { doc.addPage(); y = 36; currentX = x; }
+    if (y > BOTTOM_SAFE_LIMIT) {
+      doc.addPage();
+      y = 36;
+      currentX = x;
+    }
     
-    doc.rect(currentX, y, itemWidth, 10).fill(colors.bg);
-    doc.fillColor(colors.primary).font(fonts.regular).fontSize(7.5).text(textStr, currentX + 4, y + 1.5);
+    doc.rect(currentX, y, itemWidth, 9).fill(colors.bg);
+    doc.fillColor(colors.primary).font(fonts.regular).fontSize(7).text(textStr, currentX + 3.5, y + 1.2);
     currentX += itemWidth + gap;
   });
   
-  return y + 16;
+  return y + 13;
 };
 
 /**
@@ -307,54 +339,126 @@ export const generateResumePdf = (profile) => {
     const template = getLayoutStructure(profile.template_preference);
 
     if (template === 'modern') {
-      // MODERN: Two-column layout
-      // Draw left header band
-      doc.rect(0, 0, 595, 100).fill(colors.bg);
+      // MODERN: True Two-Column Synchronized Layout (A4 Fit Optimized)
+      // Draw top header band on page 1
+      doc.rect(0, 0, 595, 80).fill(colors.bg);
 
       // Name & Profession
       doc.fillColor(colors.primary)
          .font(fonts.bold)
-         .fontSize(24)
-         .text(name, 40, 25);
+         .fontSize(22)
+         .text(name, 36, 18);
       
       doc.fillColor(colors.text)
          .font(fonts.regular)
-         .fontSize(12)
-         .text(profession, 40, 55);
+         .fontSize(10.5)
+         .text(profession, 36, 44);
 
       if (tagline) {
         doc.fillColor(colors.accent)
            .font(fonts.italic)
-           .fontSize(10)
-           .text(`"${tagline}"`, 40, 72);
+           .fontSize(8.5)
+           .text(`"${tagline}"`, 36, 59);
       }
 
-      // Column widths
-      const leftColX = 40;
-      const leftColWidth = 320;
-      const rightColX = 380;
+      // Column coordinate constants
+      const leftColX = 36;
+      const leftColWidth = 328;
+      const rightColX = 384;
       const rightColWidth = 175;
+      const startY = 95;
       
-      let leftY = 120;
-      let rightY = 120;
+      let leftY = startY;
+      let rightY = startY;
 
-      // LEFT COLUMN
+      // -------------------------------------------------------------
+      // RIGHT COLUMN SECTIONS (Rendered into page 1 coordinate space)
+      // -------------------------------------------------------------
+      const contactItems = [];
+      if (contactEmail) contactItems.push(`Email: ${contactEmail}`);
+      if (contactPhone) contactItems.push(`Phone: ${contactPhone}`);
+      if (contactLocation) contactItems.push(`Loc: ${contactLocation}`);
+      if (linkedinUrl) contactItems.push(`LinkedIn: ${linkedinUrl}`);
+      if (portfolioUrl) contactItems.push(`Web: ${portfolioUrl}`);
+      if (githubUrl) contactItems.push(`GitHub: ${githubUrl}`);
+
+      if (contactItems.length > 0) {
+        doc.fillColor(colors.primary).font(fonts.bold).fontSize(10).text('CONTACT', rightColX, rightY);
+        doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(rightColX, rightY + 12).lineTo(rightColX + rightColWidth, rightY + 12).stroke();
+        rightY += 15;
+        contactItems.forEach(item => {
+          doc.fillColor(colors.text).font(fonts.regular).fontSize(7.5).text(item, rightColX, rightY, { width: rightColWidth });
+          rightY += 11;
+        });
+        rightY += 8;
+      }
+
+      // Skills
+      if (skills.length > 0) {
+        doc.fillColor(colors.primary).font(fonts.bold).fontSize(10).text('TECHNICAL SKILLS', rightColX, rightY);
+        doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(rightColX, rightY + 12).lineTo(rightColX + rightColWidth, rightY + 12).stroke();
+        rightY += 15;
+        skills.forEach(skill => {
+          doc.fillColor(colors.text).font(fonts.regular).fontSize(8).text(skill, rightColX, rightY, { width: rightColWidth });
+          rightY += 11.5;
+        });
+        rightY += 8;
+      }
+
+      // Languages
+      rightY = drawBadgeList(doc, 'Languages', languages, rightColX, rightY, rightColWidth, colors, fonts);
+
+      // Certifications
+      rightY = drawBadgeList(doc, 'Certifications', certifications, rightColX, rightY, rightColWidth, colors, fonts);
+
+      // Soft Skills
+      if (softSkills.length > 0) {
+        doc.fillColor(colors.primary).font(fonts.bold).fontSize(10).text('SOFT SKILLS', rightColX, rightY);
+        doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(rightColX, rightY + 12).lineTo(rightColX + rightColWidth, rightY + 12).stroke();
+        rightY += 15;
+        softSkills.forEach(skill => {
+          doc.fillColor(colors.text).font(fonts.regular).fontSize(8).text(skill, rightColX, rightY, { width: rightColWidth });
+          rightY += 11.5;
+        });
+        rightY += 8;
+      }
+
+      // Strengths
+      if (strengths.length > 0) {
+        doc.fillColor(colors.primary).font(fonts.bold).fontSize(10).text('CORE STRENGTHS', rightColX, rightY);
+        doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(rightColX, rightY + 12).lineTo(rightColX + rightColWidth, rightY + 12).stroke();
+        rightY += 15;
+        strengths.forEach(str => {
+          doc.fillColor(colors.text).font(fonts.regular).fontSize(8).text(str, rightColX, rightY, { width: rightColWidth });
+          rightY += 11.5;
+        });
+        rightY += 8;
+      }
+
+      // References (in sidebar)
+      if (referencesList.length > 0) {
+        rightY = drawStructuredSection(doc, 'References', referencesList, rightColX, rightY, rightColWidth, colors, fonts);
+      }
+
+      // -------------------------------------------------------------
+      // LEFT COLUMN SECTIONS (Rendered into page 1, cascading seamlessly)
+      // -------------------------------------------------------------
       // About Me
       if (bio) {
-        doc.fillColor(colors.primary).font(fonts.bold).fontSize(14).text('About Me', leftColX, leftY);
-        doc.strokeColor(colors.primary).lineWidth(1).moveTo(leftColX, leftY + 16).lineTo(leftColX + leftColWidth, leftY + 16).stroke();
-        leftY += 24;
-        doc.fillColor(colors.text).font(fonts.regular).fontSize(10).text(bio, leftColX, leftY, { width: leftColWidth, align: 'justify', lineGap: 3 });
-        leftY += doc.heightOfString(bio, { width: leftColWidth, lineGap: 3 }) + 20;
+        doc.fillColor(colors.primary).font(fonts.bold).fontSize(10.5).text('About Me', leftColX, leftY);
+        doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(leftColX, leftY + 12).lineTo(leftColX + leftColWidth, leftY + 12).stroke();
+        leftY += 15;
+        doc.fillColor(colors.text).font(fonts.regular).fontSize(8).text(bio, leftColX, leftY, { width: leftColWidth, align: 'justify', lineGap: 1 });
+        leftY += doc.heightOfString(bio, { width: leftColWidth, lineGap: 1 }) + 8;
       }
 
       // Professional Goal
       if (goal) {
-        doc.fillColor(colors.primary).font(fonts.bold).fontSize(14).text('Career Goal', leftColX, leftY);
-        doc.strokeColor(colors.primary).lineWidth(1).moveTo(leftColX, leftY + 16).lineTo(leftColX + leftColWidth, leftY + 16).stroke();
-        leftY += 24;
-        doc.fillColor(colors.text).font(fonts.regular).fontSize(10).text(goal, leftColX, leftY, { width: leftColWidth, align: 'justify', lineGap: 3 });
-        leftY += doc.heightOfString(goal, { width: leftColWidth, lineGap: 3 }) + 20;
+        doc.fillColor(colors.primary).font(fonts.bold).fontSize(10.5).text('Career Goal', leftColX, leftY);
+        doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(leftColX, leftY + 12).lineTo(leftColX + leftColWidth, leftY + 12).stroke();
+        leftY += 15;
+        doc.fillColor(colors.text).font(fonts.regular).fontSize(8).text(goal, leftColX, leftY, { width: leftColWidth, align: 'justify', lineGap: 1 });
+        leftY += doc.heightOfString(goal, { width: leftColWidth, lineGap: 1 }) + 8;
       }
 
       // Experience
@@ -377,78 +481,24 @@ export const generateResumePdf = (profile) => {
 
       // Achievements
       if (achievements.length > 0) {
-        doc.fillColor(colors.primary).font(fonts.bold).fontSize(14).text('Key Achievements', leftColX, leftY);
-        doc.strokeColor(colors.primary).lineWidth(1).moveTo(leftColX, leftY + 16).lineTo(leftColX + leftColWidth, leftY + 16).stroke();
-        leftY += 24;
+        if (leftY > BOTTOM_SAFE_LIMIT - 40) {
+          doc.addPage();
+          leftY = 36;
+        }
+        doc.fillColor(colors.primary).font(fonts.bold).fontSize(10.5).text('Key Achievements', leftColX, leftY);
+        doc.strokeColor(colors.primary).lineWidth(0.75).moveTo(leftColX, leftY + 12).lineTo(leftColX + leftColWidth, leftY + 12).stroke();
+        leftY += 15;
         achievements.forEach((ach) => {
-          doc.fillColor(colors.primary).fontSize(12).text('•', leftColX, leftY);
-          doc.fillColor(colors.text).font(fonts.regular).fontSize(10).text(ach, leftColX + 12, leftY, { width: leftColWidth - 12 });
-          leftY += doc.heightOfString(ach, { width: leftColWidth - 12 }) + 8;
+          if (leftY > BOTTOM_SAFE_LIMIT - 12) {
+            doc.addPage();
+            leftY = 36;
+          }
+          doc.fillColor(colors.primary).fontSize(9).text('•', leftColX, leftY);
+          doc.fillColor(colors.text).font(fonts.regular).fontSize(8).text(ach, leftColX + 8, leftY, { width: leftColWidth - 8, lineGap: 1 });
+          leftY += doc.heightOfString(ach, { width: leftColWidth - 8, lineGap: 1 }) + 3.5;
         });
-        leftY += 12;
+        leftY += 6;
       }
-
-      // RIGHT COLUMN - CONTACT INFO
-      const contactItems = [];
-      if (contactEmail) contactItems.push(`Email: ${contactEmail}`);
-      if (contactPhone) contactItems.push(`Phone: ${contactPhone}`);
-      if (contactLocation) contactItems.push(`Loc: ${contactLocation}`);
-      if (linkedinUrl) contactItems.push(`LinkedIn: ${linkedinUrl}`);
-      if (portfolioUrl) contactItems.push(`Web: ${portfolioUrl}`);
-      if (githubUrl) contactItems.push(`GitHub: ${githubUrl}`);
-
-      if (contactItems.length > 0) {
-        doc.fillColor(colors.primary).font(fonts.bold).fontSize(12).text('CONTACT', rightColX, rightY);
-        doc.strokeColor(colors.primary).lineWidth(1).moveTo(rightColX, rightY + 14).lineTo(rightColX + rightColWidth, rightY + 14).stroke();
-        rightY += 20;
-        contactItems.forEach(item => {
-          doc.fillColor(colors.text).font(fonts.regular).fontSize(9).text(item, rightColX, rightY, { width: rightColWidth });
-          rightY += 14;
-        });
-        rightY += 12;
-      }
-
-      // Skills
-      if (skills.length > 0) {
-        doc.fillColor(colors.primary).font(fonts.bold).fontSize(12).text('TECHNICAL SKILLS', rightColX, rightY);
-        rightY += 16;
-        skills.forEach(skill => {
-          doc.fillColor(colors.text).font(fonts.regular).fontSize(9).text(skill, rightColX, rightY);
-          rightY += 14;
-        });
-        rightY += 12;
-      }
-
-      // Languages
-      rightY = drawBadgeList(doc, 'Languages', languages, rightColX, rightY, rightColWidth, colors, fonts);
-
-      // Certifications
-      rightY = drawBadgeList(doc, 'Certifications', certifications, rightColX, rightY, rightColWidth, colors, fonts);
-
-      // Soft Skills
-      if (softSkills.length > 0) {
-        doc.fillColor(colors.primary).font(fonts.bold).fontSize(12).text('SOFT SKILLS', rightColX, rightY);
-        rightY += 16;
-        softSkills.forEach(skill => {
-          doc.fillColor(colors.text).font(fonts.regular).fontSize(9).text(skill, rightColX, rightY);
-          rightY += 14;
-        });
-        rightY += 12;
-      }
-
-      // Strengths
-      if (strengths.length > 0) {
-        doc.fillColor(colors.primary).font(fonts.bold).fontSize(12).text('CORE STRENGTHS', rightColX, rightY);
-        rightY += 16;
-        strengths.forEach(str => {
-          doc.fillColor(colors.text).font(fonts.regular).fontSize(9).text(str, rightColX, rightY);
-          rightY += 14;
-        });
-        rightY += 12;
-      }
-
-      // References
-      rightY = drawStructuredSection(doc, 'References', referencesList, rightColX, rightY, rightColWidth, colors, fonts);
 
     } else if (template === 'classic') {
       // CLASSIC: Traditional, formal, one-column

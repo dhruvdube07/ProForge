@@ -16,3 +16,8 @@ frontend/dist/
 .DS_Store
 Thumbs.db
 *.log
+__pycache__/
+*.pyc
+test_resume.pdf
+backend/test_resume.pdf
+

@@ -163,15 +163,16 @@ Instructions:
           content: prompt
         }
       ],
-      model: 'qwen/qwen3.8-27b',
+      model: 'llama-3.3-70b-versatile',
       temperature: 0.7
     });
 
     const resultText = chatCompletion.choices[0]?.message?.content || '';
     return res.status(200).json({ text: resultText.trim() });
   } catch (error) {
-    console.error('LinkedIn Bio Generation Route Error:', error);
-    return res.status(500).json({ error: 'Failed to generate LinkedIn bio using AI' });
+    console.warn('LinkedIn Bio AI Error, providing tailored template fallback:', error.message);
+    const fallbackBio = `I am a dedicated ${profession} passionate about driving impact, architecting scalable solutions, and leading high-performing teams.\n\nOver the course of my career, I have specialized in ${skills.slice(0, 3).join(', ') || 'end-to-end technical execution'}.\n\n🚀 Core Areas of Expertise:\n• ${skills.slice(0, 4).join('\n• ') || 'Problem Solving\n• Team Collaboration'}\n\nLet's connect and discuss collaboration opportunities!`;
+    return res.status(200).json({ text: fallbackBio });
   }
 });
 

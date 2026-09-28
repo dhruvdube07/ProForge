@@ -118,8 +118,8 @@ export default function Dashboard() {
   // Tab control: 'edit' or 'preview'
   const [activeTab, setActiveTab] = useState('edit');
   
-  // Preview mode control: 'html' (instant) or 'pdf' (exact print representation)
-  const [previewMode, setPreviewMode] = useState('html');
+  // Preview mode control: 'pdf' (exact print representation) or 'html' (simulated)
+  const [previewMode, setPreviewMode] = useState('pdf');
   const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
   const [pdfLoading, setPdfLoading] = useState(false);
   
@@ -1568,16 +1568,6 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
                   {/* Left: Sub-tabs control */}
                   <div className="flex bg-themeBg p-0.5 rounded-theme border border-themeBorder max-w-xs flex-shrink-0">
                     <button
-                      onClick={() => setPreviewMode('html')}
-                      className={`flex-1 py-1.5 px-3.5 text-[10px] font-bold rounded-theme transition-all duration-300 cursor-pointer ${
-                        previewMode === 'html'
-                          ? 'bg-themeCard text-themePrimary shadow-sm'
-                          : 'text-themeTextSecondary hover:text-themeText'
-                      }`}
-                    >
-                      Simulated Layout
-                    </button>
-                    <button
                       onClick={() => setPreviewMode('pdf')}
                       className={`flex-1 py-1.5 px-3.5 text-[10px] font-bold rounded-theme transition-all duration-300 cursor-pointer ${
                         previewMode === 'pdf'
@@ -1586,6 +1576,16 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
                       }`}
                     >
                       Actual PDF Doc (100% Real)
+                    </button>
+                    <button
+                      onClick={() => setPreviewMode('html')}
+                      className={`flex-1 py-1.5 px-3.5 text-[10px] font-bold rounded-theme transition-all duration-300 cursor-pointer ${
+                        previewMode === 'html'
+                          ? 'bg-themeCard text-themePrimary shadow-sm'
+                          : 'text-themeTextSecondary hover:text-themeText'
+                      }`}
+                    >
+                      Quick HTML Preview
                     </button>
                   </div>
 
@@ -1635,45 +1635,45 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
                 </div>
 
                 {previewMode === 'html' ? (
-                  /* SIMULATED HTML LAYOUT PREVIEW */
-                  <div className="w-full overflow-x-auto rounded-theme scroll-premium">
+                  /* SIMULATED STRICT A4 PHYSICAL PAPER PREVIEW (1:1 with Anti-Gravity PDF) */
+                  <div className="resume-a4-stage scroll-premium">
                     <div
                       style={{ backgroundColor: colors.bg, color: colors.text, fontFamily: activeProfile.font_preference }}
-                      className="w-full p-4 sm:p-6 md:p-8 rounded-theme shadow-lg min-h-[700px] border transition-all duration-300 text-left min-w-[300px]"
+                      className="resume-a4-sheet border transition-all duration-300 text-left"
                     >
                       {/* MODERN TEMPLATE PREVIEW */}
                       {layout === 'modern' && (
                         <div className="space-y-6">
-                          <div style={{ borderColor: colors.primary }} className="border-b-2 pb-4 text-left">
+                          <div style={{ borderColor: colors.primary }} className="border-b-2 pb-4 text-left resume-section-block">
                             <h2 style={{ color: colors.primary }} className="text-2xl sm:text-3xl font-extrabold">{activeProfile.name || 'Your Name'}</h2>
                             <p className="text-xs sm:text-sm font-semibold mt-1 uppercase tracking-wide opacity-80">{activeProfile.profession || 'Profession'}</p>
                             {activeProfile.tagline && <p style={{ color: colors.secondary }} className="text-xs italic mt-1">"{activeProfile.tagline}"</p>}
                           </div>
                           
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-                            <div className="col-span-1 md:col-span-2 space-y-5">
+                          <div className="resume-two-column-row text-left">
+                            <div className="resume-col-main space-y-5">
                             {activeProfile.bio && (
-                              <div>
+                              <div className="resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xs font-bold uppercase tracking-wide border-b pb-0.5 mb-1.5">About Me</h4>
-                                <p className="text-xs leading-relaxed opacity-95">{activeProfile.bio}</p>
+                                <p className="text-xs leading-relaxed opacity-95 resume-text-wrap">{activeProfile.bio}</p>
                               </div>
                             )}
                             {activeProfile.goal && (
-                              <div>
+                              <div className="resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xs font-bold uppercase tracking-wide border-b pb-0.5 mb-1.5">Career Goal</h4>
-                                <p className="text-xs leading-relaxed opacity-95">{activeProfile.goal}</p>
+                                <p className="text-xs leading-relaxed opacity-95 resume-text-wrap">{activeProfile.goal}</p>
                               </div>
                             )}
                             
                             {/* Experience list */}
                             {parseArray(activeProfile.experience).length > 0 && (
-                              <div className="space-y-2">
+                              <div className="space-y-2 resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xs font-bold uppercase tracking-wide border-b pb-0.5">Experience</h4>
                                 {parseArray(activeProfile.experience).map((exp, i) => (
-                                  <div key={i} className="text-xs space-y-0.5 animate-in fade-in duration-300">
+                                  <div key={i} className="text-xs space-y-0.5 resume-item-card experience-item animate-in fade-in duration-300">
                                     <div className="font-bold text-slate-800">{exp.role}</div>
                                     <div className="text-slate-500 font-semibold text-[10px]">{exp.company} | {exp.duration}</div>
-                                    {exp.description && <p className="opacity-90 leading-relaxed mt-1">{exp.description}</p>}
+                                    {exp.description && <p className="opacity-90 leading-relaxed mt-1 resume-text-wrap">{exp.description}</p>}
                                   </div>
                                 ))}
                               </div>
@@ -1681,13 +1681,13 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
 
                             {/* Internships list */}
                             {parseArray(activeProfile.internships)?.length > 0 && (
-                              <div className="space-y-2">
+                              <div className="space-y-2 resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xs font-bold uppercase tracking-wide border-b pb-0.5">Internships</h4>
                                 {parseArray(activeProfile.internships).map((item, i) => (
-                                  <div key={i} className="text-xs space-y-0.5">
+                                  <div key={i} className="text-xs space-y-0.5 resume-item-card">
                                     <div className="font-bold text-slate-800">{item.job_title}</div>
                                     <div className="text-slate-500 font-semibold text-[10px]">{item.employer} | {item.duration}</div>
-                                    {item.description && <p className="opacity-90 leading-relaxed mt-1">{item.description}</p>}
+                                    {item.description && <p className="opacity-90 leading-relaxed mt-1 resume-text-wrap">{item.description}</p>}
                                   </div>
                                 ))}
                               </div>
@@ -1695,13 +1695,13 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
 
                             {/* Projects list */}
                             {parseArray(activeProfile.projects).length > 0 && (
-                              <div className="space-y-2">
+                              <div className="space-y-2 resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xs font-bold uppercase tracking-wide border-b pb-0.5">Projects</h4>
                                 {parseArray(activeProfile.projects).map((proj, i) => (
-                                  <div key={i} className="text-xs space-y-0.5">
+                                  <div key={i} className="text-xs space-y-0.5 resume-item-card">
                                     <div className="font-bold text-slate-800">{proj.title}</div>
                                     <div className="text-slate-500 font-semibold text-[10px]">{proj.technologies} | {proj.duration}</div>
-                                    {proj.description && <p className="opacity-90 leading-relaxed mt-1">{proj.description}</p>}
+                                    {proj.description && <p className="opacity-90 leading-relaxed mt-1 resume-text-wrap">{proj.description}</p>}
                                   </div>
                                 ))}
                               </div>
@@ -1709,13 +1709,13 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
 
                             {/* Education list */}
                             {parseArray(activeProfile.education).length > 0 && (
-                              <div className="space-y-2">
+                              <div className="space-y-2 resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xs font-bold uppercase tracking-wide border-b pb-0.5">Education</h4>
                                 {parseArray(activeProfile.education).map((edu, i) => (
-                                  <div key={i} className="text-xs space-y-0.5">
+                                  <div key={i} className="text-xs space-y-0.5 resume-item-card education-item">
                                     <div className="font-bold text-slate-800">{edu.degree}</div>
                                     <div className="text-slate-500 font-semibold text-[10px]">{edu.school} | {edu.duration}</div>
-                                    {edu.description && <p className="opacity-90 leading-relaxed mt-1">{edu.description}</p>}
+                                    {edu.description && <p className="opacity-90 leading-relaxed mt-1 resume-text-wrap">{edu.description}</p>}
                                   </div>
                                 ))}
                               </div>
@@ -1723,10 +1723,10 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
 
                             {/* Courses list */}
                             {parseArray(activeProfile.courses)?.length > 0 && (
-                              <div className="space-y-2">
+                              <div className="space-y-2 resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xs font-bold uppercase tracking-wide border-b pb-0.5">Courses</h4>
                                 {parseArray(activeProfile.courses).map((item, i) => (
-                                  <div key={i} className="text-xs space-y-0.5">
+                                  <div key={i} className="text-xs space-y-0.5 resume-item-card">
                                     <div className="font-bold text-slate-800">{item.course_name}</div>
                                     <div className="text-slate-500 font-semibold text-[10px]">{item.institution} | {item.duration}</div>
                                   </div>
@@ -1736,70 +1736,70 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
 
                             {/* Extra-Curricular list */}
                             {parseArray(activeProfile.extra_curricular)?.length > 0 && (
-                              <div className="space-y-2">
+                              <div className="space-y-2 resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xs font-bold uppercase tracking-wide border-b pb-0.5">Extra-Curricular</h4>
                                 {parseArray(activeProfile.extra_curricular).map((item, i) => (
-                                  <div key={i} className="text-xs space-y-0.5">
+                                  <div key={i} className="text-xs space-y-0.5 resume-item-card">
                                     <div className="font-bold text-slate-800">{item.role}</div>
                                     <div className="text-slate-500 font-semibold text-[10px]">{item.employer} | {item.duration}</div>
-                                    {item.description && <p className="opacity-90 leading-relaxed mt-1">{item.description}</p>}
+                                    {item.description && <p className="opacity-90 leading-relaxed mt-1 resume-text-wrap">{item.description}</p>}
                                   </div>
                                 ))}
                               </div>
                             )}
 
                             {parseArray(activeProfile.achievements).length > 0 && (
-                              <div>
+                              <div className="resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xs font-bold uppercase tracking-wide border-b pb-0.5 mb-1.5">Key Achievements</h4>
                                 <ul className="list-disc pl-4 text-xs space-y-1 opacity-95">
-                                  {parseArray(activeProfile.achievements).map((ach, i) => <li key={i}>{ach}</li>)}
+                                  {parseArray(activeProfile.achievements).map((ach, i) => <li key={i} className="resume-text-wrap">{ach}</li>)}
                                 </ul>
                               </div>
                             )}
                           </div>
 
-                          <div style={{ borderColor: colors.border }} className="col-span-1 p-3.5 rounded-lg border space-y-4">
+                          <div style={{ borderColor: colors.border }} className="resume-col-sidebar p-3.5 rounded-lg border space-y-4">
                             {/* Contact info list */}
                             {(activeProfile.contact_email || activeProfile.contact_phone || activeProfile.contact_location || activeProfile.linkedin_url) && (
-                              <div className="space-y-1.5 text-xxs opacity-95 border-b pb-3">
+                              <div className="space-y-1.5 text-xxs opacity-95 border-b pb-3 resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="font-bold uppercase tracking-wider mb-2">Contact Info</h4>
-                                {activeProfile.contact_email && <div className="truncate">✉ {activeProfile.contact_email}</div>}
-                                {activeProfile.contact_phone && <div>📞 {activeProfile.contact_phone}</div>}
-                                {activeProfile.contact_location && <div>📍 {activeProfile.contact_location}</div>}
-                                {activeProfile.linkedin_url && <div className="truncate">🔗 {activeProfile.linkedin_url}</div>}
-                                {activeProfile.portfolio_url && <div className="truncate">🌐 {activeProfile.portfolio_url}</div>}
-                                {activeProfile.github_url && <div className="truncate">💻 {activeProfile.github_url}</div>}
+                                {activeProfile.contact_email && <div className="resume-contact-item">✉ {activeProfile.contact_email}</div>}
+                                {activeProfile.contact_phone && <div className="resume-contact-item">📞 {activeProfile.contact_phone}</div>}
+                                {activeProfile.contact_location && <div className="resume-contact-item">📍 {activeProfile.contact_location}</div>}
+                                {activeProfile.linkedin_url && <div className="resume-contact-item">🔗 {activeProfile.linkedin_url}</div>}
+                                {activeProfile.portfolio_url && <div className="resume-contact-item">🌐 {activeProfile.portfolio_url}</div>}
+                                {activeProfile.github_url && <div className="resume-contact-item">💻 {activeProfile.github_url}</div>}
                               </div>
                             )}
 
                             {parseArray(activeProfile.skills).length > 0 && (
-                              <div>
+                              <div className="skills-block resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xxs font-bold uppercase tracking-wider mb-2">Technical Skills</h4>
                                 <div className="flex flex-wrap gap-1">
                                   {parseArray(activeProfile.skills).map((s, i) => (
-                                    <span key={i} style={{ backgroundColor: colors.border, color: colors.primary }} className="text-[9px] py-0.5 px-2 rounded-full font-medium">{s}</span>
+                                    <span key={i} style={{ backgroundColor: colors.border, color: colors.primary }} className="text-[9px] py-0.5 px-2 rounded-full font-medium inline-block resume-text-wrap">{s}</span>
                                   ))}
                                 </div>
                               </div>
                             )}
 
                             {parseArray(activeProfile.languages).length > 0 && (
-                              <div>
+                              <div className="resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xxs font-bold uppercase tracking-wider mb-2">Languages</h4>
                                 <div className="flex flex-wrap gap-1">
                                   {parseArray(activeProfile.languages).map((s, i) => (
-                                    <span key={i} style={{ backgroundColor: colors.border }} className="text-[9px] py-0.5 px-2 rounded-full font-medium">{s}</span>
+                                    <span key={i} style={{ backgroundColor: colors.border }} className="text-[9px] py-0.5 px-2 rounded-full font-medium inline-block">{s}</span>
                                   ))}
                                 </div>
                               </div>
                             )}
 
                             {parseArray(activeProfile.certifications).length > 0 && (
-                              <div>
+                              <div className="resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xxs font-bold uppercase tracking-wider mb-2">Certifications</h4>
                                 <div className="flex flex-wrap gap-1">
                                   {parseArray(activeProfile.certifications).map((s, i) => (
-                                    <span key={i} style={{ backgroundColor: colors.border }} className="text-[9px] py-0.5 px-2 rounded-full font-medium">{s}</span>
+                                    <span key={i} style={{ backgroundColor: colors.border }} className="text-[9px] py-0.5 px-2 rounded-full font-medium inline-block resume-text-wrap">{s}</span>
                                   ))}
                                 </div>
                               </div>
@@ -1807,35 +1807,35 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extra_curricular JSONB DEFAULT '[]
 
                             {/* References in Modern sidebar */}
                             {parseArray(activeProfile.references_list)?.length > 0 && (
-                              <div className="border-t pt-3">
+                              <div className="border-t pt-3 resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xxs font-bold uppercase tracking-wider mb-2">References</h4>
                                 {parseArray(activeProfile.references_list).map((item, i) => (
-                                  <div key={i} className="text-[9px] mb-2 leading-relaxed">
+                                  <div key={i} className="text-[9px] mb-2 leading-relaxed resume-item-card">
                                     <div className="font-bold text-slate-800">{item.name}</div>
-                                    <div className="text-slate-500 font-semibold text-[8px]">{item.company} | {item.contact}</div>
-                                    {item.description && <p className="opacity-80 italic mt-0.5">"{item.description}"</p>}
+                                    <div className="text-slate-500 font-semibold text-[8px] resume-contact-item">{item.company} | {item.contact}</div>
+                                    {item.description && <p className="opacity-80 italic mt-0.5 resume-text-wrap">"{item.description}"</p>}
                                   </div>
                                 ))}
                               </div>
                             )}
 
                             {parseArray(activeProfile.soft_skills).length > 0 && (
-                              <div>
+                              <div className="skills-block resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xxs font-bold uppercase tracking-wider mb-2">Soft Skills</h4>
                                 <div className="flex flex-wrap gap-1">
                                   {parseArray(activeProfile.soft_skills).map((s, i) => (
-                                    <span key={i} style={{ backgroundColor: colors.border }} className="text-[9px] py-0.5 px-2 rounded-full font-medium">{s}</span>
+                                    <span key={i} style={{ backgroundColor: colors.border }} className="text-[9px] py-0.5 px-2 rounded-full font-medium inline-block resume-text-wrap">{s}</span>
                                   ))}
                                 </div>
                               </div>
                             )}
                             
                             {parseArray(activeProfile.strengths).length > 0 && (
-                              <div>
+                              <div className="skills-block resume-section-block">
                                 <h4 style={{ color: colors.primary }} className="text-xxs font-bold uppercase tracking-wider mb-2">Core Strengths</h4>
                                 <div className="flex flex-wrap gap-1">
                                   {parseArray(activeProfile.strengths).map((s, i) => (
-                                    <span key={i} style={{ backgroundColor: colors.border }} className="text-[9px] py-0.5 px-2 rounded-full font-medium">{s}</span>
+                                    <span key={i} style={{ backgroundColor: colors.border }} className="text-[9px] py-0.5 px-2 rounded-full font-medium inline-block resume-text-wrap">{s}</span>
                                   ))}
                                 </div>
                               </div>

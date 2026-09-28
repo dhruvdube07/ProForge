@@ -93,7 +93,8 @@ export default function TextBox({ onAnalyze, loading }) {
           }}
           rows={8}
           placeholder="Select one of the quick profiles above, or type your own experience here (e.g., your achievements, current role, and the job you want to target next)..."
-          className="w-full p-4 rounded-xl border border-themeBorder bg-themeCard/60 focus:bg-themeCard focus:border-themePrimary focus:ring-2 focus:ring-themePrimary/20 focus:outline-none transition-all duration-200 text-themeText font-mono text-xs leading-relaxed"
+          className="w-full p-4 rounded-xl border border-themeBorder bg-themeBg focus:bg-themeBg text-themeText placeholder:text-themeTextSecondary/70 focus:border-themePrimary focus:ring-2 focus:ring-themePrimary/20 focus:outline-none transition-all duration-200 font-sans text-xs sm:text-sm leading-relaxed"
+          style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-text)' }}
         />
 
         {/* Dynamic metrics bar */}

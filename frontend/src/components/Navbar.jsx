@@ -3,7 +3,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Sparkles, History, LogOut, LayoutDashboard, User, Settings, X, Briefcase, Globe, FileText, Linkedin, ChevronDown, Mail } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import ThemeToggle from './ThemeToggle';
-import DynamicUIFontPill from './DynamicUIFontPill';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -248,9 +247,6 @@ export default function Navbar() {
                   )}
                 </div>
               )}
-
-              {/* Dynamic UI Typography Engine Switcher */}
-              <DynamicUIFontPill />
 
               <ThemeToggle />
 

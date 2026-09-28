@@ -518,36 +518,16 @@ h1, h2, h3, h4, .font-heading {
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
 }
 
-.light .premium-frame {
-  border: 1px solid var(--color-border);
-  background-color: var(--color-card);
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
-}
-
 .glass-panel {
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
               box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
               background-color 0.4s ease, 
               border-color 0.4s ease;
-}
-
-:root:not(.light) .glass-panel {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.36), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
-}
-
-.light .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.06), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
 }
 
 /* Dynamic Interactive Cards with Shimmer Border */
@@ -578,11 +558,18 @@ h1, h2, h3, h4, .font-heading {
 
 input, select, textarea {
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  color: var(--color-text) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--color-text-secondary) !important;
+  opacity: 0.65;
 }
 
 input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 3px var(--ui-glow-color, rgba(59, 130, 246, 0.25));
   border-color: var(--color-primary) !important;
+  color: var(--color-text) !important;
 }
 
 /* Spring hover lift */
@@ -689,3 +676,134 @@ button:active, a.btn-primary:active, .cursor-pointer:active {
 .font-tech { font-family: 'Space Grotesk', sans-serif; }
 .font-bricolage { font-family: 'Bricolage Grotesque', sans-serif; }
 .font-dmsans { font-family: 'DM Sans', sans-serif; }
+
+/* =========================================================================
+   STRICT A4 PHYSICAL BOUNDARY & ANTI-GRAVITY 1:1 PRINT STABILIZATION
+   ========================================================================= */
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+/* Global defensive sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* A4 Screen Stage Canvas */
+.resume-a4-stage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  overflow-x: auto;
+  padding: 1rem 0.5rem;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 0.75rem;
+}
+
+.dark .resume-a4-stage {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* Strict Physical A4 Paper Simulation */
+.resume-a4-sheet {
+  width: 210mm;
+  height: 297mm;
+  max-height: 297mm;
+  padding: 10mm 12mm;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #ffffff;
+  position: relative;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.2);
+  line-height: 1.3;
+}
+
+/* Two-Column Print & Canvas Stabilization */
+.resume-two-column-row {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  width: 100% !important;
+  gap: 4% !important;
+  align-items: flex-start !important;
+}
+
+.resume-col-main {
+  width: 65% !important;
+  flex: 0 0 65% !important;
+  max-width: 65% !important;
+  vertical-align: top !important;
+}
+
+.resume-col-sidebar {
+  width: 31% !important;
+  flex: 0 0 31% !important;
+  max-width: 31% !important;
+  vertical-align: top !important;
+}
+
+/* Anti-Overflow & Text Wrapping */
+.resume-contact-item,
+.resume-text-wrap {
+  word-break: break-all !important;
+  overflow-wrap: anywhere !important;
+  white-space: normal !important;
+}
+
+/* Compact Spacing Budget */
+.resume-section-block {
+  margin-bottom: 0.45rem;
+}
+
+.resume-item-card {
+  margin-bottom: 0.35rem;
+}
+
+.resume-section-block,
+.resume-item-card,
+.experience-item,
+.education-item,
+.skills-block {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+@media print {
+  html, body {
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    overflow: hidden !important;
+  }
+
+  .resume-a4-stage {
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .resume-a4-sheet {
+    width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    padding: 10mm 12mm !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+
+
+
