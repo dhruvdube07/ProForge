@@ -199,8 +199,8 @@ export const useProfile = () => {
       });
       return await safeJson(res);
     } catch (err) {
-      setError(err.message);
-      throw err;
+      console.warn('Backend analyze API error:', err.message);
+      return { error: err.message };
     } finally {
       setLoading(false);
     }
@@ -320,8 +320,8 @@ export const useProfile = () => {
       });
       return await safeJson(res);
     } catch (err) {
-      setError(err.message);
-      throw err;
+      console.warn('Backend refine API error:', err.message);
+      return { error: err.message };
     } finally {
       setLoading(false);
     }
