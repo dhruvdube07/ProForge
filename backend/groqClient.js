@@ -24,13 +24,17 @@ const getDefaultGroq = () => {
  */
 const getClient = (customApiKey) => {
   if (customApiKey && customApiKey.trim() !== '') {
-    return new Groq({ apiKey: customApiKey.trim() });
+    try {
+      return new Groq({ apiKey: customApiKey.trim() });
+    } catch (err) {
+      console.warn('Custom Groq client init failed:', err.message);
+    }
   }
   const client = getDefaultGroq();
   if (client) {
     return client;
   }
-  throw new Error('Groq API Key is not configured. Please supply a custom API key in Settings or set GROQ_API_KEY in your environment.');
+  return null;
 };
 
 /**
@@ -66,6 +70,9 @@ const cleanJsonString = (raw) => {
  * Executes a chat completion with sequential model fallback
  */
 async function callGroqWithFallback(activeClient, payload, isJson = true) {
+  if (!activeClient) {
+    throw new Error('Groq client is not available or key is unconfigured');
+  }
   let lastError = null;
 
   for (let i = 0; i < FALLBACK_MODELS.length; i++) {
