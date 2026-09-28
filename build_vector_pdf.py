@@ -13,11 +13,15 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 PDF_PATH = r"c:\Users\Dhruv's Dell\Desktop\Remo\ProForge_AI_Internship_Report.pdf"
 
-# Register standard Windows TrueType fonts for clean, crisp vector typography
-pdfmetrics.registerFont(TTFont('ProFont', r'C:\Windows\Fonts\arial.ttf'))
-pdfmetrics.registerFont(TTFont('ProFont-Bold', r'C:\Windows\Fonts\arialbd.ttf'))
-pdfmetrics.registerFont(TTFont('ProFont-Italic', r'C:\Windows\Fonts\ariali.ttf'))
-pdfmetrics.registerFont(TTFont('ProFont-BoldItalic', r'C:\Windows\Fonts\arialbi.ttf'))
+# Register standard Windows TrueType fonts for clean vector typography
+pdfmetrics.registerFont(TTFont('ProFont', r'C:\Windows\Fonts\times.ttf'))
+pdfmetrics.registerFont(TTFont('ProFont-Bold', r'C:\Windows\Fonts\timesbd.ttf'))
+pdfmetrics.registerFont(TTFont('ProFont-Italic', r'C:\Windows\Fonts\timesi.ttf'))
+pdfmetrics.registerFont(TTFont('ProFont-BoldItalic', r'C:\Windows\Fonts\timesbi.ttf'))
+
+# Modern Sans-Serif for titles and headers
+pdfmetrics.registerFont(TTFont('HeadFont', r'C:\Windows\Fonts\arial.ttf'))
+pdfmetrics.registerFont(TTFont('HeadFont-Bold', r'C:\Windows\Fonts\arialbd.ttf'))
 
 class NumberedCanvas(canvas.Canvas):
     def __init__(self, *args, **kwargs):
@@ -29,14 +33,13 @@ class NumberedCanvas(canvas.Canvas):
         self._startPage()
 
     def save(self):
-        num_pages = len(self._saved_page_states)
         for state in self._saved_page_states:
             self.__dict__.update(state)
-            self.draw_decorations(num_pages)
+            self.draw_decorations()
             super().showPage()
         super().save()
 
-    def draw_decorations(self, total_pages):
+    def draw_decorations(self):
         self.saveState()
         border_x = 28 * pt
         border_y = 24 * pt
@@ -47,16 +50,17 @@ class NumberedCanvas(canvas.Canvas):
         self.setLineWidth(1.2 * pt)
         self.rect(border_x, border_y, w - 2 * border_x, h - 2 * border_y)
 
-        # Running Footer Divider & MSBTE / College Metadata
+        # Running Footer Divider & Metadata (Just page number as requested)
         self.setStrokeColor(colors.HexColor("#94a3b8"))
         self.setLineWidth(0.6 * pt)
         self.line(border_x + 8 * pt, border_y + 18 * pt, w - border_x - 8 * pt, border_y + 18 * pt)
 
-        self.setFont("ProFont", 8 * pt)
+        self.setFont("HeadFont", 8.5 * pt)
         self.setFillColor(colors.HexColor("#000000"))
         footer_text = "MSBTE DIPLOMA IN COMPUTER ENGINEERING | VIVA INSTITUTE OF TECHNOLOGY, VIRAR"
-        self.drawString(border_x + 10 * pt, border_y + 7 * pt, footer_text)
-        self.drawRightString(w - border_x - 10 * pt, border_y + 7 * pt, f"Page {self._pageNumber} of {total_pages}")
+        self.drawString(border_x + 10 * pt, border_y + 6.5 * pt, footer_text)
+        # ONLY PAGE NUMBER - NO 'Page X of Y'
+        self.drawRightString(w - border_x - 10 * pt, border_y + 6.5 * pt, f"{self._pageNumber}")
 
         self.restoreState()
 
@@ -64,34 +68,32 @@ def generate_pdf():
     doc = SimpleDocTemplate(
         PDF_PATH,
         pagesize=A4,
-        leftMargin=38 * pt,
-        rightMargin=38 * pt,
-        topMargin=34 * pt,
-        bottomMargin=36 * pt
+        leftMargin=36 * pt,
+        rightMargin=36 * pt,
+        topMargin=32 * pt,
+        bottomMargin=34 * pt
     )
 
-    # Clean, easy-to-read typography styles
-    title_cover = ParagraphStyle('CoverTitle', fontName='ProFont-Bold', fontSize=23, leading=27, alignment=TA_CENTER, textColor=colors.HexColor("#000000"), spaceAfter=4)
-    subtitle_cover = ParagraphStyle('CoverSub', fontName='ProFont-Italic', fontSize=11.5, leading=15, alignment=TA_CENTER, textColor=colors.HexColor("#1f2937"), spaceAfter=14)
-    center_bold_13 = ParagraphStyle('CBold13', fontName='ProFont-Bold', fontSize=13, leading=16, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
-    center_bold_12 = ParagraphStyle('CBold12', fontName='ProFont-Bold', fontSize=12, leading=15, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
-    center_bold_11 = ParagraphStyle('CBold11', fontName='ProFont-Bold', fontSize=11, leading=14, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
+    # Clean typography styles
+    title_cover = ParagraphStyle('CoverTitle', fontName='HeadFont-Bold', fontSize=24, leading=28, alignment=TA_CENTER, textColor=colors.HexColor("#000000"), spaceAfter=4)
+    subtitle_cover = ParagraphStyle('CoverSub', fontName='ProFont-Italic', fontSize=12, leading=15, alignment=TA_CENTER, textColor=colors.HexColor("#1f2937"), spaceAfter=14)
+    center_bold_13 = ParagraphStyle('CBold13', fontName='HeadFont-Bold', fontSize=13, leading=16, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
+    center_bold_12 = ParagraphStyle('CBold12', fontName='HeadFont-Bold', fontSize=12, leading=15, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
+    center_bold_11 = ParagraphStyle('CBold11', fontName='HeadFont-Bold', fontSize=11, leading=14, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
     center_reg_12 = ParagraphStyle('CReg12', fontName='ProFont', fontSize=12, leading=15, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
     center_reg_11 = ParagraphStyle('CReg11', fontName='ProFont', fontSize=11, leading=14, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
     
-    chapter_h1 = ParagraphStyle('ChapH1', fontName='ProFont-Bold', fontSize=13.5, leading=16, alignment=TA_CENTER, spaceBefore=0, spaceAfter=3, textColor=colors.HexColor("#000000"))
-    chapter_h2 = ParagraphStyle('ChapH2', fontName='ProFont-Bold', fontSize=11, leading=14, alignment=TA_CENTER, spaceAfter=8, textColor=colors.HexColor("#000000"))
+    chapter_h1 = ParagraphStyle('ChapH1', fontName='HeadFont-Bold', fontSize=13, leading=15.5, alignment=TA_CENTER, spaceBefore=0, spaceAfter=2.5, textColor=colors.HexColor("#000000"))
+    chapter_h2 = ParagraphStyle('ChapH2', fontName='HeadFont-Bold', fontSize=10.5, leading=13.5, alignment=TA_CENTER, spaceAfter=6, textColor=colors.HexColor("#000000"))
     
-    # Body styles with rich line-heights and coverage (dense enough to fill 80-90% of page)
-    body = ParagraphStyle('ProBody', fontName='ProFont', fontSize=9.5, leading=13.5, alignment=TA_JUSTIFY, spaceAfter=6, textColor=colors.HexColor("#000000"))
-    body_bold = ParagraphStyle('ProBodyBold', fontName='ProFont-Bold', fontSize=9.5, leading=13.5, alignment=TA_LEFT, spaceAfter=5, textColor=colors.HexColor("#000000"))
-    bullet = ParagraphStyle('ProBullet', fontName='ProFont', fontSize=9, leading=13, alignment=TA_LEFT, leftIndent=14, firstLineIndent=-8, spaceAfter=3.5, textColor=colors.HexColor("#000000"))
-    subhead = ParagraphStyle('ProSubhead', fontName='ProFont-Bold', fontSize=10.5, leading=14, alignment=TA_LEFT, spaceBefore=5, spaceAfter=2.5, textColor=colors.HexColor("#000000"))
+    # Body styles with rich line-heights and dense coverage (90%+ page coverage)
+    body = ParagraphStyle('ProBody', fontName='ProFont', fontSize=10, leading=14, alignment=TA_JUSTIFY, spaceAfter=5.5, textColor=colors.HexColor("#000000"))
+    bullet = ParagraphStyle('ProBullet', fontName='ProFont', fontSize=9.5, leading=13.5, alignment=TA_JUSTIFY, leftIndent=14, firstLineIndent=-8, spaceAfter=3.5, textColor=colors.HexColor("#000000"))
+    subhead = ParagraphStyle('ProSubhead', fontName='HeadFont-Bold', fontSize=10.5, leading=13.5, alignment=TA_LEFT, spaceBefore=5, spaceAfter=2, textColor=colors.HexColor("#000000"))
     
-    table_heading_style = ParagraphStyle('TblHdr', fontName='ProFont-Bold', fontSize=8.5, leading=11, alignment=TA_CENTER, textColor=colors.black)
-    table_cell_style = ParagraphStyle('TblCell', fontName='ProFont', fontSize=8, leading=10.5, alignment=TA_LEFT, textColor=colors.black)
-    table_center_style = ParagraphStyle('TblCenter', fontName='ProFont', fontSize=8, leading=10.5, alignment=TA_CENTER, textColor=colors.black)
-    callout_style = ParagraphStyle('Callout', fontName='ProFont', fontSize=8.5, leading=12, alignment=TA_LEFT, textColor=colors.HexColor("#0f172a"))
+    table_heading_style = ParagraphStyle('TblHdr', fontName='HeadFont-Bold', fontSize=8.5, leading=11, alignment=TA_CENTER, textColor=colors.black)
+    table_cell_style = ParagraphStyle('TblCell', fontName='ProFont', fontSize=8.5, leading=11, alignment=TA_LEFT, textColor=colors.black)
+    table_center_style = ParagraphStyle('TblCenter', fontName='ProFont', fontSize=8.5, leading=11, alignment=TA_CENTER, textColor=colors.black)
 
     story = []
 
@@ -112,10 +114,10 @@ def generate_pdf():
     story.append(Spacer(1, 4 * pt))
     
     mentor_box_data = [
-        [Paragraph("<b>Industry Mentor</b><br/>Prof. Harsh Tambade<br/><font size=8 color='#4b5563'>Founder &amp; CEO, Elite Forums</font>", center_bold_11),
-         Paragraph("<b>College Mentor / Guide</b><br/>Ms. Mansi Patil<br/><font size=8 color='#4b5563'>Lecturer, Dept. of Computer Engg.</font>", center_bold_11)]
+        [Paragraph("<b>Industry Mentor</b><br/>Prof. Harsh Tambade<br/><font size=8.5 color='#4b5563'>Founder &amp; CEO, Elite Forums</font>", center_bold_11),
+         Paragraph("<b>College Mentor / Guide</b><br/>Ms. Mansi Patil<br/><font size=8.5 color='#4b5563'>Lecturer, Dept. of Computer Engg.</font>", center_bold_11)]
     ]
-    mentor_tbl = Table(mentor_box_data, colWidths=[240 * pt, 240 * pt])
+    mentor_tbl = Table(mentor_box_data, colWidths=[245 * pt, 245 * pt])
     mentor_tbl.setStyle(TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
@@ -129,11 +131,11 @@ def generate_pdf():
     story.append(Spacer(1, 18 * pt))
 
     viva_badge_data = [
-        [Paragraph("<font size=8 color='#b91c1c'><b>VISHNU WAMAN THAKUR CHARITABLE TRUST'S</b></font>", center_bold_11)],
-        [Paragraph("<font size=20 color='#b91c1c'><b>VIVA</b></font>", center_bold_13)],
-        [Paragraph("<font size=8 color='#0f2b5c'><b>INSTITUTE OF TECHNOLOGY</b></font>", center_bold_11)]
+        [Paragraph("<font size=8.5 color='#b91c1c'><b>VISHNU WAMAN THAKUR CHARITABLE TRUST'S</b></font>", center_bold_11)],
+        [Paragraph("<font size=21 color='#b91c1c'><b>VIVA</b></font>", center_bold_13)],
+        [Paragraph("<font size=8.5 color='#0f2b5c'><b>INSTITUTE OF TECHNOLOGY</b></font>", center_bold_11)]
     ]
-    viva_badge_tbl = Table(viva_badge_data, colWidths=[220 * pt])
+    viva_badge_tbl = Table(viva_badge_data, colWidths=[230 * pt])
     viva_badge_tbl.setStyle(TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
@@ -159,49 +161,46 @@ def generate_pdf():
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("<u>TABLE OF CONTENTS / INDEX</u>", chapter_h1))
-    story.append(Spacer(1, 6 * pt))
+    story.append(Spacer(1, 5 * pt))
 
     toc_data = [
         [Paragraph("<b>Sr. No.</b>", center_bold_11), Paragraph("<b>Chapter / Topic Title</b>", center_bold_11), Paragraph("<b>Page No.</b>", center_bold_11)],
-        [Paragraph("1", center_reg_11), Paragraph("Abstract &amp; MSBTE Curriculum Alignment", body), Paragraph("3", center_reg_11)],
+        [Paragraph("1", center_reg_11), Paragraph("Abstract &amp; MSBTE Curriculum Objectives", body), Paragraph("3", center_reg_11)],
         [Paragraph("2", center_reg_11), Paragraph("Acknowledgement &amp; Mentorship Credits", body), Paragraph("4", center_reg_11)],
-        [Paragraph("3", center_reg_11), Paragraph("Chapter 1: Organization Structure of Industry &amp; Team Hierarchy", body), Paragraph("5", center_reg_11)],
+        [Paragraph("3", center_reg_11), Paragraph("Chapter 1: Organization Structure of Industry &amp; General Hierarchy", body), Paragraph("5", center_reg_11)],
         [Paragraph("4", center_reg_11), Paragraph("Chapter 2: Introduction to Industry (History, Services &amp; Training Model)", body), Paragraph("6", center_reg_11)],
-        [Paragraph("5", center_reg_11), Paragraph("Chapter 2 (Contd.): Dual Scope — On-Site Client Work vs Independent ProForge Project", body), Paragraph("7", center_reg_11)],
+        [Paragraph("5", center_reg_11), Paragraph("Chapter 2 (Contd.): Dual Scope — On-Site Company Work vs Independent Project", body), Paragraph("7", center_reg_11)],
         [Paragraph("6", center_reg_11), Paragraph("Chapter 3: Hardware, Development Environment &amp; Core Toolchains", body), Paragraph("8", center_reg_11)],
         [Paragraph("7", center_reg_11), Paragraph("Chapter 3 (Contd.): Detailed Technical Specifications &amp; Maintenance Schedule", body), Paragraph("9", center_reg_11)],
-        [Paragraph("8", center_reg_11), Paragraph("Chapter 3 (Contd.): Groq LPU AI Engine, Multi-Model Fallback &amp; Async JavaScript", body), Paragraph("10", center_reg_11)],
+        [Paragraph("8", center_reg_11), Paragraph("Chapter 3 (Contd.): Groq LPU Engine, AI Fallback Cascade &amp; Async JavaScript", body), Paragraph("10", center_reg_11)],
         [Paragraph("9", center_reg_11), Paragraph("Chapter 4: Processes, Agile Methodologies &amp; Digital Asset Handling", body), Paragraph("11", center_reg_11)],
         [Paragraph("10", center_reg_11), Paragraph("Chapter 4 (Contd.): Modular Component Hierarchy &amp; CSS Design Tokens", body), Paragraph("12", center_reg_11)],
-        [Paragraph("11", center_reg_11), Paragraph("Chapter 4 (Contd.): Unidirectional Full-Stack Data Flow &amp; Supabase JSONB Schema", body), Paragraph("13", center_reg_11)],
-        [Paragraph("12", center_reg_11), Paragraph("Chapter 5: Quality Assurance, Unit Testing &amp; Weekly Assessments", body), Paragraph("14", center_reg_11)],
-        [Paragraph("13", center_reg_11), Paragraph("Chapter 5 (Contd.): PDFKit A4 Coordinate Math &amp; ATS Scoring Validation", body), Paragraph("15", center_reg_11)],
-        [Paragraph("14", center_reg_11), Paragraph("Chapter 5 (Contd.): Cross-Browser Compatibility, DirectWrite &amp; OTP Auth Security", body), Paragraph("16", center_reg_11)],
-        [Paragraph("15", center_reg_11), Paragraph("Chapter 6: Digital Safety, Cybersecurity Protocols &amp; Key Governance", body), Paragraph("17", center_reg_11)],
-        [Paragraph("16", center_reg_11), Paragraph("Chapter 6 (Contd.): Backup Systems, Error Recovery &amp; Physical Ergonomics", body), Paragraph("18", center_reg_11)],
-        [Paragraph("17", center_reg_11), Paragraph("Chapter 6 (Contd.): Ethical AI Principles, Factual Integrity &amp; Anti-Spam Standards", body), Paragraph("19", center_reg_11)],
-        [Paragraph("18", center_reg_11), Paragraph("Chapter 7: Practical Experiences in Software Production (The 6 AI Sub-Suites)", body), Paragraph("20", center_reg_11)],
-        [Paragraph("19", center_reg_11), Paragraph("Chapter 7 (Contd.): System Assembly, API Routing &amp; Middleware Integration", body), Paragraph("21", center_reg_11)],
-        [Paragraph("20", center_reg_11), Paragraph("Chapter 7 (Contd.): Maintenance, Memory Profiling &amp; Performance Tuning", body), Paragraph("22", center_reg_11)],
-        [Paragraph("21", center_reg_11), Paragraph("Chapter 8: 12-Week Task Breakdown (Weeks 1 to 4: Foundations &amp; Full-Stack Core)", body), Paragraph("23", center_reg_11)],
-        [Paragraph("22", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown (Weeks 5 to 8: Remo AI &amp; Folio AI)", body), Paragraph("24", center_reg_11)],
-        [Paragraph("23", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown (Weeks 9 to 11: Covo, Liko &amp; Mali AI)", body), Paragraph("25", center_reg_11)],
-        [Paragraph("24", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown (Week 12: Security Auditing &amp; Final Demo)", body), Paragraph("26", center_reg_11)],
-        [Paragraph("25", center_reg_11), Paragraph("Chapter 9: Technical Challenges &amp; Engineering Solutions (PDF &amp; LLM Parsing)", body), Paragraph("27", center_reg_11)],
-        [Paragraph("26", center_reg_11), Paragraph("Chapter 9 (Contd.): Background Queueing, Sprint Coordination &amp; Student Learnings", body), Paragraph("28", center_reg_11)],
-        [Paragraph("27", center_reg_11), Paragraph("Chapter 10: Conclusion, Industry Experience &amp; Future Scope", body), Paragraph("29", center_reg_11)],
-        [Paragraph("28", center_reg_11), Paragraph("Chapter 11: References, Technical Documentation &amp; Corporate Information", body), Paragraph("30", center_reg_11)]
+        [Paragraph("11", center_reg_11), Paragraph("Chapter 4 (Contd.): Unidirectional Data Flow &amp; Supabase JSONB Schema Design", body), Paragraph("13", center_reg_11)],
+        [Paragraph("12", center_reg_11), Paragraph("Chapter 5: Quality Assurance, Automated Unit Testing &amp; Weekly Assessments", body), Paragraph("14", center_reg_11)],
+        [Paragraph("13", center_reg_11), Paragraph("Chapter 5 (Contd.): PDFKit A4 Coordinate Math, ATS Validation &amp; Cross-Browser Tests", body), Paragraph("15", center_reg_11)],
+        [Paragraph("14", center_reg_11), Paragraph("Chapter 6: Digital Safety Protocols, Cybersecurity &amp; Disaster Recovery", body), Paragraph("16", center_reg_11)],
+        [Paragraph("15", center_reg_11), Paragraph("Chapter 6 (Contd.): Ethical AI Principles, Factual Integrity &amp; Anti-Spam Standards", body), Paragraph("17", center_reg_11)],
+        [Paragraph("16", center_reg_11), Paragraph("Chapter 7: Practical Experiences in Production — The 6 ProForge AI Sub-Suites", body), Paragraph("18", center_reg_11)],
+        [Paragraph("17", center_reg_11), Paragraph("Chapter 7 (Contd.): System Assembly, Middleware Routing &amp; Performance Optimization", body), Paragraph("19", center_reg_11)],
+        [Paragraph("18", center_reg_11), Paragraph("Chapter 8: 12-Week Task Breakdown — Weeks 1 to 4: Foundations &amp; Backend APIs", body), Paragraph("20", center_reg_11)],
+        [Paragraph("19", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown — Weeks 5 to 8: Remo AI &amp; Folio AI", body), Paragraph("21", center_reg_11)],
+        [Paragraph("20", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown — Weeks 9 to 11: Covo, Liko &amp; Mali AI", body), Paragraph("22", center_reg_11)],
+        [Paragraph("21", center_reg_11), Paragraph("Chapter 8 (Contd.): 12-Week Task Breakdown — Week 12: Security Hardening &amp; Final Demo", body), Paragraph("23", center_reg_11)],
+        [Paragraph("22", center_reg_11), Paragraph("Chapter 9: Technical Challenges Encountered &amp; Engineering Solutions", body), Paragraph("24", center_reg_11)],
+        [Paragraph("23", center_reg_11), Paragraph("Chapter 9 (Contd.): Background Queueing, Sprint Reflections &amp; Student Learnings", body), Paragraph("25", center_reg_11)],
+        [Paragraph("24", center_reg_11), Paragraph("Chapter 10: Conclusion, Industrial Experience &amp; Future Scope", body), Paragraph("26", center_reg_11)],
+        [Paragraph("25", center_reg_11), Paragraph("Chapter 11: References, Technical Documentation &amp; Corporate Details", body), Paragraph("27", center_reg_11)]
     ]
 
-    toc_tbl = Table(toc_data, colWidths=[42 * pt, 420 * pt, 52 * pt])
+    toc_tbl = Table(toc_data, colWidths=[42 * pt, 428 * pt, 50 * pt])
     toc_tbl.setStyle(TableStyle([
         ('BOX', (0,0), (-1,-1), 1.2 * pt, colors.HexColor("#000000")),
         ('INNERGRID', (0,0), (-1,-1), 0.6 * pt, colors.HexColor("#000000")),
         ('ALIGN', (0,0), (0,-1), 'CENTER'),
         ('ALIGN', (2,0), (2,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('TOPPADDING', (0,0), (-1,-1), 2.2 * pt),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2.2 * pt),
+        ('TOPPADDING', (0,0), (-1,-1), 3.2 * pt),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3.2 * pt),
         ('LEFTPADDING', (1,0), (1,-1), 6 * pt),
     ]))
     story.append(toc_tbl)
@@ -213,19 +212,19 @@ def generate_pdf():
     story.append(Paragraph("<u>ABSTRACT</u>", chapter_h1))
     story.append(Spacer(1, 6 * pt))
     story.append(Paragraph(
-        "Industrial training is a compulsory and essential academic requirement mandated by the <b>Maharashtra State Board of Technical Education (MSBTE)</b> for the award of the Diploma in Computer Engineering. The primary objective of this internship is to bridge the gap between classroom theoretical concepts and live industrial software development practices, enabling diploma students to acquire practical hands-on competencies in modern programming languages, cloud architectures, database design, and real-time artificial intelligence workflows.",
+        "Industrial training is a compulsory academic curriculum requirement formulated by the <b>Maharashtra State Board of Technical Education (MSBTE)</b> for diploma students in Computer Engineering. The core purpose of this 12-week program is to provide students with practical industry exposure, transforming theoretical knowledge into hands-on software development skills in modern cloud architectures, web development frameworks, relational databases, and real-world Artificial Intelligence workflows.",
         body
     ))
     story.append(Paragraph(
-        "I completed my intensive 12-week industrial training program at <b>Elite Forums</b>, located in Vasai (East), Maharashtra, from <b>25th May 2026 to 15th August 2026</b>. During this period, my daily work was organized into two distinct yet complementary operational segments: (1) <b>On-Site Company Work &amp; Training:</b> Participating in company-assigned client software maintenance, internal testing, attending technical lectures on Python, JavaScript, and Supabase, and completing weekly coding evaluations; and (2) <b>Independent Major Project Work:</b> Designing, architecting, and fully implementing <b>PROFORGE — An End-to-End AI-Powered Career Intelligence &amp; Branding Suite</b>.",
+        "I completed my twelve-week industrial training at <b>Elite Forums</b>, situated in Vasai (East), Palghar, Maharashtra, from <b>25th May 2026 to 15th August 2026</b>. During this period, my daily work followed a clear dual-track structure: (1) <b>On-Site Company Training &amp; Tasks:</b> Participating in daily technical workshops on Python, React 18, and Supabase, completing weekly coding assignments, resolving internal bug tickets, and participating in sprint standups under company mentors; and (2) <b>Independent Major Project Engineering:</b> Conceptualizing, designing, coding, testing, and deploying <b>PROFORGE — An End-to-End AI-Powered Career Intelligence &amp; Branding Suite</b>.",
         body
     ))
     story.append(Paragraph(
-        "ProForge was developed to resolve the widespread issue of career tooling fragmentation faced by students and job seekers. The platform unifies six full-featured AI-driven sub-suites: <b>Remo AI</b> (an intelligent resume builder featuring sub-second bullet refinement and a strict coordinate-based PDFKit rendering engine), <b>Folio AI</b> (an interactive portfolio generator producing zero-dependency downloadable ZIP packages), <b>Talo AI</b> (an ATS alignment checker comparing candidate profiles with job descriptions), <b>Covo AI</b> (a recruiter cold email and PDF cover letter studio), <b>Liko AI</b> (a LinkedIn personal branding engine), and <b>Mali AI</b> (an automated email scheduler with rich HTML templates).",
+        "ProForge was engineered to resolve the severe problem of career tooling fragmentation that diploma and undergraduate students encounter when applying for internships and jobs. Rather than requiring users to navigate multiple disconnected websites, ProForge unites six specialized sub-suites in one unified platform: <b>Remo AI</b> (an ATS resume studio with sub-second AI bullet refinement and strict A4 vector PDF generation via PDFKit), <b>Folio AI</b> (a dynamic portfolio builder producing downloadable zero-dependency ZIP packages), <b>Talo AI</b> (an ATS alignment auditor comparing candidate profiles with job descriptions), <b>Covo AI</b> (a personalized cold outreach and PDF cover letter studio), <b>Liko AI</b> (a LinkedIn post and personal branding optimizer), and <b>Mali AI</b> (an automated campaign scheduler and rich HTML email studio).",
         body
     ))
     story.append(Paragraph(
-        "The technical stack comprises React 18, Vite, Tailwind CSS, Node.js, Express REST APIs, Supabase PostgreSQL with JSONB schema structures, Groq SDK LPU inference (Qwen &amp; Llama 3 models), Nodemailer with Zoho SMTP, and PDFKit. This report comprehensively documents the industrial hierarchy, equipment used, engineering methodologies, QA testing, digital security, 12-week task timelines, student learnings, and MSBTE curriculum outcomes achieved during the training.",
+        "The system is built using React 18, Vite, Tailwind CSS, Node.js, Express REST routing, Supabase PostgreSQL with JSONB schema structures, Groq SDK LPU inference (Qwen 2.5 and Llama 3 models), and Nodemailer with Zoho SMTP. This report documents the industry organizational structure, equipment, software design methodologies, quality assurance testing, cybersecurity protocols, 12-week task timelines, technical challenges, and MSBTE learning outcomes achieved during the internship.",
         body
     ))
 
@@ -236,30 +235,30 @@ def generate_pdf():
     story.append(Paragraph("<u>ACKNOWLEDGEMENT</u>", chapter_h1))
     story.append(Spacer(1, 6 * pt))
     story.append(Paragraph(
-        "The successful completion of this 12-week industrial training and the development of the ProForge AI platform would not have been possible without the guidance, encouragement, and support of my mentors, teachers, and family. I take this opportunity to express my profound gratitude to everyone who contributed to this journey.",
+        "The successful completion of this 12-week industrial training and the development of the ProForge AI platform represents a major milestone in my academic and technical journey. I take this opportunity to express my profound gratitude to all the mentors, teachers, and colleagues who provided their guidance, encouragement, and support.",
         body
     ))
     story.append(Paragraph(
-        "First and foremost, I express my sincere and deepest gratitude to my college mentor, <b>Ms. Mansi Patil</b>, Lecturer in the Department of Computer Engineering, VIVA Institute of Technology, Virar (East). Her continuous academic guidance, valuable suggestions, periodic monitoring, and patient feedback throughout the internship semester were instrumental in ensuring that this project strictly adheres to MSBTE guidelines and academic standards.",
+        "I express my deepest and most sincere gratitude to my college mentor, <b>Ms. Mansi Patil</b>, Lecturer in the Department of Computer Engineering at VIVA Institute of Technology, Virar (East). Her academic supervision, regular project reviews, valuable technical suggestions, and continuous encouragement were instrumental in keeping this project aligned with MSBTE curriculum standards.",
         body
     ))
     story.append(Paragraph(
-        "I am equally thankful to my industry mentor, <b>Prof. Harsh Tambade</b>, Founder and CEO of <b>Elite Forums</b>, Vasai (East), for providing me the opportunity to undergo this rigorous industrial training. His deep domain expertise in Generative AI, cloud infrastructure, and modern web application development, along with his mentorship on architectural patterns, helped me tackle complex full-stack engineering problems during the development of ProForge.",
+        "I am equally thankful to my industry mentor, <b>Prof. Harsh Tambade</b>, Founder and CEO of <b>Elite Forums</b>, Vasai (East), for providing me the opportunity to undergo this rigorous industrial training at the Vasai center. His deep technical knowledge in Generative AI architectures, cloud microservices, and modern web application development, along with his guidance on software design patterns, helped me overcome complex full-stack engineering challenges.",
         body
     ))
     story.append(Paragraph(
-        "I also extend my heartfelt thanks to the <b>Head of Department</b> and all faculty members of the Department of Computer Engineering at VIVA Institute of Technology for their continuous encouragement and for providing the academic foundation required to excel in the software industry.",
+        "I also extend my heartfelt thanks to the <b>Head of Department</b> and all faculty members of the Department of Computer Engineering at VIVA Institute of Technology for providing excellent academic infrastructure, encouragement, and laboratory facilities.",
         body
     ))
     story.append(Paragraph(
-        "Finally, I thank the entire engineering and instructional team at Elite Forums for creating a supportive, collaborative learning environment, and my parents and friends for their unwavering moral support throughout this period.",
+        "I thank the entire developers and instructors team at Elite Forums for their supportive peer reviews, technical workshops, and daily collaborative environment, and my parents and friends for their continuous moral support throughout this period.",
         body
     ))
-    story.append(Spacer(1, 30 * pt))
+    story.append(Spacer(1, 28 * pt))
     sig_data = [
-        [Paragraph("<b>Dhruv R. Dubey</b><br/>Enrollment No: 25112400240<br/>Class: TYCO - B (Third Year Computer Engineering)<br/>VIVA Institute of Technology, Virar (East)", ParagraphStyle('RightSig', fontName='ProFont', fontSize=9.5, leading=13.5, alignment=TA_RIGHT))]
+        [Paragraph("<b>Dhruv R. Dubey</b><br/>Enrollment No: 25112400240<br/>Class: TYCO - B (Third Year Diploma in Computer Engineering)<br/>Department of Computer Engineering<br/>VIVA Institute of Technology, Virar (East), Maharashtra", ParagraphStyle('RightSig', fontName='ProFont', fontSize=9.5, leading=13.5, alignment=TA_RIGHT))]
     ]
-    sig_tbl = Table(sig_data, colWidths=[500 * pt])
+    sig_tbl = Table(sig_data, colWidths=[510 * pt])
     sig_tbl.setStyle(TableStyle([('ALIGN', (0,0), (-1,-1), 'RIGHT')]))
     story.append(sig_tbl)
 
@@ -268,10 +267,10 @@ def generate_pdf():
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 1", chapter_h1))
-    story.append(Paragraph("ORGANIZATION STRUCTURE OF INDUSTRY &amp; TEAM HIERARCHY", chapter_h2))
+    story.append(Paragraph("ORGANIZATION STRUCTURE OF INDUSTRY &amp; GENERAL HIERARCHY", chapter_h2))
     
-    org_cell_header = ParagraphStyle('OrgHdr', fontName='ProFont-Bold', fontSize=9, leading=11, alignment=TA_CENTER, textColor=colors.white)
-    org_cell_body = ParagraphStyle('OrgBody', fontName='ProFont', fontSize=8, leading=10.5, alignment=TA_CENTER, textColor=colors.black)
+    org_cell_header = ParagraphStyle('OrgHdr', fontName='HeadFont-Bold', fontSize=9, leading=11, alignment=TA_CENTER, textColor=colors.white)
+    org_cell_body = ParagraphStyle('OrgBody', fontName='ProFont', fontSize=8.5, leading=11, alignment=TA_CENTER, textColor=colors.black)
 
     org_data = [
         [Paragraph("<b>Elite Forums</b>", org_cell_header), ""],
@@ -282,7 +281,7 @@ def generate_pdf():
         [Paragraph("Anshu Jaiswal<br/>Adarsh Pandey<br/>Mithilesh Vichare<br/>Yuvraj Singh", org_cell_body),
          Paragraph("Shreya Mishra<br/>Prathamesh Jakkula<br/>Nandini Singh<br/>Shreya Mulik<br/>Shashank Singh", org_cell_body)]
     ]
-    org_tbl = Table(org_data, colWidths=[195 * pt, 195 * pt])
+    org_tbl = Table(org_data, colWidths=[200 * pt, 200 * pt])
     org_tbl.setStyle(TableStyle([
         ('SPAN', (0,0), (1,0)),
         ('SPAN', (0,1), (1,1)),
@@ -298,21 +297,21 @@ def generate_pdf():
         ('BACKGROUND', (1,4), (1,4), colors.HexColor("#0f2b5c")),
         ('BOX', (0,0), (-1,-1), 1.2 * pt, colors.HexColor("#0f2b5c")),
         ('INNERGRID', (0,0), (-1,-1), 0.6 * pt, colors.HexColor("#cbd5e1")),
-        ('TOPPADDING', (0,0), (-1,-1), 3 * pt),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3 * pt),
+        ('TOPPADDING', (0,0), (-1,-1), 3.5 * pt),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5 * pt),
     ]))
     story.append(org_tbl)
     story.append(Spacer(1, 6 * pt))
     story.append(Paragraph(
-        "<b>Elite Forums</b> is an active IT services, software consulting, and technical upskilling company situated in Vasai (East), Palghar district, Maharashtra. The company follows a clean, modern organizational hierarchy designed for rapid software iteration and direct mentorship for diploma and degree engineering interns.",
+        "<b>Elite Forums</b> is an active IT consulting, software engineering, and technical training organization based in Vasai (East), Palghar district, Maharashtra. The company follows a modern, lean organizational hierarchy designed to foster rapid full-stack software development, close team communication, and direct technical mentorship for diploma interns.",
         body
     ))
     story.append(Paragraph(
-        "At the head of the organization is the Founder and CEO, <b>Prof. Harsh Tambade</b>, who drives strategic vision, cloud architecture, and corporate partnerships. The executive management consists of <b>Jeet Gharat</b> (General Manager) and <b>Siddhant Mandlik</b> (COO), who supervise daily operations, infrastructure, and industry outreach. Project workflows are managed by <b>Suchita Nigam</b> (Project Manager), who coordinates between the <b>Developers Team</b> (handling commercial client projects) and the <b>Instructors Team</b> (responsible for mentoring interns in Python, React, and Machine Learning).",
+        "The organization is led by Founder and CEO, <b>Prof. Harsh Tambade</b>, who sets strategic technology direction, cloud infrastructure policies, and corporate training programs. Executive operations are managed by <b>Jeet Gharat</b> (General Manager) and <b>Siddhant Mandlik</b> (COO), who supervise client engagements, facilities, and academic partnerships. Daily project execution is managed by <b>Suchita Nigam</b> (Project Manager), who coordinates work between the <b>Developers Team</b> (handling commercial client projects and SaaS tooling) and the <b>Instructors Team</b> (mentoring interns in Python, React, Cloud Databases, and AI).",
         body
     ))
     story.append(Paragraph(
-        "This clear structure allowed me as an intern to receive direct feedback on my code, participate in sprint standups, and understand how commercial software engineering teams operate in practice.",
+        "This clear division of roles gave me direct exposure to professional software engineering practices, agile daily standups, code review workflows, and sprint milestone management throughout my training.",
         body
     ))
 
@@ -326,7 +325,7 @@ def generate_pdf():
     elite_badge_data = [
         [Paragraph("<font size=13 color='white'><b>ELITE FORUMS — IT SERVICES &amp; CONSULTING</b></font><br/><font size=7.5 color='#d1d5db'><b>VASAI (EAST), PALGHAR, MAHARASHTRA – 401208 &bull; ESTABLISHED 2023</b></font>", center_bold_12)]
     ]
-    elite_tbl = Table(elite_badge_data, colWidths=[390 * pt])
+    elite_tbl = Table(elite_badge_data, colWidths=[400 * pt])
     elite_tbl.setStyle(TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
@@ -337,18 +336,18 @@ def generate_pdf():
     story.append(elite_tbl)
     story.append(Spacer(1, 6 * pt))
 
-    story.append(Paragraph("Company Background &amp; Mission", subhead))
+    story.append(Paragraph("Company Background &amp; Founding Vision", subhead))
     story.append(Paragraph(
-        "Elite Forums was established in <b>2023</b> with the goal of bridging the technical gap between academic engineering syllabi and the modern software industry. Operating with a lean team of <b>11 to 50 professionals</b>, the firm provides tailored IT consulting, customized web solutions, and structured internship training programs for diploma and undergraduate engineering students across Maharashtra.",
+        "Elite Forums was established in <b>2023</b> in Mumbai/Vasai, Maharashtra, to bridge the technical gap between traditional academic engineering curricula and the rapidly evolving software industry. Operating with a dedicated team of <b>11 to 50 professionals</b>, Elite Forums provides high-quality software development services, cloud migration advisory, and intensive hands-on technical training for diploma and engineering students.",
         body
     ))
-    story.append(Paragraph("Core Business Offerings &amp; Verticals", subhead))
-    story.append(Paragraph("• <b>Technical Training &amp; Upskilling:</b> Practical, project-based training programs in Full-Stack Web Development, Python Programming, Generative AI Integration, Cloud Databases, and Cybersecurity Fundamentals.", bullet))
-    story.append(Paragraph("• <b>Custom Software Development:</b> Engineering bespoke web portals, database-backed management systems, and automated REST API pipelines for small and medium-sized businesses.", bullet))
-    story.append(Paragraph("• <b>IT Advisory &amp; Cloud Migration:</b> Helping traditional businesses migrate local workflows to modern cloud platforms like Supabase, AWS, and modern serverless platforms.", bullet))
+    story.append(Paragraph("Core Business Verticals &amp; Offerings", subhead))
+    story.append(Paragraph("• <b>Technical Upskilling &amp; Diploma Training:</b> Practical, project-driven training programs in Full-Stack Web Development, Python Programming, Generative AI Integration, Cloud Databases, and Cybersecurity Fundamentals.", bullet))
+    story.append(Paragraph("• <b>Custom Software &amp; Web Development:</b> Developing responsive web applications, database-backed enterprise portals, and automated REST API pipelines for commercial clients.", bullet))
+    story.append(Paragraph("• <b>IT Advisory &amp; Cloud Migration:</b> Assisting local enterprises in modernizing legacy database workflows into scalable cloud solutions using Supabase, PostgreSQL, and serverless architectures.", bullet))
     story.append(Paragraph("The Industrial Training Model for Diploma Students", subhead))
     story.append(Paragraph(
-        "As a diploma student in Computer Engineering following the MSBTE curriculum, the industrial training at Elite Forums provided a practical learning curve. Rather than merely listening to lectures, students are required to write production-grade code, participate in daily standups, use Git for version control, and present their work in weekly sprint reviews. This practical exposure helped me develop strong confidence in full-stack web technologies.",
+        "As a diploma student in Computer Engineering under the MSBTE curriculum, the training at Elite Forums provided a practical, industry-aligned learning curve. Rather than passive theory lectures, students are required to write production-grade code, participate in daily standups, use Git for collaborative version control, and present technical slide decks in weekly sprint reviews. This practical exposure built strong technical confidence in full-stack web technologies.",
         body
     ))
 
@@ -361,7 +360,7 @@ def generate_pdf():
     
     story.append(Paragraph("Clarification of Daily Work &amp; Project Independence", subhead))
     story.append(Paragraph(
-        "To provide complete academic transparency for MSBTE evaluation, my 12-week internship work was categorized into two distinct operational components: <b>On-Site Company Assigned Tasks</b> and <b>Independent Capstone Project Engineering (ProForge)</b>.",
+        "To provide full clarity for MSBTE academic evaluation, my 12-week internship work was divided into two distinct operational components: <b>On-Site Company Assigned Tasks</b> and <b>Independent Capstone Project Engineering (ProForge)</b>.",
         body
     ))
 
@@ -373,7 +372,7 @@ def generate_pdf():
         [Paragraph("<b>Intellectual Ownership</b>", table_cell_style), Paragraph("Internal exercises and client tickets owned by Elite Forums.", table_cell_style), Paragraph("Independent student project built by Dhruv R. Dubey for MSBTE diploma fulfillment.", table_cell_style)],
         [Paragraph("<b>Key Outcomes</b>", table_cell_style), Paragraph("Mastered Git, JavaScript ES6, React components, Node.js REST APIs, and Supabase.", table_cell_style), Paragraph("Delivered an end-to-end, multi-tenant career intelligence suite with 100% strict A4 vector PDF engine.", table_cell_style)]
     ]
-    scope_tbl = Table(scope_table_data, colWidths=[90 * pt, 205 * pt, 205 * pt])
+    scope_tbl = Table(scope_table_data, colWidths=[95 * pt, 210 * pt, 210 * pt])
     scope_tbl.setStyle(TableStyle([
         ('BOX', (0,0), (-1,-1), 1 * pt, colors.HexColor("#000000")),
         ('INNERGRID', (0,0), (-1,-1), 0.5 * pt, colors.HexColor("#cbd5e1")),
@@ -396,14 +395,14 @@ def generate_pdf():
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 3", chapter_h1))
-    story.append(Paragraph("TYPES OF MAJOR EQUIPMENT, HARDWARE &amp; SOFTWARE TOOLS USED", chapter_h2))
+    story.append(Paragraph("HARDWARE, DEVELOPMENT ENVIRONMENT &amp; CORE TOOLCHAINS", chapter_h2))
     
     story.append(Paragraph(
-        "Building a modern web application requires a well-structured set of development tools, operating environments, and cloud infrastructure. During the internship, I worked with the following primary hardware and software stack:",
+        "Developing a modern web application requires a well-structured set of development tools, runtime environments, and cloud infrastructure. During the internship, I worked with the following primary hardware and software stack:",
         body
     ))
     story.append(Paragraph("Hardware Workstation Configuration", subhead))
-    story.append(Paragraph("• <b>Processor:</b> Intel Core i5 / i7 Multi-Core Processor (x64 Architecture).", bullet))
+    story.append(Paragraph("• <b>Processor:</b> Intel Core i5 / i7 Multi-Core Processor (x64 Architecture) for fast local compilation.", bullet))
     story.append(Paragraph("• <b>System Memory (RAM):</b> 16 GB DDR4 RAM (essential for running Vite dev servers, Node.js runtimes, and local browsers simultaneously).", bullet))
     story.append(Paragraph("• <b>Storage:</b> 512 GB NVMe Solid State Drive for high-speed file compilation and fast build times.", bullet))
     story.append(Paragraph("• <b>Operating System:</b> Microsoft Windows 11 64-bit with PowerShell and Git Bash terminals.", bullet))
@@ -423,7 +422,7 @@ def generate_pdf():
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 3 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("DETAILED SPECIFICATIONS &amp; MAINTENANCE SCHEDULE", chapter_h2))
+    story.append(Paragraph("DETAILED TECHNICAL SPECIFICATIONS &amp; MAINTENANCE SCHEDULE", chapter_h2))
     
     tools_grid = [
         [Paragraph("<b>Tool / Technology</b>", table_heading_style),
@@ -475,7 +474,7 @@ def generate_pdf():
          Paragraph("Monitoring bounce rates, verifying SPF/DKIM records", table_cell_style)]
     ]
 
-    tools_tbl_obj = Table(tools_grid, colWidths=[75 * pt, 95 * pt, 65 * pt, 130 * pt, 135 * pt])
+    tools_tbl_obj = Table(tools_grid, colWidths=[80 * pt, 100 * pt, 65 * pt, 135 * pt, 135 * pt])
     tools_tbl_obj.setStyle(TableStyle([
         ('BOX', (0,0), (-1,-1), 1.2 * pt, colors.HexColor("#000000")),
         ('INNERGRID', (0,0), (-1,-1), 0.6 * pt, colors.HexColor("#000000")),
@@ -498,7 +497,7 @@ def generate_pdf():
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 3 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("GROQ LPU AI ENGINE, MULTI-MODEL FALLBACK &amp; ASYNC JAVASCRIPT", chapter_h2))
+    story.append(Paragraph("GROQ LPU ENGINE, AI FALLBACK CASCADE &amp; ASYNC JAVASCRIPT", chapter_h2))
     
     story.append(Paragraph("Asynchronous JavaScript &amp; Non-Blocking Event Loop", subhead))
     story.append(Paragraph(
@@ -522,7 +521,7 @@ def generate_pdf():
          Paragraph("<code>openai/gpt-oss-20b</code><br/>Lightweight model if high-capacity is busy.", table_cell_style),
          Paragraph("Rule-Based Extractor<br/>Offline regex parser so UI never shows blank error.", table_cell_style)]
     ]
-    ai_flow_tbl = Table(ai_flow_data, colWidths=[125 * pt, 125 * pt, 125 * pt, 125 * pt])
+    ai_flow_tbl = Table(ai_flow_data, colWidths=[128 * pt, 128 * pt, 128 * pt, 128 * pt])
     ai_flow_tbl.setStyle(TableStyle([
         ('BOX', (0,0), (-1,-1), 1 * pt, colors.HexColor("#000000")),
         ('INNERGRID', (0,0), (-1,-1), 0.5 * pt, colors.HexColor("#cbd5e1")),
@@ -597,7 +596,7 @@ def generate_pdf():
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 4 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("UNIDIRECTIONAL FULL-STACK DATA FLOW &amp; SUPABASE JSONB SCHEMA", chapter_h2))
+    story.append(Paragraph("UNIDIRECTIONAL DATA FLOW &amp; SUPABASE JSONB SCHEMA DESIGN", chapter_h2))
     
     story.append(Paragraph("Unidirectional Data Flow Architecture", subhead))
     story.append(Paragraph(
@@ -621,7 +620,7 @@ def generate_pdf():
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 5", chapter_h1))
-    story.append(Paragraph("QUALITY ASSURANCE, UNIT TESTING &amp; WEEKLY ASSESSMENTS", chapter_h2))
+    story.append(Paragraph("QUALITY ASSURANCE, AUTOMATED UNIT TESTING &amp; ASSESSMENTS", chapter_h2))
     
     story.append(Paragraph("Quality Assurance (QA) Philosophy at Elite Forums", subhead))
     story.append(Paragraph(
@@ -639,20 +638,15 @@ def generate_pdf():
     ))
 
     # ==========================================
-    # PAGE 15: CHAPTER 5 - PDF & ATS TESTING
+    # PAGE 15: CHAPTER 5 - PDF & ATS & CROSS BROWSER
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 5 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("PDFKIT A4 COORDINATE MATH &amp; ATS SCORING VALIDATION", chapter_h2))
+    story.append(Paragraph("PDFKIT A4 COORDINATE MATH, ATS VALIDATION &amp; BROWSER TESTS", chapter_h2))
     
-    story.append(Paragraph("The Challenge of Strict A4 Physical Page Boundaries", subhead))
-    story.append(Paragraph(
-        "A major technical challenge encountered during testing was ensuring that generated resumes fit cleanly onto standard <b>A4 paper dimensions (595.28 x 841.89 points / 210 x 297 mm)</b>. When users added long job descriptions, traditional browser print engines often cut lines in half or pushed single lines onto awkward second pages.",
-        body
-    ))
     story.append(Paragraph("Defensive PDFKit Coordinate Calculation Strategy", subhead))
     story.append(Paragraph(
-        "To resolve this, I implemented an automated coordinate calculation algorithm inside <code>backend/services/pdfService.js</code>:",
+        "A major technical challenge was ensuring resumes fit cleanly onto standard <b>A4 paper dimensions (595.28 x 841.89 points / 210 x 297 mm)</b> without awkward page breaks:",
         body
     ))
     story.append(Paragraph("• <b>Height Measurement:</b> Using <code>doc.heightOfString()</code> to pre-calculate the vertical pixel height of every text block and bullet point before drawing.", bullet))
@@ -664,36 +658,18 @@ def generate_pdf():
         "We validated Talo AI's ATS scoring algorithm by testing 50+ diverse resume profiles against real job descriptions across Software Engineering, Data Analysis, and Web Development roles. The test suite verified that keyword extraction accurately identified matching vs missing competencies and produced actionable improvement suggestions.",
         body
     ))
-
-    # ==========================================
-    # PAGE 16: CHAPTER 5 - SECURITY & BROWSER TESTING
-    # ==========================================
-    story.append(PageBreak())
-    story.append(Paragraph("CHAPTER 5 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("CROSS-BROWSER COMPATIBILITY, DIRECTWRITE &amp; OTP AUTH SECURITY", chapter_h2))
-    
-    story.append(Paragraph("Cross-Browser Compatibility &amp; Typography Rendering", subhead))
+    story.append(Paragraph("Cross-Browser Compatibility &amp; DirectWrite Smoothing", subhead))
     story.append(Paragraph(
-        "To guarantee an identical user experience across all devices and platforms, the ProForge web application was rigorously tested across multiple modern web browsers:",
-        body
-    ))
-    story.append(Paragraph("• <b>Google Chrome &amp; Microsoft Edge (Chromium Engine):</b> Tested hardware acceleration, GPU canvas rendering, and fast HMR performance.", bullet))
-    story.append(Paragraph("• <b>Mozilla Firefox (Gecko Engine):</b> Verified CSS custom property inheritance, smooth scrolling behaviors, and font antialiasing.", bullet))
-    story.append(Paragraph("• <b>Apple Safari (WebKit Engine):</b> Tested mobile responsive layouts, touch gesture responsiveness, and backdrop-filter glassmorphism effects.", bullet))
-    story.append(Paragraph("• <b>DirectWrite &amp; Font Smoothing:</b> Configured <code>-webkit-font-smoothing: antialiased</code> and <code>text-rendering: optimizeLegibility</code> to prevent blurred typography on Windows displays.", bullet))
-    
-    story.append(Paragraph("OTP Authentication &amp; Session Integrity Testing", subhead))
-    story.append(Paragraph(
-        "We conducted thorough security testing on the Zoho SMTP 6-digit OTP verification flow. The test suite verified that: (1) OTPs automatically expire after 10 minutes, (2) Brute-force attempts are blocked after 5 failed tries, (3) Used OTPs cannot be replayed, and (4) Unauthorized API requests without valid JWT session headers return immediate HTTP 401 Unauthorized status codes.",
+        "The application was tested across Google Chrome, Microsoft Edge, Mozilla Firefox, and Apple Safari. CSS rules <code>-webkit-font-smoothing: antialiased</code> and <code>text-rendering: optimizeLegibility</code> were configured to ensure sharp, crisp typography across all Windows and macOS displays.",
         body
     ))
 
     # ==========================================
-    # PAGE 17: CHAPTER 6 - SAFETY & CYBERSECURITY
+    # PAGE 16: CHAPTER 6 - SAFETY & CYBERSECURITY
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 6", chapter_h1))
-    story.append(Paragraph("DIGITAL SAFETY, CYBERSECURITY PROTOCOLS &amp; KEY GOVERNANCE", chapter_h2))
+    story.append(Paragraph("DIGITAL SAFETY PROTOCOLS, CYBERSECURITY &amp; DISASTER RECOVERY", chapter_h2))
     
     story.append(Paragraph("Cybersecurity Protocols in Modern Web Engineering", subhead))
     story.append(Paragraph(
@@ -705,34 +681,10 @@ def generate_pdf():
     story.append(Paragraph("2. <b>Input Sanitization &amp; Injection Prevention:</b> All user inputs across resume textboxes and email forms are sanitized to neutralize Cross-Site Scripting (XSS) and SQL injection payloads.", body))
     story.append(Paragraph("3. <b>JWT Authorization Guards:</b> Sensitive backend routes are protected with <code>requireAuth</code> middleware, which validates cryptographic signatures before granting access to user data.", body))
     story.append(Paragraph("4. <b>Multi-Device Login Detection (loginHistory.js):</b> An automated security auditor logs the IP address and User-Agent signature of every login, notifying users if an unrecognized device accesses their account.", body))
+    story.append(Paragraph("5. <b>Disaster Recovery &amp; Redundancy:</b> Database tables are protected by automated Supabase cloud snapshots, while code is versioned with daily GitHub commits.", body))
 
     # ==========================================
-    # PAGE 18: CHAPTER 6 - WORKSPACE & RECOVERY
-    # ==========================================
-    story.append(PageBreak())
-    story.append(Paragraph("CHAPTER 6 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("BACKUP SYSTEMS, ERROR RECOVERY &amp; PHYSICAL ERGONOMICS", chapter_h2))
-    
-    story.append(Paragraph("System Backup &amp; Disaster Recovery Protocols", subhead))
-    story.append(Paragraph(
-        "To prevent data loss and ensure uninterrupted development workflows, systematic backup and recovery protocols were strictly followed throughout the internship:",
-        body
-    ))
-    story.append(Paragraph("• <b>Git Remote Redundancy:</b> All code updates were committed with semantic messages and pushed daily to remote GitHub repositories, allowing instant rollback to any stable previous state.", bullet))
-    story.append(Paragraph("• <b>Database Snapshotting:</b> Supabase PostgreSQL tables and authentication schemas were protected by automated cloud snapshots.", bullet))
-    story.append(Paragraph("• <b>Graceful API Degradation:</b> When external AI services encounter rate limits or transient network failures, backend try-catch handlers fall back to secondary models or offline heuristic parsers.", bullet))
-    
-    story.append(Paragraph("Physical Ergonomics &amp; Workplace Safety", subhead))
-    story.append(Paragraph(
-        "During on-site training sessions at the Elite Forums center in Vasai, interns followed standard workplace safety and ergonomic guidelines:",
-        body
-    ))
-    story.append(Paragraph("• <b>Ergonomic Posture:</b> Maintaining proper chair height and monitor distance to reduce spinal strain during extended programming sessions.", bullet))
-    story.append(Paragraph("• <b>20-20-20 Eye Rest Rule:</b> Taking brief breaks every 20 minutes to reduce digital eye strain.", bullet))
-    story.append(Paragraph("• <b>Electrical &amp; Fire Safety:</b> Ensuring all computer power cables, extension strips, and workstation equipment adhere to standard electrical safety and emergency fire protocols.", bullet))
-
-    # ==========================================
-    # PAGE 19: CHAPTER 6 - ETHICAL AI GOVERNANCE
+    # PAGE 17: CHAPTER 6 - ETHICAL AI GOVERNANCE
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 6 (CONTINUED)", chapter_h1))
@@ -747,13 +699,14 @@ def generate_pdf():
     story.append(Paragraph("2. <b>User Privacy &amp; Data Ownership:</b> Candidate resume profiles are strictly private to the user. No personal profile data is sold, monetized, or used to train third-party public AI models without explicit consent.", body))
     story.append(Paragraph("3. <b>Ethical Outreach &amp; Anti-Spam (Mali AI):</b> Recruiter outreach emails generated by Covo AI and scheduled by Mali AI adhere to anti-spam best practices, including clear sender identities, professional subject lines, and transparent intent.", body))
     story.append(Paragraph("4. <b>Transparent ATS Matching (Talo AI):</b> Rather than using deceptive 'white font keyword stuffing' techniques, Talo AI provides honest, constructive guidance on genuine skill gaps.", body))
+    story.append(Paragraph("5. <b>Physical Workspace Safety:</b> Interns followed ergonomic posture guidelines and 20-minute eye rest breaks during on-site coding sessions in the Vasai center.", body))
 
     # ==========================================
-    # PAGE 20: CHAPTER 7 - PRACTICAL EXPERIENCES (PART 1)
+    # PAGE 18: CHAPTER 7 - PRACTICAL EXPERIENCES (PART 1)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 7", chapter_h1))
-    story.append(Paragraph("PRACTICAL EXPERIENCES IN SOFTWARE PRODUCTION (THE 6 AI SUB-SUITES)", chapter_h2))
+    story.append(Paragraph("PRACTICAL EXPERIENCES IN PRODUCTION — THE 6 PROFORGE AI SUB-SUITES", chapter_h2))
     
     story.append(Paragraph("Full-Cycle Software Engineering Exposure", subhead))
     story.append(Paragraph(
@@ -768,45 +721,34 @@ def generate_pdf():
     story.append(Paragraph("• <b>6. Mali AI (Campaign &amp; Scheduling Studio):</b> Engineered a visual HTML email composer with 12 Google fonts, 7 theme palettes, and an automated background queue scheduler (<code>emailScheduler.js</code>).", bullet))
 
     # ==========================================
-    # PAGE 21: CHAPTER 7 - PRACTICAL EXPERIENCES (PART 2)
+    # PAGE 19: CHAPTER 7 - PRACTICAL EXPERIENCES (PART 2)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 7 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("SYSTEM ASSEMBLY, API ROUTING &amp; MIDDLEWARE INTEGRATION", chapter_h2))
+    story.append(Paragraph("SYSTEM ASSEMBLY, MIDDLEWARE ROUTING &amp; PERFORMANCE OPTIMIZATION", chapter_h2))
     
     story.append(Paragraph("Full-Stack System Assembly &amp; API Integration", subhead))
     story.append(Paragraph(
         "The system assembly phase involved connecting decoupled frontend React views with backend Express services and cloud databases into a cohesive, high-performance architecture:",
         body
     ))
-    story.append(Paragraph("• <b>Modular Express Routing:</b> Organized backend logic into dedicated route controllers: <code>analyzeRoutes.js</code> (AI text parsing), <code>profileRoutes.js</code> (database CRUD), <code>generateRoutes.js</code> (PDFKit document generation), <code>authRoutes.js</code> (OTP verification), and <code>maliRoutes.js</code> (email campaign management).", bullet))
+    story.append(Paragraph("• <b>Modular Express Routing:</b> Organized backend logic into dedicated route controllers: <code>analyzeRoutes.js</code>, <code>profileRoutes.js</code>, <code>generateRoutes.js</code>, <code>authRoutes.js</code>, and <code>maliRoutes.js</code>.", bullet))
     story.append(Paragraph("• <b>Supabase Cloud Database Connection:</b> Connected backend services to Supabase PostgreSQL using connection pooling and JSONB data types to store dynamic profile objects.", bullet))
     story.append(Paragraph("• <b>Transactional Email Integration:</b> Configured Nodemailer with Zoho SMTP credentials to handle transactional 6-digit OTP delivery with high deliverability.", bullet))
     story.append(Paragraph("• <b>Zero-Dependency Client Bundling:</b> Integrated JSZip and FileSaver.js to package standalone portfolio websites directly within the client browser without consuming server bandwidth.", bullet))
-
-    # ==========================================
-    # PAGE 22: CHAPTER 7 - PRACTICAL EXPERIENCES (PART 3)
-    # ==========================================
-    story.append(PageBreak())
-    story.append(Paragraph("CHAPTER 7 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("MAINTENANCE, MEMORY PROFILING &amp; PERFORMANCE TUNING", chapter_h2))
     
-    story.append(Paragraph("Routine Maintenance &amp; System Optimization", subhead))
-    story.append(Paragraph(
-        "Software maintenance is an essential ongoing activity in production web environments. During the final phase of development, I performed key maintenance and optimization tasks:",
-        body
-    ))
-    story.append(Paragraph("• <b>NPM Package Auditing:</b> Audited all frontend and backend dependencies using <code>npm audit</code>, upgrading outdated libraries and resolving security vulnerabilities.", bullet))
-    story.append(Paragraph("• <b>Background Queue Maintenance:</b> Optimized <code>emailScheduler.js</code> to run periodic database polling intervals without creating memory leaks or exhausting database connection limits.", bullet))
-    story.append(Paragraph("• <b>PDF Memory Buffer Management:</b> Configured PDFKit to stream binary chunks directly into Express HTTP response streams, significantly reducing RAM usage during concurrent PDF exports.", bullet))
+    story.append(Paragraph("Routine Maintenance &amp; Performance Tuning", subhead))
+    story.append(Paragraph("• <b>NPM Package Auditing:</b> Audited dependencies using <code>npm audit</code>, upgrading outdated libraries and resolving security vulnerabilities.", bullet))
+    story.append(Paragraph("• <b>Background Queue Maintenance:</b> Optimized <code>emailScheduler.js</code> to run periodic database polling intervals without creating memory leaks.", bullet))
+    story.append(Paragraph("• <b>PDF Memory Buffer Streaming:</b> Configured PDFKit to stream binary chunks directly into Express HTTP response streams, reducing RAM usage during peak exports.", bullet))
     story.append(Paragraph("• <b>Frontend Bundle Tree-Shaking:</b> Configured Vite production build settings to eliminate unused code, reducing initial page load times to under 1.2 seconds.", bullet))
 
     # ==========================================
-    # PAGE 23: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 1-4)
+    # PAGE 20: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 1-4)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 8", chapter_h1))
-    story.append(Paragraph("12-WEEK TASK BREAKDOWN (WEEKS 1 TO 4: FOUNDATIONS &amp; CORE)", chapter_h2))
+    story.append(Paragraph("12-WEEK TASK BREAKDOWN — WEEKS 1 TO 4: FOUNDATIONS &amp; CORE", chapter_h2))
     
     story.append(Paragraph("Week 1: Web Foundations, Modern JavaScript ES6 &amp; Git Version Control", subhead))
     story.append(Paragraph(
@@ -830,11 +772,11 @@ def generate_pdf():
     ))
 
     # ==========================================
-    # PAGE 24: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 5-8)
+    # PAGE 21: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 5-8)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 8 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("12-WEEK TASK BREAKDOWN (WEEKS 5 TO 8: REMO AI &amp; FOLIO AI)", chapter_h2))
+    story.append(Paragraph("12-WEEK TASK BREAKDOWN — WEEKS 5 TO 8: REMO AI &amp; FOLIO AI", chapter_h2))
     
     story.append(Paragraph("Weeks 5–6: Remo AI Resume Studio &amp; PDFKit Vector Engine", subhead))
     story.append(Paragraph(
@@ -853,11 +795,11 @@ def generate_pdf():
     ))
 
     # ==========================================
-    # PAGE 25: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 9-11)
+    # PAGE 22: CHAPTER 8 - 12-WEEK ROADMAP (WEEKS 9-11)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 8 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("12-WEEK TASK BREAKDOWN (WEEKS 9 TO 11: COVO, LIKO &amp; MALI AI)", chapter_h2))
+    story.append(Paragraph("12-WEEK TASK BREAKDOWN — WEEKS 9 TO 11: COVO, LIKO &amp; MALI AI", chapter_h2))
     
     story.append(Paragraph("Week 9: Covo AI Outreach Studio &amp; PDF Cover Letter Generator", subhead))
     story.append(Paragraph(
@@ -876,11 +818,11 @@ def generate_pdf():
     ))
 
     # ==========================================
-    # PAGE 26: CHAPTER 8 - 12-WEEK ROADMAP (WEEK 12)
+    # PAGE 23: CHAPTER 8 - 12-WEEK ROADMAP (WEEK 12)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 8 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("12-WEEK TASK BREAKDOWN (WEEK 12: SECURITY &amp; FINAL DEMO)", chapter_h2))
+    story.append(Paragraph("12-WEEK TASK BREAKDOWN — WEEK 12: SECURITY &amp; FINAL DEMO", chapter_h2))
     
     story.append(Paragraph("Week 12: Cybersecurity Hardening, Multi-Theme System &amp; Final Evaluation", subhead))
     story.append(Paragraph(
@@ -900,11 +842,11 @@ def generate_pdf():
     story.append(Paragraph("• <b>Mali AI:</b> Email campaign composer with background scheduling queue.", bullet))
 
     # ==========================================
-    # PAGE 27: CHAPTER 9 - CHALLENGES & SOLUTIONS (PART 1)
+    # PAGE 24: CHAPTER 9 - CHALLENGES & SOLUTIONS (PART 1)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 9", chapter_h1))
-    story.append(Paragraph("TECHNICAL CHALLENGES &amp; ENGINEERING SOLUTIONS (PDF &amp; LLM)", chapter_h2))
+    story.append(Paragraph("TECHNICAL CHALLENGES ENCOUNTERED &amp; ENGINEERING SOLUTIONS", chapter_h2))
     
     story.append(Paragraph("1. Dynamic Coordinate Math &amp; A4 Pagination in PDFKit", subhead))
     story.append(Paragraph(
@@ -926,11 +868,11 @@ def generate_pdf():
     ))
 
     # ==========================================
-    # PAGE 28: CHAPTER 9 - CHALLENGES & SOLUTIONS (PART 2)
+    # PAGE 25: CHAPTER 9 - CHALLENGES & SOLUTIONS (PART 2)
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 9 (CONTINUED)", chapter_h1))
-    story.append(Paragraph("BACKGROUND QUEUEING, SPRINT COORDINATION &amp; STUDENT LEARNINGS", chapter_h2))
+    story.append(Paragraph("BACKGROUND QUEUEING, SPRINT REFLECTIONS &amp; STUDENT LEARNINGS", chapter_h2))
     
     story.append(Paragraph("3. Asynchronous Background Scheduling for Email Campaigns", subhead))
     story.append(Paragraph(
@@ -951,11 +893,11 @@ def generate_pdf():
     story.append(Paragraph("• <b>Time Management:</b> Balanced daily on-site training sessions with independent capstone development across 12 intensive weeks.", bullet))
 
     # ==========================================
-    # PAGE 29: CHAPTER 10 - CONCLUSION
+    # PAGE 26: CHAPTER 10 - CONCLUSION
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 10", chapter_h1))
-    story.append(Paragraph("CONCLUSION, INDUSTRY EXPERIENCE &amp; FUTURE SCOPE", chapter_h2))
+    story.append(Paragraph("CONCLUSION, INDUSTRIAL EXPERIENCE &amp; FUTURE SCOPE", chapter_h2))
     
     story.append(Paragraph(
         "My 12-week industrial training at <b>Elite Forums</b>, Vasai (East), has been an invaluable learning experience that successfully fulfilled all MSBTE Diploma curriculum objectives for Computer Engineering. The program provided a perfect bridge between theoretical academic concepts and live software industry practices.",
@@ -975,11 +917,11 @@ def generate_pdf():
     ))
 
     # ==========================================
-    # PAGE 30: CHAPTER 11 - REFERENCES
+    # PAGE 27: CHAPTER 11 - REFERENCES
     # ==========================================
     story.append(PageBreak())
     story.append(Paragraph("CHAPTER 11", chapter_h1))
-    story.append(Paragraph("REFERENCES, TECHNICAL DOCUMENTATION &amp; CORPORATE INFORMATION", chapter_h2))
+    story.append(Paragraph("REFERENCES, TECHNICAL DOCUMENTATION &amp; CORPORATE DETAILS", chapter_h2))
     
     story.append(Paragraph("1. Official Documentation &amp; Technical Standards", subhead))
     story.append(Paragraph("• React 18 Official Documentation – https://react.dev/", bullet))
@@ -1000,9 +942,9 @@ def generate_pdf():
     
     story.append(Spacer(1, 10 * pt))
     elite_link_data = [
-        [Paragraph("<b>Training Industry: Elite Forums</b><br/><font color='#003366'><u>https://in.linkedin.com/company/eliteforums</u></font><br/><font size=8 color='#4b5563'>IT Services, Software Consulting &amp; Technical Upskilling &bull; Vasai (East), Maharashtra – 401208</font>", center_bold_11)]
+        [Paragraph("<b>Training Industry: Elite Forums</b><br/><font color='#003366'><u>https://in.linkedin.com/company/eliteforums</u></font><br/><font size=8.5 color='#4b5563'>IT Services, Software Consulting &amp; Technical Upskilling &bull; Vasai (East), Maharashtra – 401208</font>", center_bold_11)]
     ]
-    elite_link_tbl = Table(elite_link_data, colWidths=[420 * pt])
+    elite_link_tbl = Table(elite_link_data, colWidths=[430 * pt])
     elite_link_tbl.setStyle(TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
@@ -1014,7 +956,7 @@ def generate_pdf():
     story.append(elite_link_tbl)
 
     doc.build(story, canvasmaker=NumberedCanvas)
-    print("30-Page ProForge AI Internship Report PDF successfully regenerated.")
+    print("27-Page ProForge AI Internship Report PDF successfully regenerated.")
 
 if __name__ == "__main__":
     generate_pdf()
